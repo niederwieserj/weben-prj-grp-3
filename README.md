@@ -12,7 +12,8 @@ docker compose up -d
 in this folder (the root folder of the git repo).
 
 # 3rd Party Tools
-## Bootstrap
-- Version: 5.3.8
-- Downloaded: 15.03.2026
-
+| Tool                  | Version | Date       | Note                    |
+| --------------------- | ------- | ---------- | ----------------------- |
+| Bootstrap             | 5.3.8   | 15.03.2026 |                         |
+| Bootstrap icons       | 1.13.1  | 15.03.2026 |                         |
+| Bootstrap color modes | -       | 15.03.2026 | From Bootstrap examples |
