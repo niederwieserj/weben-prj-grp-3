@@ -1,5 +1,31 @@
 
-/* For global CSS */
+/*global CSS */
+/*custom*/
+/*
+*{
+    color: white;
+}
+
+*:not(.heading, h1,h2,h3,h4,h5,p, div, a){
+    background: #241e1e;
+}*/
+
+#logo{
+    font-weight:bold;
+    font-size:larger;
+    font-style: oblique;
+    color:#320292;
+}
+
+.navbar-cart{
+    width:24px;
+    height:24px;
+    color:#320292;
+    margin-left: 1rem;
+    margin-top: 0.2rem;
+    
+}
+
 
 /* For Bootstrap examples to work properly */
 .bd-placeholder-img {

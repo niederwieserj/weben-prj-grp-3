@@ -1,0 +1,27 @@
+#welcome{
+    background-image: url("./../img/vengeance-gaming-pc-hero.png");
+}
+
+#top-heading{
+    text-align: left;
+    margin-top: 3rem;
+    margin-bottom:3rem;
+    
+}
+
+h1{
+    font-weight: bold;
+    color:white;
+}
+
+h4{
+    color:white;
+    margin-bottom:1rem;
+}
+
+#learn-more-buy{
+    text-align: left;
+    color:aqua;
+    
+}
+
