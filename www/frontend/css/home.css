@@ -1,0 +1,137 @@
+body{
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main{
+    margin-top: 1.5rem;
+    flex-grow:1;
+}
+
+#intro{
+    background-image: url("./../img/vengeance-gaming-pc-hero.png");
+    position: relative;
+    overflow: hidden;
+    padding: 1rem;
+    text-align: center;
+
+}
+
+#top-heading{
+    text-align: left;
+    margin-top: 3rem;
+    margin-bottom:3rem;
+}
+
+h1{
+    font-weight: bold;
+    color:white;
+}
+
+h4{
+    color:white;
+    margin-bottom:1rem;
+}
+
+#learn-more-buy{
+    text-align: left;
+    gap: 1rem;
+    font-weight:normal;
+}
+
+#explore-heading{
+    text-align: center;
+    font-size: xxx-large;
+    margin-top: 4rem;
+    margin-bottom: 2.5rem;
+}
+
+.row{
+    width: 100%;
+    margin:0px;
+}
+
+.explore-card{
+    border-width:5px;
+    border-style:inset;
+    border-color:transparent;
+    background:#1e1f25;
+    position: relative;
+    height: 100%;
+    padding: 1rem;
+}
+
+.explore-card:hover{
+    
+    border-color:rgb(167, 91, 255);
+}
+
+.stretched-link{
+    text-align:left;
+    color:white;
+    font-size:40px;
+    text-decoration: none;
+}
+
+
+.stretched-link:hover{
+    color:rgb(255, 230, 0);
+}
+
+.image-container{
+    margin-top:1rem;
+    margin: bottom 1rem;
+    padding-top:1rem;
+    padding-bottom:1rem;
+    text-align: center;
+}
+
+.component-img{
+    width:240px;
+    height:240px;
+    object-fit: contain;
+}
+
+
+
+.col-responsive {
+    flex: 0 0 100%;
+    max-width: 100%;
+    padding: 0 10px;
+}
+
+/*2 columns >670px */
+@media (min-width: 670px) {
+    .col-responsive {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+/*3 columns >1145px */
+@media (min-width: 1145px) {
+    .col-responsive {
+        flex: 0 0 33.3333%;
+        max-width: 33.3333%;
+    }
+}
+
+
+/*4 columns >1420px */
+@media (min-width: 1420px) {
+    .col-responsive {
+        flex: 0 0 25%;
+        max-width: 25%;
+    }
+}
+/*wrapping row*/
+.row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+@media (min-width: 768px) {
+  .flex-md-equal > * {
+    flex: 1;
+  }
+}

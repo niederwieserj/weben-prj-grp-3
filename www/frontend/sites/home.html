@@ -9,105 +9,123 @@
     <link href="/frontend/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="/frontend/css/product.css" rel="stylesheet">
+    <link href="/frontend/css/home.css" rel="stylesheet">
+    <link href="/frontend/css/style.css" rel="stylesheet">
 </head>
 
-<body class="d-flex flex-column min-vh-100">
-    <main class="container-fluid mt-4 flex-grow-1">
-        <!-- Layout placeholders -->
+<body class="d-flex">
+    <main class="container-fluid">
+        
         <div id="navbar-placeholder"></div>
 
         <!-- ======================================================================= -->
-        <!-- Content goes here -->
+        <!-- Intro -->
 
-        <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-body-tertiary">
-            <div class="col-md-6 p-lg-5 mx-auto my-5">
-                <h1 class="display-3 fw-bold">Designed for engineers</h1>
-                <h3 class="fw-normal text-muted mb-3">
-                    Build anything you want with Aperture
-                </h3>
-                <div class="d-flex gap-3 justify-content-center lead fw-normal">
+        <div class="p-md-5 m-md-3 bg-body-tertiary" id="intro">
+            <div class="heading col-md-6 p-lg-5 " id="top-heading">
+                <h1 class="heading">PC parts from core to case</h1>
+                <h4 class="heading">
+                    Build your custom PC with CoreGear
+                </h4>
+                <div class="d-flex lead" id="learn-more-buy">
                     <a class="icon-link" href="#">
                         Learn more
-                        <svg class="bi" aria-hidden="true">
-                            <use xlink:href="#chevron-right"></use>
-                        </svg>
                     </a>
-                    <a class="icon-link" href="#">
+                    <a class="icon-link" href="../sites/products.html">
                         Buy
-                        <svg class="bi" aria-hidden="true">
-                            <use xlink:href="#chevron-right"></use>
-                        </svg>
                     </a>
                 </div>
             </div>
-            <div class="product-device shadow-sm d-none d-md-block"></div>
-            <div class="product-device product-device-2 shadow-sm d-none d-md-block"></div>
+            
         </div>
-        <div class="d-md-flex flex-md-equal w-100 my-md-3 ps-md-3">
-            <div class="text-bg-dark me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
-                <div class="my-3 py-3">
-                    <h2 class="display-5">Another headline</h2>
-                    <p class="lead">And an even wittier subheading.</p>
+
+        <!-- explore shop categories: cards -->
+        <div class="row g-3 my-md-3 ps-md-3">
+            <h2 id="explore-heading">
+                Explore by category
+            </h2>
+            <div class="col-responsive">
+                <div class="explore-card pt-md-5 px-md-5">
+                    <a href="#" class="stretched-link">Cases</a>
+
+                    <div class="image-container">
+                        <img src="./../img/case-white-3500x.png" alt="white 4500x base frame" class="component-img">
+                    </div>
                 </div>
-                <div class="bg-body-tertiary shadow-sm mx-auto" style="width: 80%; height: 300px; border-radius: 21px 21px 0 0"></div>
             </div>
-            <div class="bg-body-tertiary me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
-                <div class="my-3 p-3">
-                    <h2 class="display-5">Another headline</h2>
-                    <p class="lead">And an even wittier subheading.</p>
+
+            <div class="col-responsive">
+                <div class="explore-card pt-md-5 px-md-5">
+                    <a href="#" class="stretched-link">Coolers</a>
+
+                    <div class="image-container">
+                        <img src="./../img/icue-link-h100i-lcd-liquid-cooler.png" alt="white 4500x base frame"
+                            class="component-img">
+                    </div>
                 </div>
-                <div class="bg-dark shadow-sm mx-auto" style="width: 80%; height: 300px; border-radius: 21px 21px 0 0"></div>
             </div>
-        </div>
-        <div class="d-md-flex flex-md-equal w-100 my-md-3 ps-md-3">
-            <div class="bg-body-tertiary me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
-                <div class="my-3 p-3">
-                    <h2 class="display-5">Another headline</h2>
-                    <p class="lead">And an even wittier subheading.</p>
+
+            <div class="col-responsive">
+                <div class="explore-card pt-md-5 px-md-5">
+                    <a href="#" class="stretched-link">RAM</a>
+
+                    <div class="image-container">
+                        <img src="./../img/vengeance-ddr5-blk.png" alt="white 4500x base frame" class="component-img">
+                    </div>
                 </div>
-                <div class="bg-dark shadow-sm mx-auto" style="width: 80%; height: 300px; border-radius: 21px 21px 0 0"></div>
             </div>
-            <div class="text-bg-primary me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
-                <div class="my-3 py-3">
-                    <h2 class="display-5">Another headline</h2>
-                    <p class="lead">And an even wittier subheading.</p>
+            <div class="col-responsive">
+                <div class="explore-card pt-md-5 px-md-5">
+                    <a href="#" class="stretched-link">GPUs</a>
+
+                    <div class=" image-container">
+                        <img src="./../img/RTX-5080-16g-vanguard-msi.png" alt="GeForce RTX 5060 16GB vanguard msi" class="component-img">
+                    </div>
                 </div>
-                <div class="bg-body-tertiary shadow-sm mx-auto" style="width: 80%; height: 300px; border-radius: 21px 21px 0 0"></div>
-            </div>
-        </div>
-        <div class="d-md-flex flex-md-equal w-100 my-md-3 ps-md-3">
-            <div class="bg-body-tertiary me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
-                <div class="my-3 p-3">
-                    <h2 class="display-5">Another headline</h2>
-                    <p class="lead">And an even wittier subheading.</p>
-                </div>
-                <div class="bg-body shadow-sm mx-auto" style="width: 80%; height: 300px; border-radius: 21px 21px 0 0"></div>
-            </div>
-            <div class="bg-body-tertiary me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
-                <div class="my-3 py-3">
-                    <h2 class="display-5">Another headline</h2>
-                    <p class="lead">And an even wittier subheading.</p>
-                </div>
-                <div class="bg-body shadow-sm mx-auto" style="width: 80%; height: 300px; border-radius: 21px 21px 0 0"></div>
             </div>
         </div>
-        <div class="d-md-flex flex-md-equal w-100 my-md-3 ps-md-3">
-            <div class="bg-body-tertiary me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
-                <div class="my-3 p-3">
-                    <h2 class="display-5">Another headline</h2>
-                    <p class="lead">And an even wittier subheading.</p>
+
+        <div class="row g-3 my-md-3 ps-md-3">
+           
+            <div class="col-responsive">
+                <div class="explore-card pt-md-5 px-md-5">
+                    <a href="#" class="stretched-link">Power supply</a>
+
+                    <div class="image-container">
+                        <img src="./../img/rmx-series-rm750x-corsair.png" alt="rmx series rm750x corsair modular power supply" class="component-img">
+                    </div>
                 </div>
-                <div class="bg-body shadow-sm mx-auto" style="width: 80%; height: 300px; border-radius: 21px 21px 0 0"></div>
             </div>
-            <div class="bg-body-tertiary me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
-                <div class="my-3 py-3">
-                    <h2 class="display-5">Another headline</h2>
-                    <p class="lead">And an even wittier subheading.</p>
+
+            <div class="col-responsive">
+                <div class="explore-card pt-md-5 px-md-5">
+                    <a href="#" class="stretched-link">Fans</a>
+
+                    <div class="image-container">
+                        <img src="./../img/icue-link-rx140-max-rgb140mm-pwm-w.png" alt="icue link rx140 max rgb140mm pwm w fan" class="component-img">
+                    </div>
                 </div>
-                <div class="bg-body shadow-sm mx-auto" style="width: 80%; height: 300px; border-radius: 21px 21px 0 0"></div>
+            </div>
+            <div class="col-responsive">
+                <div class="explore-card pt-md-5 px-md-5">
+                    <a href="#" class="stretched-link">Motherboards</a>
+
+                    <div class="image-container">
+                        <img src="./../img/mag-z890-tomahawk-wifi_II-mb.png" alt="GeForce RTX 5060 16GB vanguard msi" class="component-img">
+                    </div>
+                </div>
+            </div>
+            <div class="col-responsive">
+                <div class="explore-card pt-md-5 px-md-5">
+                    <a href="#" class="stretched-link">Storage</a>
+
+                    <div class="image-container">
+                        <img src="./../img/m370-NVMe-m.2.png" alt="GeForce RTX 5060 16GB vanguard msi" class="component-img">
+                    </div>
+                </div>
             </div>
         </div>
+        
 
         <!-- ======================================================================= -->
 
@@ -117,7 +135,6 @@
 
     <div id="footer-placeholder"></div>
 
-    <!-- Layout loader (must be last) -->
     <script src="/frontend/js/layout.js"></script>
 </body>
 
