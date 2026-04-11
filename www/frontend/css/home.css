@@ -32,11 +32,13 @@ h4{
 
 .explore-card{
     border-width:5px;
+    border-style:inset;
+    border-color:transparent;
     background:#1e1f25;
 }
 
 .explore-card:hover{
-    border-style:inset;
+    
     border-color:rgb(167, 91, 255);
 }
 
