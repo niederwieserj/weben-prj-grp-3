@@ -1,12 +1,26 @@
-#welcome{
+body{
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main{
+    margin-top: 1.5rem;
+    flex-grow:1;
+}
+
+#intro{
     background-image: url("./../img/vengeance-gaming-pc-hero.png");
+    position: relative;
+    overflow: hidden;
+    padding: 1rem;
+    text-align: center;
+
 }
 
 #top-heading{
     text-align: left;
     margin-top: 3rem;
     margin-bottom:3rem;
-    
 }
 
 h1{
@@ -21,6 +35,8 @@ h4{
 
 #learn-more-buy{
     text-align: left;
+    gap: 1rem;
+    font-weight:normal;
 }
 
 #explore-heading{
@@ -30,11 +46,19 @@ h4{
     margin-bottom: 2.5rem;
 }
 
+.row{
+    width: 100%;
+    margin:0px;
+}
+
 .explore-card{
     border-width:5px;
     border-style:inset;
     border-color:transparent;
     background:#1e1f25;
+    position: relative;
+    height: 100%;
+    padding: 1rem;
 }
 
 .explore-card:hover{
@@ -54,11 +78,21 @@ h4{
     color:rgb(255, 230, 0);
 }
 
+.image-container{
+    margin-top:1rem;
+    margin: bottom 1rem;
+    padding-top:1rem;
+    padding-bottom:1rem;
+    text-align: center;
+}
+
 .component-img{
     width:240px;
     height:240px;
     object-fit: contain;
 }
+
+
 
 .col-responsive {
     flex: 0 0 100%;
