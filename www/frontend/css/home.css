@@ -21,7 +21,81 @@ h4{
 
 #learn-more-buy{
     text-align: left;
-    color:aqua;
-    
 }
 
+#explore-heading{
+    text-align: center;
+    font-size: xxx-large;
+    margin-top: 4rem;
+    margin-bottom: 2.5rem;
+}
+
+.explore-card{
+    border-width:5px;
+    background:#1e1f25;
+}
+
+.explore-card:hover{
+    border-style:inset;
+    border-color:rgb(167, 91, 255);
+}
+
+.stretched-link{
+    text-align:left;
+    color:white;
+    font-size:40px;
+    text-decoration: none;
+}
+
+
+.stretched-link:hover{
+    color:rgb(255, 230, 0);
+}
+
+.component-img{
+    width:240px;
+    height:240px;
+    object-fit: contain;
+}
+
+.col-responsive {
+    flex: 0 0 100%;
+    max-width: 100%;
+    padding: 0 10px;
+}
+
+/*2 columns >670px */
+@media (min-width: 670px) {
+    .col-responsive {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+/*3 columns >1145px */
+@media (min-width: 1145px) {
+    .col-responsive {
+        flex: 0 0 33.3333%;
+        max-width: 33.3333%;
+    }
+}
+
+
+/*4 columns >1420px */
+@media (min-width: 1420px) {
+    .col-responsive {
+        flex: 0 0 25%;
+        max-width: 25%;
+    }
+}
+/*wrapping row*/
+.row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+@media (min-width: 768px) {
+  .flex-md-equal > * {
+    flex: 1;
+  }
+}
