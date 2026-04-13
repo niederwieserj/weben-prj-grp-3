@@ -1,9 +1,9 @@
 <?php
 
 $host = 'database';
-$dbname = 'docker';
-$user = 'docker';
-$password = 'docker';
+$dbname = 'webshop';
+$user = 'root';
+$password = 'tiger';
 
 try {
     $pdo = new PDO(
