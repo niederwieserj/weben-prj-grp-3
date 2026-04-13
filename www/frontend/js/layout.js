@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadScript('/frontend/bootstrap/js/bootstrap.bundle.min.js');
     // await loadScript('/frontend/bootstrap/color-modes/color-modes.js');
 
+    await loadUserState();
 });
 
 async function insertResourceById(id, path) {
@@ -32,4 +33,29 @@ function loadScript(src) {
         }
         document.body.appendChild(script);
     });
+}
+
+async function loadUserState() {
+    try {
+        const response = await fetch("/backend/logic/request_handler.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                action: "getUserState"
+            })
+        });
+
+        const state = await response.json();
+        
+        if (state.logged_in) {
+            // Hide guest-only items
+            // Show user menu
+            document.getElementById('nav-drop-logged-out').style.display = 'none';
+            document.getElementById('nav-drop-logged-in').style.display = 'block';
+        }
+    } catch (error) {
+        console.error('Failed to load user state:', error);
+    }
 }

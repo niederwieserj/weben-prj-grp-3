@@ -1,3 +1,33 @@
+document.addEventListener('click', async (e) => {
+    if (e.target.id === "btn-sign-out") {
+        signout(e);
+    }
+});
+
+async function signout(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    try {
+        const response = await fetch('/backend/logic/request_handler.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ action: "signout" })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            document.getElementById('nav-drop-logged-out').style.display = 'block';
+            document.getElementById('nav-drop-logged-in').style.display = 'none';
+        }
+    } catch (error) {
+        console.error('Logout error:', error);
+    }
+}
+
 async function requestPasswordReset() {
     const emailInput = document.getElementById("resetEmail");
     const messageBox = document.getElementById("resetMessage");
@@ -49,3 +79,23 @@ async function requestPasswordReset() {
         `;
     }
 }
+
+// Example starter JavaScript for disabling form submissions if there are invalid fields
+(() => {
+  'use strict'
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  const forms = document.querySelectorAll('.needs-validation')
+
+  // Loop over them and prevent submission
+  Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity()) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+
+      form.classList.add('was-validated')
+    }, false)
+  })
+})()

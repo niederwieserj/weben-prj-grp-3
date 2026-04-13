@@ -146,7 +146,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `username`, `password_hash`, `email`, `title`, `first_name`, `last_name`, `is_admin`, `created_at`, `reset_token`, `reset_token_expires`) VALUES
-(1, 'testuser', '843d32ec3167e3c53aaf392d6e318943f57ee22da94c8c2fee107b90430ea51c', 'test@test.com', '', 'Max', 'Mustermännchen', 0, '2026-04-11 10:26:29', NULL, NULL);
+(1, 'testuser', hash('sha256', 'testuser'), 'test@test.com', '', 'Max', 'Mustermännchen', 0, '2026-04-11 10:26:29', NULL, NULL);
 
 -- --------------------------------------------------------
 
