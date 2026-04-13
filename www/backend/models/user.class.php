@@ -212,6 +212,47 @@ class User {
         return ["success" => true, "message" => "Login successful.", "user" => $user];
     }
 
+        /**
+     * Logs out the current user and clears session/cookies.
+     * Implements Spec III.2.f: Session cleanup on logout.
+     * 
+     * @return array ['success' => bool, 'message' => string]
+     */
+    public static function logout(PDO $pdo): array {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Clear "Remember Me" cookie if exists
+        $cookieName = 'webshop_remember';
+        if (isset($_COOKIE[$cookieName])) {
+            setcookie($cookieName, "", time() - 3600, "/");
+            unset($_COOKIE[$cookieName]);
+        }
+
+        // Unset all session variables
+        $_SESSION = [];
+
+        // Delete session cookie
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(
+                session_name(),
+                "",
+                time() - 42000,
+                $params["path"],
+                $params["domain"],
+                $params["secure"],
+                $params["httponly"]
+            );
+        }
+
+        // Destroy session
+        session_destroy();
+
+        return ["success" => true, "message" => "Logged out successfully."];
+    }
+
     /**
      * Updates user profile data.
      * Implements Spec III.6.a: Edit data, requires password verification (implied by "sensitive info").
