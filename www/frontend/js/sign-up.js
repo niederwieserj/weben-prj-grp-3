@@ -3,11 +3,14 @@
 // Registration Handler
 document.addEventListener('DOMContentLoaded', () => {
     const signupForm = document.getElementById('signupForm');
+    console.log("test2");
 
     if (signupForm) {
         signupForm.addEventListener('submit', async function (e) {
             e.preventDefault();
             e.stopPropagation();
+
+            console.log("test");
 
             // Bootstrap Validation Check
             if (!this.checkValidity()) {
@@ -15,24 +18,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Custom Validation: Password Match
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            
-            if (password !== confirmPassword) {
-                alert("Passwords do not match!");
-                return;
-            }
-
             // Collect Data
             const formData = {
-                action: 'register',
-                title: document.getElementById('title').value,
+                action: 'sign-up',
                 firstName: document.getElementById('firstName').value,
                 lastName: document.getElementById('lastName').value,
                 email: document.getElementById('email').value,
                 username: document.getElementById('username').value,
-                password: password,
+                password: document.getElementById('password').value,
                 address: document.getElementById('address').value,
                 city: document.getElementById('city').value,
                 zip: document.getElementById('zip').value,
@@ -51,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (result.success) {
                     // Success: Redirect to login or show success message
                     alert("Account created successfully! Redirecting to login...");
-                    window.location.href = 'sign-in.html';
+                    // window.location.href = 'sign-in.html';
                 } else {
                     // Error: Show message
                     alert("Error: " + result.message);

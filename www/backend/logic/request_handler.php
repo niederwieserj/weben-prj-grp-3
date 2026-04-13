@@ -11,6 +11,10 @@ $data = json_decode(file_get_contents("php://input"), true);
 $action = $data['action'] ?? '';
 
 switch ($action) {
+    case 'sign-up':
+        echo json_encode(User::register($pdo, $data));
+        break;
+
     case 'login':
         echo json_encode(User::login($pdo, $data['identifier'], $data['password'], $data['remember-me']));
         break;

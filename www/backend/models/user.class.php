@@ -81,32 +81,37 @@ class User {
     // --- Business Logic Methods ---
 
     /**
-     * Registers a new user.
-     * Implements Spec III.1: Validation, Encryption, Admin flag check.
+     * Static method to Register a new user.
+     * This replaces the procedural registerUser() function.
      * 
+     * @param PDO $pdo Database connection
+     * @param array $data Associative array of user data
      * @return array ['success' => bool, 'message' => string, 'user' => User|null]
      */
-    public static function register(PDO $pdo, string $username, string $email, string $password, 
-                                    string $firstName, string $lastName, string $title): array {
-        
-        // 1. Validation (Spec III.1.b, III.1.c)
-        $username = trim($username);
-        $email = trim($email);
-        $password = trim($password);
-        $firstName = trim($firstName);
-        $lastName = trim($lastName);
-        $title = trim($title);
+    public static function register(PDO $pdo, array $data): array {
+        // Extract data
+        $username = trim($data['username'] ?? '');
+        $email = trim($data['email'] ?? '');
+        $password = $data['password'] ?? '';
+        $firstName = trim($data['firstName'] ?? '');
+        $lastName = trim($data['lastName'] ?? '');
+        $title = '';
+        $address = trim($data['address'] ?? '');
+        $city = trim($data['city'] ?? '');
+        $zip = trim($data['zip'] ?? '');
+        $country = trim($data['country'] ?? '');
 
-        if (empty($username) || empty($email) || empty($password)) {
-            return ["success" => false, "message" => "Username, email, and password are required."];
-        }
-
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return ["success" => false, "message" => "Invalid email format."];
+        // 1. Validation
+        if (empty($username) || empty($email) || empty($password) || empty($firstName) || empty($lastName)) {
+            return ["success" => false, "message" => "All required fields must be filled."];
         }
 
         if (strlen($password) < 6) {
             return ["success" => false, "message" => "Password must be at least 6 characters."];
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return ["success" => false, "message" => "Invalid email format."];
         }
 
         // 2. Check Existence
@@ -116,24 +121,38 @@ class User {
             return ["success" => false, "message" => "Username or email already exists."];
         }
 
-        // 3. Hash Password (Spec III.1.d) - Using SHA256 to match your reset logic
+        // 3. Hash Password
         $passwordHash = hash('sha256', $password);
 
-        // 4. Insert (Default is_admin = 0, Spec III.1.e)
-        $stmt = $pdo->prepare("
-            INSERT INTO users (username, email, password_hash, first_name, last_name, title, is_admin)
-            VALUES (?, ?, ?, ?, ?, ?, 0)
-        ");
-
         try {
-            $stmt->execute([$username, $email, $passwordHash, $firstName, $lastName, $title]);
+            $pdo->beginTransaction();
+
+            // 4. Insert User
+            $stmtUser = $pdo->prepare("
+                INSERT INTO users (username, email, password_hash, first_name, last_name, title, is_admin)
+                VALUES (?, ?, ?, ?, ?, ?, 0)
+            ");
+            $stmtUser->execute([$username, $email, $passwordHash, $firstName, $lastName, $title]);
             $newUserId = $pdo->lastInsertId();
-            
-            $newUser = new User($pdo, $newUserId);
+
+            // 5. Insert Address (Spec III.1.b.x)
+            // Note: In a strict OOP design, you might have an Address class. 
+            // But for this project scope, inserting here is acceptable.
+            $stmtAddr = $pdo->prepare("
+                INSERT INTO addresses (fk_user_id, postal_code, address, city, country)
+                VALUES (?, ?, ?, ?, ?)
+            ");
+            $stmtAddr->execute([$newUserId, $zip, $address, $city, $country]);
+
+            $pdo->commit();
+
+            // 6. Return new User object
+            $newUser = new self($pdo, $newUserId);
             return ["success" => true, "message" => "Registration successful.", "user" => $newUser];
 
         } catch (PDOException $e) {
-            error_log("Registration Error: " . $e->getMessage());
+            $pdo->rollBack();
+            error_log("Registration DB Error: " . $e->getMessage());
             return ["success" => false, "message" => "Database error during registration."];
         }
     }
