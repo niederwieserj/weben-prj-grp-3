@@ -80,31 +80,22 @@ async function requestPasswordReset() {
     }
 }
 
-// frontend/js/auth.js
-document.getElementById('loginForm').addEventListener('submit', function (e) {
-    e.preventDefault(); // STOP the page reload!
+// Example starter JavaScript for disabling form submissions if there are invalid fields
+(() => {
+  'use strict'
 
-    const formData = new FormData(e.target);
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  const forms = document.querySelectorAll('.needs-validation')
 
-    const data = Object.fromEntries(formData.entries());
-    data.action = 'login'; // Add the action for your PHP handler
-    data['remember-me'] = document.getElementById('remember-me').checked;
+  // Loop over them and prevent submission
+  Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity()) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
 
-    console.log(data);
-
-    fetch('/backend/logic/request_handler.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    })
-        .then(response => response.json())
-        .then(result => {
-            if (result.success) {
-                document.getElementById('nav-drop-logged-out').style.display = 'none';
-                document.getElementById('nav-drop-logged-in').style.display = 'block';
-                window.location.replace("home.html");
-            } else {
-                document.getElementById('logo').innerText = result.message;
-            }
-        });
-});
+      form.classList.add('was-validated')
+    }, false)
+  })
+})()
