@@ -37,7 +37,7 @@ function loadScript(src) {
 
 async function loadUserState() {
     try {
-        const response = await fetch("/backend/logic/request_handler.php", {
+        const response = await fetch("/backend/controllers/request_handler.php", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

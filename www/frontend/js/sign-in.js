@@ -9,7 +9,7 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
 
     console.log(data);
 
-    fetch('/backend/logic/request_handler.php', {
+    fetch('/backend/controllers/request_handler.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)

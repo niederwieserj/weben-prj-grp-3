@@ -9,7 +9,7 @@ async function signout(e) {
     e.stopPropagation();
 
     try {
-        const response = await fetch('/backend/logic/request_handler.php', {
+        const response = await fetch('/backend/controllers/request_handler.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -40,7 +40,7 @@ async function requestPasswordReset() {
     }
 
     try {
-        const response = await fetch("/backend/logic/request_handler.php", {
+        const response = await fetch("/backend/controllers/request_handler.php", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
