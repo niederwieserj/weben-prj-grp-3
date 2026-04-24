@@ -97,7 +97,7 @@ class AuthService {
             return ["success" => false, "message" => "Invalid or expired token."];
         }
 
-        $hash = password_hash($newPassword, PASSWORD_DEFAULT);
+        $hash = hash('sha256', $newPassword);
         if ($this->db->updatePassword($user['user_id'], $hash)) {
             return ["success" => true, "message" => "Password reset successful."];
         }

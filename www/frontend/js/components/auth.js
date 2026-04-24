@@ -5,7 +5,7 @@
 
 import { apiPost } from '../modules/api.js';
 import { showToast, showSuccess, showError } from '../modules/toast.js';
-import { toggleVisibility, getElement } from '../modules/utils.js';
+import { showAlert, toggleVisibility, getElement } from '../modules/utils.js';
 import { initBootstrapValidation } from '../modules/validators.js';
 
 /* ------------------------------------------------------------------ */
@@ -94,7 +94,10 @@ async function signOut(e) {
  * Request a password-reset link for the given email.
  * Reads from #resetEmail, writes feedback to #resetMessage.
  */
-async function requestPasswordReset() {
+async function handlePasswordResetRequest(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
     const emailInput = getElement('resetEmail');
     const messageBox = getElement('resetMessage');
 
@@ -103,7 +106,6 @@ async function requestPasswordReset() {
     const email = emailInput.value.trim();
 
     if (email === '') {
-        messageBox.innerHTML = '<div class="alert alert-danger">Please enter your email.</div>';
         showError('Please enter your email.');
         return;
     }
@@ -112,23 +114,18 @@ async function requestPasswordReset() {
         const data = await apiPost('requestPasswordReset', { email });
 
         if (data.success) {
-            messageBox.innerHTML = `
-                <div class="alert alert-success">
-                    ${data.message}<br>
-                    <a href="${data.reset_link}">Open reset page</a>
-                </div>
-            `;
+            showAlert(messageBox, 'success',
+                `${data.message}<br><a href="${data.reset_link}">Open reset page</a>`);
             showSuccess('Password reset link sent!');
         } else {
-            messageBox.innerHTML = `<div class="alert alert-danger">${data.message}</div>`;
             showError(data.message);
         }
     } catch (error) {
         console.error('Password reset error:', error);
-        messageBox.innerHTML = '<div class="alert alert-danger">Failed to request password reset.</div>';
         showError('Failed to request password reset.');
     }
 }
+
 
 /* ------------------------------------------------------------------ */
 /*  Public initialisation                                               */
@@ -152,9 +149,11 @@ export function initAuth() {
         }
     });
 
-    // Expose requestPasswordReset globally for inline onclick handlers
-    // (Long-term: replace with data-attribute listeners)
-    window.requestPasswordReset = requestPasswordReset;
+    // Password reset request form (replaces onclick="requestPasswordReset()")
+    const resetForm = getElement('resetPasswordRequestForm');
+    if (resetForm) {
+        resetForm.addEventListener('submit', handlePasswordResetRequest);
+    }
 
     // Enable Bootstrap validation on auth forms
     initBootstrapValidation();

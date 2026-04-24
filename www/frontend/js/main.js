@@ -9,6 +9,7 @@
 
 import { initAuth } from './components/auth.js';
 import { initCheckout } from './components/checkout.js';
+import { initResetPassword } from './components/reset-password.js';
 // import { initProducts } from './components/products.js'; // Future
 
 /**
@@ -25,6 +26,7 @@ function bootstrapApp() {
 
     initAuth();
     initCheckout();
+    initResetPassword();
     // initProducts();
     
     console.log('App: Ready.');
