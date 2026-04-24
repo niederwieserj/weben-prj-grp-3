@@ -39,6 +39,12 @@
         <div id="message" class="mt-3"></div>
     </div>
 
-    <script src="../js/profile.js"></script>
+    <!-- New way: Load layout first, then main.js as a module -->
+<!-- 1. Load Layout (Orchestrator) -->
+<script src="/frontend/js/layout.js"></script>
+
+<!-- 2. Load Main App (Modular Entry Point) -->
+<!-- Note: type="module" is required for import/export syntax -->
+<script type="module" src="/frontend/js/main.js"></script>
 </body>
 </html>
