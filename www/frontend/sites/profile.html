@@ -1,53 +1,112 @@
 <!DOCTYPE html>
 <html lang="de" data-bs-theme="dark">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
-    <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/frontend/bootstrap/css/bootstrap.min.css">
+
+    <link rel="icon" type="image/x-icon" href="/frontend/img/coreGear-logo-copy.png">
+    <title>Profile &#x2022; CoreGear</title>
 </head>
+<body>
 
-<body class="container py-5">
-    <h1 class="mb-4">Edit Personal Data</h1>
+    <div id="head-placeholder"></div>
+    <div id="navbar-placeholder"></div>
 
-    <div class="card p-4">
-        <div class="mb-3">
-            <label for="title" class="form-label">Title</label>
-            <input type="text" id="title" class="form-control">
+    <main class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
+
+                <div class="card border-secondary mb-4">
+                    <div class="card-header text-center">
+                        <h3 class="mb-0">My Profile</h3>
+                    </div>
+                    <div class="card-body p-4">
+
+                        <div id="profile-alert" class="alert d-none" role="alert"></div>
+
+                        <form id="profile-form" novalidate>
+                            <div class="row g-3">
+
+                                <div class="col-md-6">
+                                    <label for="title" class="form-label">Title</label>
+                                    <select id="title" class="form-select">
+                                        <option value="">—</option>
+                                        <option value="Mr">Mr</option>
+                                        <option value="Mrs">Mrs</option>
+                                        <option value="Dr">Dr</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="username" class="form-label">Username</label>
+                                    <input type="text" id="username" class="form-control" readonly disabled>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="first_name" class="form-label">First Name</label>
+                                    <input type="text" id="first_name" class="form-control" required>
+                                    <div class="invalid-feedback">First name is required.</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="last_name" class="form-label">Last Name</label>
+                                    <input type="text" id="last_name" class="form-control" required>
+                                    <div class="invalid-feedback">Last name is required.</div>
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="email" class="form-label">Email Address</label>
+                                    <input type="email" id="email" class="form-control" required>
+                                    <div class="invalid-feedback">Please enter a valid email.</div>
+                                </div>
+
+                                <div class="col-12 d-grid mt-4">
+                                    <button type="submit" id="btn-save" class="btn btn-primary btn-lg">Save Changes</button>
+                                </div>
+
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+
+                <div class="card border-secondary">
+                    <div class="card-header">
+                        <h5 class="mb-0">Account Actions</h5>
+                    </div>
+                    <div class="card-body d-flex flex-column gap-2">
+                        <a href="/frontend/pages/change-password.html" class="btn btn-outline-warning">Change Password</a>
+                        <button type="button" id="btn-delete-account" class="btn btn-outline-danger">Delete Account</button>
+                    </div>
+                </div>
+
+            </div>
         </div>
+    </main>
 
-        <div class="mb-3">
-            <label for="first_name" class="form-label">First name</label>
-            <input type="text" id="first_name" class="form-control">
-        </div>
-
-        <div class="mb-3">
-            <label for="last_name" class="form-label">Last name</label>
-            <input type="text" id="last_name" class="form-control">
-        </div>
-
-        <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input type="text" id="username" class="form-control">
-        </div>
-
-        <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" id="email" class="form-control">
-        </div>
-
-        <button class="btn btn-primary" onclick="saveUserData()">Save changes</button>
-        <div id="message" class="mt-3"></div>
+    <!-- Toast container -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastContainer">
+    <div id="loginToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <svg id="severityIndicator" class="bi me-2" width="8" height="8" fill="currentColor">
+          <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#circle-fill" />
+        </svg>
+        <strong class="me-auto">Login Failed</strong>
+        <small class="text-body-secondary">just now</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        Invalid username or password. Please try again.
+      </div>
     </div>
+  </div>
 
-    <!-- New way: Load layout first, then main.js as a module -->
-    <!-- 1. Load Layout (Orchestrator) -->
+    <div id="footer-placeholder"></div>
+
     <script src="/frontend/js/layout.js"></script>
-
-    <!-- 2. Load Main App (Modular Entry Point) -->
-    <!-- Note: type="module" is required for import/export syntax -->
     <script type="module" src="/frontend/js/main.js"></script>
-</body>
+    <script type="module" src="/frontend/js/components/profile.js"></script>
 
+</body>
 </html>

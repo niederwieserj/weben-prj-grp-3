@@ -24,7 +24,7 @@ class User {
         $this->lastName = $data['last_name'] ?? '';
         $this->title = $data['title'] ?? '';
         $this->isAdmin = (bool)($data['is_admin'] ?? false);
-        $this->isActive = (bool)($data['is_active'] ?? true);
+        $this->isActive = (bool)($data['is_active'] ?? false);
         $this->createdAt = $data['created_at'] ?? '';
     }
 
