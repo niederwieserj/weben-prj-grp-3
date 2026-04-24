@@ -36,23 +36,47 @@ switch ($action) {
         break;
 
     case 'getUserState':
-        $response = [
-            'logged_in' => isset($_SESSION['user_id']),
-            'user_id' => $_SESSION['user_id'] ?? null,
-            'is_admin' => $_SESSION['is_admin'] ?? false,
-            'username' => $_SESSION['username'] ?? null
-        ];
+        // Now returns consistent format with other auth responses
+        if (isset($_SESSION['user_id'])) {
+            $response = [
+                "success" => true,
+                "logged_in" => true,
+                "user_id" => $_SESSION['user_id'],
+                "is_admin" => $_SESSION['is_admin'] ?? false,
+                "username" => $_SESSION['username'] ?? null
+            ];
+        } else {
+            $response = [
+                "success" => true,
+                "logged_in" => false
+            ];
+        }
         break;
 
     case 'getUserData':
-        // TODO: Replace hardcoded 1 with $_SESSION['user_id'] once logged in
-        $userId = $_SESSION['user_id'] ?? 1; 
-        $response = $authService->getUserData($userId);
+        // Properly use session user_id, fallback to null if not logged in
+        $userId = $_SESSION['user_id'] ?? null;
+        if (!$userId) {
+            $response = [
+                "success" => false,
+                "message" => "Not authenticated"
+            ];
+        } else {
+            $response = $authService->getUserData($userId);
+        }
         break;
 
     case 'updateUserData':
-        $userId = $_SESSION['user_id'] ?? 1;
-        $response = $authService->updateUserData($userId, $input);
+        // Require authentication for updates
+        $userId = $_SESSION['user_id'] ?? null;
+        if (!$userId) {
+            $response = [
+                "success" => false,
+                "message" => "Not authenticated"
+            ];
+        } else {
+            $response = $authService->updateUserData($userId, $input);
+        }
         break;
 
     case 'requestPasswordReset':

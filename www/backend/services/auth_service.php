@@ -21,7 +21,7 @@ class AuthService {
             return ["success" => false, "message" => "Invalid email format."];
         }
 
-        // 2. Check Existence
+        // 2. Check Existence (Now returns User object or null)
         if ($this->db->getUserByEmailOrUsername($data['username'])) {
             return ["success" => false, "message" => "User already exists."];
         }
@@ -32,28 +32,39 @@ class AuthService {
         try {
             $this->db->beginTransaction();
             $userId = $this->db->createUser($data);
+            
+            // Retrieve the newly created User object
+            $newUser = $this->db->getUserById($userId);
+            
             $this->db->commit();
 
             // Auto-login after registration
-            $this->loginUser($userId);
+            $this->loginUser($newUser);
 
-            return ["success" => true, "message" => "Registration successful.", "user" => $this->db->getUserById($userId)];
+            // Return the User object converted to array for JSON response
+            return ["success" => true, "message" => "Registration successful.", "user" => $newUser->toArray()];
         } catch (Exception $e) {
             $this->db->rollback();
+            // Log error internally if possible
             return ["success" => false, "message" => "Registration failed."];
         }
     }
 
     public function login(string $identifier, string $password, bool $rememberMe): array {
+        // Get User object
         $user = $this->db->getUserByEmailOrUsername($identifier);
 
-        if (!$user || hash('sha256', $password) !== $user['password_hash']) {
+        if (!$user) {
             return ["success" => false, "message" => "Invalid credentials."];
         }
 
-        $this->loginUser($user['user_id'], $rememberMe);
-        
-        return ["success" => true, "message" => "Login successful.", "user" => $user];
+        // Verify password using the User object's hash
+        if (password_verify($password, $user->getPasswordHash())) {
+            $this->loginUser($user, $rememberMe);
+            return ["success" => true, "message" => "Login successful.", "user" => $user->toArray()];
+        }
+
+        return ["success" => false, "message" => "Invalid credentials."];
     }
 
     public function logout(): array {
@@ -71,15 +82,13 @@ class AuthService {
 
         $user = $this->db->getUserByEmailOrUsername($email);
         if (!$user) {
-            // Security: Don't reveal if email exists
             return ["success" => true, "message" => "If the email exists, a reset link has been sent."];
         }
 
         $token = bin2hex(random_bytes(32));
         $expires = date('Y-m-d H:i:s', time() + 3600);
 
-        if ($this->db->setResetToken($user['user_id'], $token, $expires)) {
-            // In real app: send email here
+        if ($this->db->setResetToken($user->getUserId(), $token, $expires)) {
             $link = "http://localhost/frontend/sites/reset-password.html?token=" . $token;
             return ["success" => true, "message" => "Reset link generated.", "reset_link" => $link];
         }
@@ -97,8 +106,8 @@ class AuthService {
             return ["success" => false, "message" => "Invalid or expired token."];
         }
 
-        $hash = hash('sha256', $newPassword);
-        if ($this->db->updatePassword($user['user_id'], $hash)) {
+        $hash = password_hash($newPassword, PASSWORD_DEFAULT); // Switched to password_hash for consistency
+        if ($this->db->updatePassword($user->getUserId(), $hash)) {
             return ["success" => true, "message" => "Password reset successful."];
         }
 
@@ -110,7 +119,7 @@ class AuthService {
         if (!$user) {
             return ["success" => false, "message" => "User not found."];
         }
-        return ["success" => true, "user" => $user];
+        return ["success" => true, "user" => $user->toArray()];
     }
 
     public function updateUserData(int $userId, array $data): array {
@@ -135,18 +144,15 @@ class AuthService {
     }
 
     // Helper to set session and cookie
-    private function loginUser(int $userId, bool $rememberMe = false): void {
+    private function loginUser(User $user, bool $rememberMe = false): void {
         session_regenerate_id(true);
-        $_SESSION['user_id'] = $userId;
-        
-        $user = $this->db->getUserById($userId);
-        $_SESSION['username'] = $user['username'];
-        $_SESSION['is_admin'] = (bool)$user['is_admin'];
+        $_SESSION['user_id'] = $user->getUserId();
+        $_SESSION['username'] = $user->getUsername();
+        $_SESSION['is_admin'] = $user->isAdmin();
 
         if ($rememberMe) {
             $token = bin2hex(random_bytes(32));
-            // Store token in DB for 'remember me' logic (omitted for brevity, usually requires a separate table)
-            // For now, just set a generic cookie flag
+            // In a real app, store this token in a 'remember_tokens' table linked to user_id
             setcookie('remember_me', 'true', time() + (86400 * 30), "/");
         }
     }

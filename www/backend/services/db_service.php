@@ -6,11 +6,12 @@ define('DB_NAME', 'webshop');
 define('DB_USER', 'root');
 define('DB_PASS', 'tiger');
 
+require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/user.class.php';
+
 class DbService {
     private PDO $pdo;
 
     public function __construct() {
-        // Load credentials from config, not hardcoded
         $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
         $options = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -20,26 +21,36 @@ class DbService {
         try {
             $this->pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
         } catch (PDOException $e) {
-            // In production, log this, don't expose to user
             throw new Exception("Database connection failed.");
         }
     }
 
     // --- User Queries ---
-    public function getUserById(int $id): ?array {
+    
+    /**
+     * Returns a User object or null
+     */
+    public function getUserById(int $id): ?User {
         $stmt = $this->pdo->prepare("SELECT * FROM users WHERE user_id = ?");
         $stmt->execute([$id]);
         $result = $stmt->fetch();
-        return $result ?: null;
+        return $result ? new User($result) : null;
     }
 
-    public function getUserByEmailOrUsername(string $identifier): ?array {
+    /**
+     * Returns a User object or null
+     */
+    public function getUserByEmailOrUsername(string $identifier): ?User {
         $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email = ? OR username = ?");
         $stmt->execute([$identifier, $identifier]);
         $result = $stmt->fetch();
-        return $result ?: null;
+        return $result ? new User($result) : null;
     }
 
+    /**
+     * Creates a user and returns the new User ID (int)
+     * The User object is created in AuthService after retrieval
+     */
     public function createUser(array $data): int {
         $stmt = $this->pdo->prepare("
             INSERT INTO users (username, email, password_hash, first_name, last_name, title, is_admin, is_active)
@@ -52,7 +63,11 @@ class DbService {
         return (int)$this->pdo->lastInsertId();
     }
 
+    // ... keep updateUser, checkUniqueUser, transaction helpers exactly as they are ...
+    // They operate on raw data/IDs, which is fine for DB layer.
+
     public function updateUser(int $userId, array $data): bool {
+        // ... existing implementation ...
         $fields = [];
         $values = [];
 
@@ -89,14 +104,20 @@ class DbService {
         return $stmt->execute([$token, $expires, $userId]);
     }
 
-    public function getUserByToken(string $token): ?array {
+    public function getUserByToken(string $token): ?User {
         $stmt = $this->pdo->prepare("
             SELECT user_id FROM users 
             WHERE reset_token = ? AND reset_token_expires > NOW()
         ");
         $stmt->execute([$token]);
         $result = $stmt->fetch();
-        return $result ?: null;
+        // Note: This query only selects user_id. 
+        // To return a full User object, we need the full row. 
+        // Ideally, change query to SELECT *, but for now we'll handle the partial data.
+        if (!$result) return null;
+        
+        // Since we only have user_id, we fetch the full user to create the object
+        return $this->getUserById((int)$result['user_id']);
     }
 
     public function updatePassword(int $userId, string $hash): bool {
