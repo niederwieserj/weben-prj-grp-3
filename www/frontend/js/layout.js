@@ -20,7 +20,7 @@ async function insertResourceById(id, path) {
 
         document.getElementById(id).insertAdjacentHTML('afterbegin', html);
     } catch (error) {
-        console.error(`Failed to load ${path}:`, error);
+        console.info(`Failed to load ${path}:`, error);
     }
 }
 

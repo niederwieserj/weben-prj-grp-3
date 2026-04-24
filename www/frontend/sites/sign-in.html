@@ -11,11 +11,11 @@
 
 <body class="d-flex flex-column min-vh-100">
   <main class="container mt-4 flex-grow-1">
-    <div id="navbar-placeholder"></div>
+    <!--<div id="navbar-placeholder"></div>-->
 
     <div class="form-signin w-100 m-auto">
       <form id="loginForm">
-        <img class="mb-4" src="/frontend/img/bootstrap-logo.svg" alt="" width="72" height="57" />
+        <img class="mb-4" src="/frontend/img/coregear-logo.png" alt="" width="72" />
         <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 
         <div class="form-floating">
@@ -59,7 +59,24 @@
     </div>
   </main>
 
-  <div id="footer-placeholder"></div>
+  <!--<div id="footer-placeholder"></div>-->
+
+  <!-- Toast container -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastContainer">
+    <div id="loginToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <svg id="severityIndicator" class="bi me-2" width="8" height="8" fill="currentColor">
+          <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#circle-fill" />
+        </svg>
+        <strong class="me-auto">Login Failed</strong>
+        <small class="text-body-secondary">just now</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        Invalid username or password. Please try again.
+      </div>
+    </div>
+  </div>
 
   <script src="/frontend/js/auth.js"></script>
   <script src="/frontend/js/sign-in.js"></script>

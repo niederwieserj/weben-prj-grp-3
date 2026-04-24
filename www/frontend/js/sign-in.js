@@ -1,3 +1,4 @@
+
 document.getElementById('loginForm').addEventListener('submit', function (e) {
     e.preventDefault(); // STOP the page reload!
 
@@ -17,11 +18,34 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
         .then(response => response.json())
         .then(result => {
             if (result.success) {
-                document.getElementById('nav-drop-logged-out').style.display = 'none';
-                document.getElementById('nav-drop-logged-in').style.display = 'block';
+                // document.getElementById('nav-drop-logged-out').style.display = 'none';
+                // document.getElementById('nav-drop-logged-in').style.display = 'block';
                 window.location.replace("home.html");
             } else {
-                document.getElementById('logo').innerText = result.message;
+                showToast(data.message || 'Invalid username or password.', 'text-danger');
             }
         });
 });
+
+function showToast(message, color) {
+    const toastEl = document.getElementById('loginToast');
+    const severityEl = document.getElementById('severityIndicator');
+
+    if (!toastEl || !severityEl) {
+        return;
+    }
+
+    // Update the toast body with the specific error message
+    const toastBody = toastEl.querySelector('.toast-body');
+    if (toastBody) {
+        toastBody.textContent = message;
+    }
+
+    severityEl.classList.add(color); // e.g. text-success, text-danger, ...
+
+    const toast = bootstrap.Toast.getOrCreateInstance(toastEl, {
+        delay: 4000
+    });
+
+    toast.show();
+}

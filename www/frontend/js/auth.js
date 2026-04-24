@@ -35,7 +35,7 @@ async function requestPasswordReset() {
     const email = emailInput.value.trim();
 
     if (email === "") {
-        messageBox.innerHTML = `<div class="alert alert-danger">Please enter your email.</div>`;
+        showToast("Please enter your email.", "text-danger");
         return;
     }
 
@@ -52,7 +52,7 @@ async function requestPasswordReset() {
         });
 
         const raw = await response.text();
-        console.log("RAW RESPONSE:", raw); // 🔥 WICHTIG
+        console.log("RAW RESPONSE:", raw);
 
         const data = JSON.parse(raw);
 
@@ -64,19 +64,11 @@ async function requestPasswordReset() {
                 </div>
             `;
         } else {
-            messageBox.innerHTML = `
-                <div class="alert alert-danger">
-                    ${data.message}
-                </div>
-            `;
+            showToast(data.message, "text-danger");
         }
     } catch (error) {
         console.error(error);
-        messageBox.innerHTML = `
-            <div class="alert alert-danger">
-                Failed to request password reset.
-            </div>
-        `;
+        showToast("Failed to request password reset.", "text-danger");
     }
 }
 
@@ -99,3 +91,26 @@ async function requestPasswordReset() {
     }, false)
   })
 })()
+
+function showToast(message, color) {
+    const toastEl = document.getElementById('loginToast');
+    const severityEl = document.getElementById('severityIndicator');
+
+    if (!toastEl || !severityEl) {
+        return;
+    }
+
+    // Update the toast body with the specific error message
+    const toastBody = toastEl.querySelector('.toast-body');
+    if (toastBody) {
+        toastBody.textContent = message;
+    }
+
+    severityEl.classList.add(color); // e.g. text-success, text-danger, ...
+
+    const toast = bootstrap.Toast.getOrCreateInstance(toastEl, {
+        delay: 4000
+    });
+
+    toast.show();
+}
