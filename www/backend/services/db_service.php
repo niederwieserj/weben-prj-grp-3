@@ -53,21 +53,17 @@ class DbService {
      */
     public function createUser(array $data): int {
         $stmt = $this->pdo->prepare("
-            INSERT INTO users (username, email, password_hash, first_name, last_name, title, is_admin, is_active)
+            INSERT INTO users (username, email, password_hash, first_name, last_name, fk_title_id, is_admin, is_active)
             VALUES (?, ?, ?, ?, ?, ?, 0, 1)
         ");
         $stmt->execute([
             $data['username'], $data['email'], $data['password_hash'],
-            $data['first_name'], $data['last_name'], $data['title']
+            $data['firstName'], $data['lastName'], $data['title_id']
         ]);
         return (int)$this->pdo->lastInsertId();
     }
 
-    // ... keep updateUser, checkUniqueUser, transaction helpers exactly as they are ...
-    // They operate on raw data/IDs, which is fine for DB layer.
-
     public function updateUser(int $userId, array $data): bool {
-        // ... existing implementation ...
         $fields = [];
         $values = [];
 

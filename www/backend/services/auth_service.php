@@ -14,9 +14,11 @@ class AuthService {
         if (empty($data['username']) || empty($data['email']) || empty($data['password'])) {
             return ["success" => false, "message" => "Missing required fields."];
         }
+
         if ($data['password'] !== $data['confirm_password']) {
             return ["success" => false, "message" => "Passwords do not match."];
         }
+        
         if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             return ["success" => false, "message" => "Invalid email format."];
         }
@@ -56,6 +58,10 @@ class AuthService {
 
         if (!$user) {
             return ["success" => false, "message" => "Invalid credentials."];
+        }
+
+        if (!$user->isActive()) {
+            return ['success' => false, 'message' => 'Account is deactivated. Contact support.'];
         }
 
         // Verify password using the User object's hash
