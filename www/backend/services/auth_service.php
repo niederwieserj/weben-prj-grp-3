@@ -1,15 +1,19 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/services/db_service.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/user.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/address.class.php';
 
-class AuthService {
+class AuthService
+{
     private DbService $db;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->db = new DbService();
     }
 
-    public function register(array $data): array {
+    public function register(array $data): array
+    {
         // 1. Validation
         if (empty($data['username']) || empty($data['email']) || empty($data['password'])) {
             return ["success" => false, "message" => "Missing required fields."];
@@ -18,7 +22,7 @@ class AuthService {
         if ($data['password'] !== $data['confirm_password']) {
             return ["success" => false, "message" => "Passwords do not match."];
         }
-        
+
         if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             return ["success" => false, "message" => "Invalid email format."];
         }
@@ -33,11 +37,16 @@ class AuthService {
 
         try {
             $this->db->beginTransaction();
-            $userId = $this->db->createUser($data);
-            
+            $userId = $this->db->createUser(new User($data));
+
+            $address = new Address($data);
+            $address->setFkUserId($userId);
+
+            $this->db->createAddress($address);
+
             // Retrieve the newly created User object
             $newUser = $this->db->getUserById($userId);
-            
+
             $this->db->commit();
 
             // Auto-login after registration
@@ -52,7 +61,8 @@ class AuthService {
         }
     }
 
-    public function login(string $identifier, string $password, bool $rememberMe): array {
+    public function login(string $identifier, string $password, bool $rememberMe): array
+    {
         // Get User object
         $user = $this->db->getUserByEmailOrUsername($identifier);
 
@@ -73,7 +83,8 @@ class AuthService {
         return ["success" => false, "message" => "Invalid credentials."];
     }
 
-    public function logout(): array {
+    public function logout(): array
+    {
         session_destroy();
         if (isset($_COOKIE['remember_me'])) {
             setcookie('remember_me', '', time() - 3600, '/');
@@ -81,7 +92,8 @@ class AuthService {
         return ["success" => true, "message" => "Logged out."];
     }
 
-    public function requestPasswordReset(string $email): array {
+    public function requestPasswordReset(string $email): array
+    {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return ["success" => false, "message" => "Invalid email."];
         }
@@ -102,7 +114,8 @@ class AuthService {
         return ["success" => false, "message" => "Failed to generate reset token."];
     }
 
-    public function resetPassword(string $token, string $newPassword): array {
+    public function resetPassword(string $token, string $newPassword): array
+    {
         if (strlen($newPassword) < 6) {
             return ["success" => false, "message" => "Password too short."];
         }
@@ -120,7 +133,8 @@ class AuthService {
         return ["success" => false, "message" => "Failed to reset password."];
     }
 
-    public function getUserData(int $userId): array {
+    public function getUserData(int $userId): array
+    {
         $user = $this->db->getUserById($userId);
         if (!$user) {
             return ["success" => false, "message" => "User not found."];
@@ -128,29 +142,31 @@ class AuthService {
         return ["success" => true, "user" => $user->toArray()];
     }
 
-    public function updateUserData(int $userId, array $data): array {
-        // Validation
-        if (empty($data['username']) || empty($data['email'])) {
-            return ["success" => false, "message" => "Username and email required."];
-        }
-        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            return ["success" => false, "message" => "Invalid email."];
+    public function updateUserData(int $userId, array $input): array
+    {
+        $user = $this->db->getUserById($userId);
+        if (!$user) {
+            return ['success' => false, 'message' => 'User not found.'];
         }
 
-        // Check uniqueness excluding self
-        if ($this->db->checkUniqueUser($userId, $data['username'], $data['email'])) {
-            return ["success" => false, "message" => "Username or email already taken."];
-        }
+        // Apply only the fields that were submitted
+        if (isset($input['first_name']))
+            $user->setFirstName($input['first_name']);
+        if (isset($input['last_name']))
+            $user->setLastName($input['last_name']);
+        if (isset($input['title']))
+            $user->setTitleId((int) $input['title']);
+        if (isset($input['email']))
+            $user->setEmail($input['email']);
+        if (isset($input['username']))
+            $user->setUsername($input['username']);
 
-        if ($this->db->updateUser($userId, $data)) {
-            return ["success" => true, "message" => "Profile updated."];
-        }
-
-        return ["success" => false, "message" => "Update failed."];
+        $success = $this->db->updateUser($user);
+        return ['success' => true, 'message' => 'User updated.'];
     }
-
     // Helper to set session and cookie
-    private function loginUser(User $user, bool $rememberMe = false): void {
+    private function loginUser(User $user, bool $rememberMe = false): void
+    {
         session_regenerate_id(true);
         $_SESSION['user_id'] = $user->getUserId();
         $_SESSION['username'] = $user->getUsername();

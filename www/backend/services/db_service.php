@@ -8,16 +8,18 @@ define('DB_PASS', 'tiger');
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/user.class.php';
 
-class DbService {
+class DbService
+{
     private PDO $pdo;
 
-    public function __construct() {
+    public function __construct()
+    {
         $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
         $options = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
         ];
-        
+
         try {
             $this->pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
         } catch (PDOException $e) {
@@ -26,12 +28,13 @@ class DbService {
     }
 
     // --- User Queries ---
-    
+
     /**
      * Returns a User object or null
      */
-    public function getUserById(int $id): ?User {
-        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE user_id = ?");
+    public function getUserById(int $id): ?User
+    {
+        $stmt = $this->pdo->prepare("SELECT *, fk_title_id AS title_id FROM users WHERE user_id = ?");
         $stmt->execute([$id]);
         $result = $stmt->fetch();
         return $result ? new User($result) : null;
@@ -40,50 +43,79 @@ class DbService {
     /**
      * Returns a User object or null
      */
-    public function getUserByEmailOrUsername(string $identifier): ?User {
-        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email = ? OR username = ?");
+    public function getUserByEmailOrUsername(string $identifier): ?User
+    {
+        $stmt = $this->pdo->prepare("SELECT *, fk_title_id AS title_id FROM users WHERE email = ? OR username = ?");
         $stmt->execute([$identifier, $identifier]);
         $result = $stmt->fetch();
         return $result ? new User($result) : null;
     }
 
-    /**
-     * Creates a user and returns the new User ID (int)
-     * The User object is created in AuthService after retrieval
-     */
-    public function createUser(array $data): int {
+    public function createUser(User $user): int
+    {
         $stmt = $this->pdo->prepare("
-            INSERT INTO users (username, email, password_hash, first_name, last_name, fk_title_id, is_admin, is_active)
-            VALUES (?, ?, ?, ?, ?, ?, 0, 1)
-        ");
+        INSERT INTO users (username, email, password_hash, first_name, last_name, fk_title_id, is_admin, is_active)
+        VALUES (?, ?, ?, ?, ?, ?, 0, 1)
+    ");
         $stmt->execute([
-            $data['username'], $data['email'], $data['password_hash'],
-            $data['firstName'], $data['lastName'], $data['title_id']
+            $user->getUsername(),
+            $user->getEmail(),
+            $user->getPasswordHash(),
+            $user->getFirstName(),
+            $user->getLastName(),
+            $user->getTitleId()
         ]);
+        return (int) $this->pdo->lastInsertId();
+    }
+
+        /**
+     * Creates a new address record using an Address object.
+     * 
+     * @param Address $address The address object containing the data.
+     * @return int The new address_id.
+     */
+    public function createAddress(Address $address): int {
+        $stmt = $this->pdo->prepare("
+            INSERT INTO addresses (fk_user_id, postal_code, address, city, country)
+            VALUES (?, ?, ?, ?, ?)
+        ");
+        
+        $stmt->execute([
+            $address->getFkUserId(),
+            $address->getPostalCode(),
+            $address->getAddress(),
+            $address->getCity(),
+            $address->getCountry()
+        ]);
+
         return (int)$this->pdo->lastInsertId();
     }
 
-    public function updateUser(int $userId, array $data): bool {
-        $fields = [];
-        $values = [];
-
-        if (isset($data['first_name'])) { $fields[] = "first_name = ?"; $values[] = $data['first_name']; }
-        if (isset($data['last_name'])) { $fields[] = "last_name = ?"; $values[] = $data['last_name']; }
-        if (isset($data['title'])) { $fields[] = "title = ?"; $values[] = $data['title']; }
-        if (isset($data['email'])) { $fields[] = "email = ?"; $values[] = $data['email']; }
-        if (isset($data['username'])) { $fields[] = "username = ?"; $values[] = $data['username']; }
-        if (isset($data['is_active'])) { $fields[] = "is_active = ?"; $values[] = (int)$data['is_active']; }
-
-        if (empty($fields)) return true;
-
-        $values[] = $userId;
-        $sql = "UPDATE users SET " . implode(", ", $fields) . " WHERE user_id = ?";
-        
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute($values);
+    public function updateUser(User $user): bool
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE users SET
+            first_name = ?,
+            last_name = ?,
+            fk_title_id = ?,
+            email = ?,
+            username = ?,
+            is_active = ?
+        WHERE user_id = ?
+    ");
+        return $stmt->execute([
+            $user->getFirstName(),
+            $user->getLastName(),
+            $user->getTitleId(),
+            $user->getEmail(),
+            $user->getUsername(),
+            (int) $user->isActive(),
+            $user->getUserId()
+        ]);
     }
 
-    public function checkUniqueUser(int $excludeId, string $username, string $email): bool {
+    public function checkUniqueUser(int $excludeId, string $username, string $email): bool
+    {
         $stmt = $this->pdo->prepare("
             SELECT user_id FROM users 
             WHERE (username = ? OR email = ?) AND user_id != ?
@@ -93,14 +125,16 @@ class DbService {
     }
 
     // --- Password Reset Queries ---
-    public function setResetToken(int $userId, string $token, string $expires): bool {
+    public function setResetToken(int $userId, string $token, string $expires): bool
+    {
         $stmt = $this->pdo->prepare("
             UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE user_id = ?
         ");
         return $stmt->execute([$token, $expires, $userId]);
     }
 
-    public function getUserByToken(string $token): ?User {
+    public function getUserByToken(string $token): ?User
+    {
         $stmt = $this->pdo->prepare("
             SELECT user_id FROM users 
             WHERE reset_token = ? AND reset_token_expires > NOW()
@@ -110,13 +144,15 @@ class DbService {
         // Note: This query only selects user_id. 
         // To return a full User object, we need the full row. 
         // Ideally, change query to SELECT *, but for now we'll handle the partial data.
-        if (!$result) return null;
-        
+        if (!$result)
+            return null;
+
         // Since we only have user_id, we fetch the full user to create the object
-        return $this->getUserById((int)$result['user_id']);
+        return $this->getUserById((int) $result['user_id']);
     }
 
-    public function updatePassword(int $userId, string $hash): bool {
+    public function updatePassword(int $userId, string $hash): bool
+    {
         $stmt = $this->pdo->prepare("
             UPDATE users SET password_hash = ?, reset_token = NULL, reset_token_expires = NULL WHERE user_id = ?
         ");
@@ -124,7 +160,16 @@ class DbService {
     }
 
     // --- Transaction Helpers ---
-    public function beginTransaction(): void { $this->pdo->beginTransaction(); }
-    public function commit(): void { $this->pdo->commit(); }
-    public function rollback(): void { $this->pdo->rollBack(); }
+    public function beginTransaction(): void
+    {
+        $this->pdo->beginTransaction();
+    }
+    public function commit(): void
+    {
+        $this->pdo->commit();
+    }
+    public function rollback(): void
+    {
+        $this->pdo->rollBack();
+    }
 }

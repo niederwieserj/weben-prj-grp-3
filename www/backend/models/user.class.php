@@ -10,7 +10,7 @@ class User {
     private string $passwordHash;
     private string $firstName;
     private string $lastName;
-    private string $title;
+    private int $title_id;
     private bool $isAdmin;
     private bool $isActive;
     private string $createdAt;
@@ -20,9 +20,9 @@ class User {
         $this->username = $data['username'] ?? '';
         $this->email = $data['email'] ?? '';
         $this->passwordHash = $data['password_hash'] ?? '';
-        $this->firstName = $data['first_name'] ?? '';
-        $this->lastName = $data['last_name'] ?? '';
-        $this->title = $data['title'] ?? '';
+        $this->firstName = $data['firstName'] ?? '';
+        $this->lastName = $data['lastName'] ?? '';
+        $this->title_id = (int)$data['title_id'] ?? 1;
         $this->isAdmin = (bool)($data['is_admin'] ?? false);
         $this->isActive = (bool)($data['is_active'] ?? false);
         $this->createdAt = $data['created_at'] ?? '';
@@ -35,10 +35,22 @@ class User {
     public function getPasswordHash(): string { return $this->passwordHash; }
     public function getFirstName(): string { return $this->firstName; }
     public function getLastName(): string { return $this->lastName; }
-    public function getTitle(): string { return $this->title; }
+    public function getTitleId(): int { return $this->title_id; }
     public function isAdmin(): bool { return $this->isAdmin; }
     public function isActive(): bool { return $this->isActive; }
     public function getCreatedAt(): string { return $this->createdAt; }
+
+    // Setters
+    public function setUserId(int $userId): void { $this->userId = $userId; }
+    public function setUsername(string $username): void { $this->username = $username; }
+    public function setEmail(string $email): void { $this->email = $email; }
+    public function setPasswordHash(string $passwordHash): void { $this->passwordHash = $passwordHash; }
+    public function setFirstName(string $firstName): void { $this->firstName = $firstName; }
+    public function setLastName(string $lastName): void { $this->lastName = $lastName; }
+    public function setTitleId(int $title_id): void { $this->title_id = $title_id; }
+    public function setIsAdmin(bool $isAdmin): void { $this->isAdmin = $isAdmin; }
+    public function setIsActive(bool $isActive): void { $this->isActive = $isActive; }
+    public function setCreatedAt(string $createdAt): void { $this->createdAt = $createdAt; }
 
     public function toArray(): array {
         return [
@@ -47,7 +59,7 @@ class User {
             "email" => $this->email,
             "first_name" => $this->firstName,
             "last_name" => $this->lastName,
-            "title" => $this->title,
+            "title_id" => $this->title_id,
             "is_admin" => $this->isAdmin,
             "is_active" => $this->isActive,
             "created_at" => $this->createdAt
