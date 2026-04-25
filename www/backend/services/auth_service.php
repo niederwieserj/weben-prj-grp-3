@@ -29,7 +29,11 @@ class AuthService
 
         // 2. Check Existence (Now returns User object or null)
         if ($this->db->getUserByEmailOrUsername($data['username'])) {
-            return ["success" => false, "message" => "User already exists."];
+            return ["success" => false, "message" => "Username already exists."];
+        }
+
+        if ($this->db->getUserByEmailOrUsername($data['email'])) {
+            return ["success" => false, "message" => "Email already exists."];
         }
 
         // 3. Hash Password

@@ -33,22 +33,26 @@ export async function apiPost(action, payload = {}, options = {}) {
 }
 
 /**
- * Send a GET request (for future read-only endpoints).
- *
- * @param {string}  endpoint — URL path
- * @param {RequestInit} [options={}]
- * @returns {Promise<Object>}
+ * Send a GET request with optional query parameters.
  */
-export async function apiGet(endpoint, options = {}) {
-    const response = await fetch(endpoint, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        ...options
-    });
+export async function apiGet(endpoint, options = {}, params = {}) {
+  // 1. Build the URL with parameters if they exist
+  let url = endpoint;
+  if (Object.keys(params).length > 0) {
+    const queryString = new URLSearchParams(params).toString();
+    url += `?${queryString}`;
+  }
 
-    if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
+  // 2. Make the request
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+    ...options
+  });
 
-    return response.json();
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  }
+
+  return response.json();
 }

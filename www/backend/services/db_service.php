@@ -7,6 +7,7 @@ define('DB_USER', 'root');
 define('DB_PASS', 'tiger');
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/user.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/product.class.php';
 
 class DbService
 {
@@ -25,6 +26,42 @@ class DbService
         } catch (PDOException $e) {
             throw new Exception("Database connection failed.");
         }
+    }
+
+    // --- Product Queries
+
+    /**
+     * Returns a single Product object or null.
+     */
+    public function getProductById(int $id): ?Product
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT *, fk_category_id AS category_id FROM products WHERE product_id = ?"
+        );
+        $stmt->execute([$id]);
+        $result = $stmt->fetch();
+        return $result ? new Product($result) : null;
+    }
+
+    /**
+     * Returns an array of Product objects.
+     *
+     * @return Product[]
+     */
+    public function getAllProducts(): array
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT *, fk_category_id AS category_id FROM products ORDER BY created_at DESC"
+        );
+        $stmt->execute();
+        $results = $stmt->fetchAll();
+
+        $products = [];
+        foreach ($results as $row) {
+            $products[] = new Product($row);
+        }
+
+        return $products;
     }
 
     // --- User Queries ---
@@ -68,18 +105,19 @@ class DbService
         return (int) $this->pdo->lastInsertId();
     }
 
-        /**
+    /**
      * Creates a new address record using an Address object.
      * 
      * @param Address $address The address object containing the data.
      * @return int The new address_id.
      */
-    public function createAddress(Address $address): int {
+    public function createAddress(Address $address): int
+    {
         $stmt = $this->pdo->prepare("
             INSERT INTO addresses (fk_user_id, postal_code, address, city, country)
             VALUES (?, ?, ?, ?, ?)
         ");
-        
+
         $stmt->execute([
             $address->getFkUserId(),
             $address->getPostalCode(),
@@ -88,7 +126,7 @@ class DbService
             $address->getCountry()
         ]);
 
-        return (int)$this->pdo->lastInsertId();
+        return (int) $this->pdo->lastInsertId();
     }
 
     public function updateUser(User $user): bool
