@@ -50,42 +50,52 @@
             <div class="position-sticky" style="top: 2rem">
               <div class="p-4 mb-3 border rounded">
                 <h4 class="fst-italic">Filter</h4>
+                <!-- Price Range -->
                 <div class="row">
                   <div class="col-3">
                     <label for="range4" class="form-label">Price</label>
                   </div>
                   <div class="col-9">
-                    <input type="range" class="form-range" min="0" max="100" value="50" id="range4">
-                    <output for="range4" id="rangeValue" aria-hidden="true" class="font-monospace"></output>
+                    <input type="range" class="form-range" min="0" max="500" value="500" id="range4">
+                    <output for="range4" id="rangeValue" aria-hidden="true" class="font-monospace">0 - 500 €</output>
                   </div>
                 </div>
                 <hr>
-                <div>
-                  <div class="row">
-                    <div class="col-3">
-                      <p>Sort by</p>
-                    </div>
-                    <div class="col-9">
-                      <select class="form-select" aria-label="Default select example">
-                        <option selected>Price</option>
-                        <option value="1">Rating</option>
-                      </select>
-                    </div>
+
+                <!-- Sort By -->
+                <div class="row">
+                  <div class="col-3">
+                    <p>Sort by</p>
+                  </div>
+                  <div class="col-9">
+                    <select class="form-select" id="sort-select">
+                      <option value="price">Price (low to high)</option>
+                      <option value="rating">Rating (high to low)</option>
+                    </select>
                   </div>
                 </div>
                 <hr>
-                <div>
-                  <div class="row">
-                    <div class="col-3">
-                      <p>Min Rating</p>
-                    </div>
-                    <div class="col-9">
-                      
-                    </div>
+
+                <!-- Min Rating -->
+                <div class="row">
+                  <div class="col-3">
+                    <p>Min Rating</p>
+                  </div>
+                  <div class="col-9">
+                    <select class="form-select" id="min-rating-select">
+                      <option value="0">Any</option>
+                      <option value="3">3+ Stars</option>
+                      <option value="4">4+ Stars</option>
+                      <option value="4.5">4.5+ Stars</option>
+                    </select>
                   </div>
                 </div>
 
               </div>
+
+              <p id="result-counter" class="text-body-secondary mt-3">
+
+              </p>
 
             </div>
           </div>
@@ -116,7 +126,7 @@
 
   <script type="module" src="/frontend/js/components/products.js"></script>
 
-  
+
 </body>
 
 </html>
