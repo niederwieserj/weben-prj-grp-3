@@ -108,6 +108,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     // Switch Case Router
     switch ($action) {
+        case 'getCategories':
+            $response = $productService->getCategories();
+            break;
+            
         case 'getProduct':
             $product_id = (int)$_GET['product_id'] ?? 0;
             $response = $productService->getProduct($product_id);

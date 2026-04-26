@@ -7,7 +7,8 @@
 
   <!-- Bootstrap CSS -->
   <link href="/frontend/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="/frontend/css/product.css" rel="stylesheet">
+  <!--<link href="/frontend/css/product.css" rel="stylesheet">-->
+  <link href="/frontend/css/products.css" rel="stylesheet">
   <link href="/frontend/css/style.css" rel="stylesheet">
 
   <link rel="icon" type="image/x-icon" href="/frontend/img/coreGear-logo-copy.png">
@@ -50,53 +51,121 @@
             <div class="position-sticky" style="top: 2rem">
               <div class="p-4 mb-3 border rounded">
                 <h4 class="fst-italic">Filter</h4>
-                <!-- Price Range -->
-                <div class="row">
-                  <div class="col-3">
-                    <label for="range4" class="form-label">Price</label>
-                  </div>
-                  <div class="col-9">
-                    <input type="range" class="form-range" min="0" max="500" value="500" id="range4">
-                    <output for="range4" id="rangeValue" aria-hidden="true" class="font-monospace">0 - 500 €</output>
-                  </div>
-                </div>
-                <hr>
 
-                <!-- Sort By -->
-                <div class="row">
-                  <div class="col-3">
-                    <p>Sort by</p>
-                  </div>
-                  <div class="col-9">
-                    <select class="form-select" id="sort-select">
-                      <option value="price">Price (low to high)</option>
-                      <option value="rating">Rating (high to low)</option>
-                    </select>
-                  </div>
-                </div>
-                <hr>
+                <!-- Price Range (Collapsible) -->
+                <ul class="list-unstyled ps-0">
+                  <li class="mb-1">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#price-collapse" aria-expanded="false">
+                      Price
+                    </button>
+                    <div class="collapse" id="price-collapse">
+                      <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li class="p-2">
+                          <div class="row">
+                            <div class="col-3">
+                              <label for="range4" class="form-label">Range</label>
+                            </div>
+                            <div class="col-9">
+                              <input type="range" class="form-range" min="0" max="500" value="500" id="range4">
+                              <output for="range4" id="rangeValue" aria-hidden="true" class="font-monospace">0 - 500 €</output>
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                </ul>
 
-                <!-- Min Rating -->
-                <div class="row">
-                  <div class="col-3">
-                    <p>Min Rating</p>
-                  </div>
-                  <div class="col-9">
-                    <select class="form-select" id="min-rating-select">
-                      <option value="0">Any</option>
-                      <option value="3">3+ Stars</option>
-                      <option value="4">4+ Stars</option>
-                      <option value="4.5">4.5+ Stars</option>
-                    </select>
-                  </div>
-                </div>
+                <!-- Min Rating (Collapsible) -->
+                <ul class="list-unstyled ps-0">
+                  <li class="mb-1">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#rating-collapse" aria-expanded="false">
+                      Rating
+                    </button>
+                    <div class="collapse" id="rating-collapse">
+                      <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li class="p-2">
+                          <div class="row">
+                            <div class="col-3">
+                              <p>Level</p>
+                            </div>
+                            <div class="col-9">
+                              <select class="form-select" id="min-rating-select">
+                                <option value="0">Any</option>
+                                <option value="3">3+ Stars</option>
+                                <option value="4">4+ Stars</option>
+                                <option value="4.5">4.5+ Stars</option>
+                              </select>
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                </ul>
+
+                <!-- Category (Collapsible) -->
+                <ul class="list-unstyled ps-0">
+                  <li class="mb-1">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#category-collapse" aria-expanded="false">
+                      Categories
+                    </button>
+                    <span class="badge rounded-pill bg-primary">
+                      15</span>
+                    <div class="collapse" id="category-collapse">
+                      <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li class="p-2" id="category-filters">
+                          <!-- Populated dynamically by JS -->
+                          <p class="text-muted small">Loading categories...</p>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                </ul>
+
+                <!-- Sort (Existing Structure) -->
+                <ul class="list-unstyled ps-0">
+                  <li class="mb-1">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false">
+                      Sort
+                    </button>
+                    <div class="collapse" id="home-collapse">
+                      <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li class="p-2">
+                          <!-- Sort By -->
+                          <div class="row">
+                            <div class="col-3">
+                              <p>Sort by</p>
+                            </div>
+                            <div class="col-9">
+                              <select class="form-select" id="sort-select">
+                                <option value="price">Price (low to high)</option>
+                                <option value="rating">Rating (high to low)</option>
+                              </select>
+                            </div>
+                          </div>
+                        </li>
+                        <li class="p-2">
+                          <div class="row">
+                            <div class="col-3">
+                              <p>Order</p>
+                            </div>
+                            <div class="col-9">
+                              <input type="button" class="btn-check" name="sort-order" id="option5" autocomplete="off" checked>
+                              <label class="btn btn-sm btn-outline" for="option5"><svg class="bi" width="24" height="24" fill="currentColor">
+                                  <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#sort-up" />
+                                </svg> Ascending</label>
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                </ul>
 
               </div>
 
-              <p id="result-counter" class="text-body-secondary mt-3">
-
-              </p>
-
+              <p id="result-counter" class="text-body-secondary mt-3"></p>
             </div>
           </div>
         </div>
