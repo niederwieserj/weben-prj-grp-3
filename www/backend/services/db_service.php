@@ -8,6 +8,8 @@ define('DB_PASS', 'tiger');
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/user.class.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/product.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/productRating.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/productImage.class.php';
 
 class DbService
 {
@@ -28,6 +30,20 @@ class DbService
         }
     }
 
+    // --- Rating Queries
+    /**
+     * Returns a single Product object or null.
+     */
+    public function getRatingById(int $id): ?ProductRating
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT * FROM product_ratings WHERE product_id = ?"
+        );
+        $stmt->execute([$id]);
+        $result = $stmt->fetch();
+        return $result ? new ProductRating($result) : null;
+    }
+
     // --- Product Queries
 
     /**
@@ -41,6 +57,63 @@ class DbService
         $stmt->execute([$id]);
         $result = $stmt->fetch();
         return $result ? new Product($result) : null;
+    }
+
+    /**
+     * Fetches all products with their associated images.
+     * Returns an array of arrays: [ [Product, Image[]], ... ]
+     * 
+     * Note: We do NOT modify the Product, or Image classes.
+     */
+    public function getAllProductsWithImages(): array
+    {
+        // 1. The SQL Query
+        // We join ratings and images. 
+        // We use DISTINCT to avoid duplicates if a product has multiple images/ratings 
+        // causing a Cartesian product explosion, OR we handle the grouping in PHP.
+        // Here, we fetch raw data and group in PHP for maximum flexibility.
+        
+        $sql = "
+            SELECT 
+                *
+            FROM products p
+            LEFT JOIN product_images i ON p.product_id = i.fk_product_id
+            ORDER BY p.product_id ASC
+        ";
+
+        $stmt = $this->pdo->query($sql);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (empty($rows)) {
+            return [];
+        }
+
+        // 2. Grouping Logic
+        $groupedProducts = [];
+
+        foreach ($rows as $row) {
+            $pid = $row['product_id'];
+
+            // Initialize the product entry if it doesn't exist yet
+            if (!isset($groupedProducts[$pid])) {
+                // Instantiate the Product class (unchanged)
+                $productObj = new Product($row);
+                
+                // Initialize the container for this product
+                $groupedProducts[$pid] = [
+                    'product' => $productObj,
+                    'images' => []
+                ];
+            }
+
+            // 4. Attach Images
+            if (!empty($row['image_id'])) {
+                $groupedProducts[$pid]['images'][] = new ProductImage($row);
+            }
+        }
+
+        // 5. Return as a numerically indexed array (optional, for cleaner consumption)
+        return array_values($groupedProducts);
     }
 
     /**

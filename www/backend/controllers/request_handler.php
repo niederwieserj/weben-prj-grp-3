@@ -117,6 +117,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $response = $productService->getAllProducts();
             break;
 
+        case 'getProductsWithImages':
+            $response = $productService->getProductsWithImages();
+            break;
+
+        case 'getRatingById':
+            $product_id = $_GET['product_id'] ?? 0;
+            $response = $productService->getRatingById($product_id);
+            break;
+
         default:
             $response = [
                 "success" => false,
@@ -128,4 +137,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 
 // Output JSON
+$test = json_encode($response);
 echo json_encode($response);

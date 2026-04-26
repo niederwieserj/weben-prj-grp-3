@@ -21,7 +21,7 @@ async function loadProducts() {
         const productToInsert = cardTemplate.cloneNode(true);
         
         productToInsert.querySelector('#product-name').textContent = element['name'];
-        productToInsert.querySelector('#product-description').textContent = element['description'];
+        // productToInsert.querySelector('#product-description').textContent = element['description'];
         productToInsert.querySelector('#product-price').textContent = element['price'] + ' €';
         
 

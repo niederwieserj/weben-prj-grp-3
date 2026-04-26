@@ -3,7 +3,7 @@
  * Product Model
  * Represents the product data structure only.
  */
-class Product {
+class Product implements JsonSerializable {
     private int $productId;
     private string $name;
     private string $description;
@@ -52,6 +52,21 @@ class Product {
             'stock_quantity' => $this->stockQuantity,
             'fk_category_id' => $this->fkCategoryId,
             'created_at' => $this->createdAt
+        ];
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'product_id'           => $this->productId,
+            'name'                 => $this->name,
+            'description'          => $this->description,
+            'avg_rating'           => $this->avgRating,
+            'total_ratings_count'  => $this->totalRatingsCount,
+            'price'                => $this->price,
+            'stock_quantity'       => $this->stockQuantity,
+            'fk_category_id'       => $this->fkCategoryId,
+            'created_at'           => $this->createdAt
         ];
     }
 }

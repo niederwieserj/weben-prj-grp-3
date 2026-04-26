@@ -3,7 +3,7 @@
  * ProductImage Model
  * Represents the product_images data structure only.
  */
-class ProductImage {
+class ProductImage implements JsonSerializable {
     private int $imageId;
     private int $fkProductId;
     private string $imageUrl;
@@ -32,6 +32,18 @@ class ProductImage {
     public function getCreatedAt(): string { return $this->createdAt; }
 
     public function toArray(): array {
+        return [
+            'image_id' => $this->imageId,
+            'fk_product_id' => $this->fkProductId,
+            'image_url' => $this->imageUrl,
+            'alt_text' => $this->altText,
+            'sort_order' => $this->sortOrder,
+            'is_primary' => $this->isPrimary,
+            'created_at' => $this->createdAt
+        ];
+    }
+
+    public function jsonSerialize(): array {
         return [
             'image_id' => $this->imageId,
             'fk_product_id' => $this->fkProductId,

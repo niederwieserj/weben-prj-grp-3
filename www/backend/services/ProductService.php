@@ -12,6 +12,30 @@ class ProductService
     }
 
     /**
+     * Get rating by ID.
+     */
+    public function getProductsWithImages(): array
+    {
+        $products = $this->db->getAllProductsWithImages();
+
+        return ['success' => true, 'products' => $products];
+    }
+
+    /**
+     * Get rating by ID.
+     */
+    public function getRatingById(int $id): array
+    {
+        $rating = $this->db->getRatingById($id);
+
+        if (!$rating) {
+            return ['success' => false, 'message' => 'No rating found for product.'];
+        }
+
+        return ['success' => true, 'rating' => $rating->toArray()];
+    }
+
+    /**
      * Get a single product by ID.
      */
     public function getProduct(int $productId): array
