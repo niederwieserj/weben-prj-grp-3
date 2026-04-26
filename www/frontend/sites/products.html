@@ -110,14 +110,21 @@
                     <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#category-collapse" aria-expanded="false">
                       Categories
                     </button>
-                    <span class="badge rounded-pill bg-primary">
-                      15</span>
+                    <!-- Updated Badge with ID -->
+                    <span id="category-badge" class="badge rounded-pill bg-primary">
+                      0
+                    </span>
+
                     <div class="collapse" id="category-collapse">
-                      <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                        <li class="p-2" id="category-filters">
-                          <!-- Populated dynamically by JS -->
-                          <p class="text-muted small">Loading categories...</p>
-                        </li>
+                      <!-- New Action Buttons -->
+                      <div class="d-flex justify-content-between mb-2 small">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btn-cat-select-all">Select All</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btn-cat-deselect-all">Deselect All</button>
+                      </div>
+
+                      <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small" id="category-filters">
+                        <!-- Populated dynamically by JS -->
+                        <p class="text-muted small">Loading categories...</p>
                       </ul>
                     </div>
                   </li>
@@ -139,8 +146,10 @@
                             </div>
                             <div class="col-9">
                               <select class="form-select" id="sort-select">
-                                <option value="price">Price (low to high)</option>
-                                <option value="rating">Rating (high to low)</option>
+                                <option value="price">Price</option>
+                                <option value="rating">Rating</option>
+                                <option value="name">Name</option>
+                                <option value="stock">Stock</option>
                               </select>
                             </div>
                           </div>
@@ -151,10 +160,12 @@
                               <p>Order</p>
                             </div>
                             <div class="col-9">
-                              <input type="button" class="btn-check" name="sort-order" id="option5" autocomplete="off" checked>
-                              <label class="btn btn-sm btn-outline" for="option5"><svg class="bi" width="24" height="24" fill="currentColor">
+                              <button type="button" class="btn btn-sm btn-outline" id="sort-order-btn" data-order="asc">
+                                <svg class="bi" width="24" height="24" fill="currentColor">
                                   <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#sort-up" />
-                                </svg> Ascending</label>
+                                </svg>
+                                <span id="sort-order-label">Ascending</span>
+                              </button>
                             </div>
                           </div>
                         </li>

@@ -10,11 +10,22 @@ window.addEventListener('layout-ready', () => {
     initFilters();
 });
 
+function updateCategoryBadge() {
+    const badge = document.getElementById('category-badge');
+    if (!badge) return;
+
+    const checkedCount = document.querySelectorAll('.category-filter:checked').length;
+    badge.textContent = checkedCount;
+    
+    // Optional: Hide badge if 0, or keep it showing 0
+    // if (checkedCount === 0) badge.style.display = 'none'; 
+    // else badge.style.display = 'inline-block';
+}
+
 async function loadCategories() {
     const data = await apiGet('/backend/controllers/request_handler.php', {}, { action: 'getCategories' });
     const categories = data['categories'];
-    console.log(categories);
-
+    
     const container = document.getElementById('category-filters');
     if (!container || !Array.isArray(categories)) return;
 
@@ -31,6 +42,7 @@ async function loadCategories() {
         input.type = 'checkbox';
         input.value = cat.category_id;
         input.id = 'cat-' + cat.category_id;
+        input.checked = true;
 
         const label = document.createElement('label');
         label.className = 'form-check-label';
@@ -41,9 +53,34 @@ async function loadCategories() {
         wrapper.appendChild(label);
         container.appendChild(wrapper);
 
-        // Re-filter when any category checkbox changes
-        input.addEventListener('change', applyFilters);
+        input.addEventListener('change', () => {
+            applyFilters();
+            updateCategoryBadge();
+        });
     });
+
+    // Update badge AFTER all checkboxes are created
+    updateCategoryBadge();
+
+    // Setup Select All / Deselect All buttons
+    const btnSelectAll = document.getElementById('btn-cat-select-all');
+    const btnDeselectAll = document.getElementById('btn-cat-deselect-all');
+
+    if (btnSelectAll) {
+        btnSelectAll.addEventListener('click', () => {
+            document.querySelectorAll('.category-filter').forEach(cb => cb.checked = true);
+            updateCategoryBadge();
+            applyFilters();
+        });
+    }
+
+    if (btnDeselectAll) {
+        btnDeselectAll.addEventListener('click', () => {
+            document.querySelectorAll('.category-filter').forEach(cb => cb.checked = false);
+            updateCategoryBadge();
+            applyFilters();
+        });
+    }
 }
 
 async function loadProducts() {
@@ -69,6 +106,7 @@ async function loadProducts() {
         productToInsert.setAttribute('data-price', product['price']);
         productToInsert.setAttribute('data-rating', product['avg_rating']);
         productToInsert.setAttribute('data-stock', product['stock_quantity']);
+        productToInsert.setAttribute('data-name', product['name']);
         productToInsert.setAttribute('data-category', product['fk_category_id'] || 'uncategorized');
 
         if (row['images'] === undefined || row['images'].length === 0) {
@@ -101,6 +139,19 @@ async function loadProducts() {
         productGrid.appendChild(productToInsert);
     });
 
+        // Set max price based on most expensive product
+    const prices = allProducts.map(row => parseFloat(row['product']['price']));
+    const maxPrice = Math.max(...prices, 0);
+    const rangeInput = document.getElementById('range4');
+    const rangeOutput = document.getElementById('rangeValue');
+    if (rangeInput) {
+        rangeInput.max = maxPrice;
+        rangeInput.value = maxPrice;
+    }
+    if (rangeOutput) {
+        rangeOutput.textContent = '0 - ' + maxPrice + ' €';
+    }
+
     updateResultCount();
 }
 
@@ -117,7 +168,8 @@ function initFilters() {
         });
     }
 
-    const sortSelect = document.querySelector('#product-catalogue-container select');
+    // Sort criteria dropdown — target #sort-select specifically
+    const sortSelect = document.getElementById('sort-select');
     if (sortSelect) {
         sortSelect.addEventListener('change', function () {
             sortProducts(this.value);
@@ -130,13 +182,36 @@ function initFilters() {
             applyFilters();
         });
     }
+
+    // Sort order toggle button
+    const sortOrderBtn = document.getElementById('sort-order-btn');
+    if (sortOrderBtn) {
+        sortOrderBtn.addEventListener('click', function () {
+            const isAsc = this.dataset.order === 'asc';
+            const newOrder = isAsc ? 'desc' : 'asc';
+            this.dataset.order = newOrder;
+
+            // Swap icon
+            const iconUse = this.querySelector('svg use');
+            iconUse.setAttribute('xlink:href',
+                '/frontend/bootstrap-icons/bootstrap-icons.svg#' + (newOrder === 'asc' ? 'sort-up' : 'sort-down')
+            );
+
+            // Swap label
+            document.getElementById('sort-order-label').textContent =
+                newOrder === 'asc' ? 'Ascending' : 'Descending';
+
+            // Re-sort with current criteria and new direction
+            const currentCriteria = document.getElementById('sort-select')?.value || 'price';
+            sortProducts(currentCriteria);
+        });
+    }
 }
 
 function applyFilters() {
     const maxPrice = parseInt(document.getElementById('range4').value);
     const minRating = parseFloat(document.querySelector('#min-rating-select')?.value || 0);
 
-    // Gather checked category IDs; empty set = no category filter (show all)
     const checkedCategories = new Set();
     document.querySelectorAll('.category-filter:checked').forEach(cb => {
         checkedCategories.add(cb.value);
@@ -150,7 +225,8 @@ function applyFilters() {
 
         const matchesPrice = price <= maxPrice;
         const matchesRating = rating >= minRating;
-        const matchesCategory = checkedCategories.size === 0 || checkedCategories.has(category);
+        // FIX: Show all if no categories selected, otherwise check if category matches
+        const matchesCategory = checkedCategories.has(category);
 
         if (matchesPrice && matchesRating && matchesCategory) {
             $card.fadeIn(200);
@@ -159,10 +235,17 @@ function applyFilters() {
         }
     });
 
+    const currentCriteria = document.getElementById('sort-select')?.value || 'price';
+    sortProducts(currentCriteria);
+
     updateResultCount();
 }
 
 function sortProducts(criteria) {
+    const sortOrderBtn = document.getElementById('sort-order-btn');
+    const order = sortOrderBtn?.dataset.order || 'asc';
+    const multiplier = order === 'asc' ? 1 : -1;
+
     const cards = Array.from($('.product-card').get());
 
     cards.sort((a, b) => {
@@ -170,9 +253,15 @@ function sortProducts(criteria) {
         const $b = $(b);
 
         if (criteria === 'price') {
-            return parseFloat($a.attr('data-price')) - parseFloat($b.attr('data-price'));
+            return multiplier * (parseFloat($a.attr('data-price')) - parseFloat($b.attr('data-price')));
         } else if (criteria === 'rating') {
-            return parseFloat($b.attr('data-rating')) - parseFloat($a.attr('data-rating'));
+            return multiplier * (parseFloat($b.attr('data-rating')) - parseFloat($a.attr('data-rating')));
+        } else if (criteria === 'name') {
+            const nameA = ($a.attr('data-name') || '').toLowerCase();
+            const nameB = ($b.attr('data-name') || '').toLowerCase();
+            return multiplier * nameA.localeCompare(nameB);
+        } else if (criteria === 'stock') {
+            return multiplier * (parseInt($b.attr('data-stock')) - parseInt($a.attr('data-stock')));
         }
         return 0;
     });
