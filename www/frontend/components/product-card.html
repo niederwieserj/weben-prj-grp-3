@@ -1,30 +1,25 @@
 <div id="template" class="col">
-    <div class="card shadow-sm">
-        <img src="/backend/product-pictures/RTX-5080-16g-vanguard-msi.png" class="p-5">
+    <a id="product-link" href="#" class="text-decoration-none text-reset">
+    <div class="card shadow">
+        <svg aria-label="Placeholder: Thumbnail" class="bd-placeholder-img card-img-top" height="250" preserveAspectRatio="xMidYMid slice" role="img" width="100%" xmlns="http://www.w3.org/2000/svg" style="display: none;">
+            <title>Placeholder</title>
+            <rect width="100%" height="100%" fill="#55595c"></rect>
+            <text x="50%" y="50%" fill="#eceeef" dy=".3em">
+                No picture added
+            </text>
+        </svg>
+        <img class="p-5" height="250" style="display: none;">
         <div class="card-body">
             <p id="product-name" class="card-text fw-bold font-monospace"></p>
             <!--<p id="product-description" class="card-text">-->
             </p>
             <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <svg class="bi text-warning" width="14" height="14" fill="currentColor">
-                        <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#star-fill" />
-                    </svg>
-                    <svg class="bi text-warning" width="14" height="14" fill="currentColor">
-                        <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#star-fill" />
-                    </svg>
-                    <svg class="bi text-warning" width="14" height="14" fill="currentColor">
-                        <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#star-fill" />
-                    </svg>
-                    <svg class="bi text-warning" width="14" height="14" fill="currentColor">
-                        <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#star-half" />
-                    </svg>
-                    <svg class="bi text-warning" width="14" height="14" fill="currentColor">
-                        <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#star" />
-                    </svg>
+                <div id="product-rating">
                 </div>
-                <small id="product-price" class="text-body-secondary font-monospace">100 €</small>
+                
+                <small id="product-price" class="text-body-secondary font-monospace"></small>
             </div>
         </div>
     </div>
+    </a>
 </div>

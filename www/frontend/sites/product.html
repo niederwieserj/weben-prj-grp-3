@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="de" data-bs-theme="dark">
+
+<head id="head-placeholder">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Bootstrap CSS -->
+  <link href="/frontend/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <link rel="icon" type="image/x-icon" href="/frontend/img/coreGear-logo-copy.png">
+  <title></title>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+  <main class="container-fluid mt-4 flex-grow-1">
+    <!-- Layout placeholders -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- ======================================================================= -->
+    <!-- Content goes here -->
+
+    <div id="content" class="row mt-5">
+      <div class="col-1">
+
+      </div>
+      <div class="col-5">
+        <div id="myCarousel" class="carousel slide carousel-fade mb-6" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            <div class="carousel-item active" style="height: 400px;">
+              <svg aria-hidden="true" class="bd-placeholder-img" height="100%" preserveAspectRatio="xMidYMid slice" width="100%" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100%" height="100%" fill="var(--bs-secondary-color)"></rect>
+              </svg>
+              <div class="container">
+                <div class="carousel-caption text-start">
+                  <h1>Example headline.</h1>
+                  <p class="opacity-75">
+                    Some representative placeholder content for the first slide of
+                    the carousel.
+                  </p>
+                  <p>
+                    <a class="btn btn-lg btn-primary" href="#">Sign up today</a>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-item" style="height: 400px;">
+              <svg aria-hidden="true" class="bd-placeholder-img" height="100%" preserveAspectRatio="xMidYMid slice" width="100%" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100%" height="100%" fill="var(--bs-secondary-color)"></rect>
+              </svg>
+              <div class="container">
+                <div class="carousel-caption">
+                  <h1>Another example headline.</h1>
+                  <p>
+                    Some representative placeholder content for the second slide
+                    of the carousel.
+                  </p>
+                  <p><a class="btn btn-lg btn-primary" href="#">Learn more</a></p>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-item" style="height: 400px;">
+              <svg aria-hidden="true" class="bd-placeholder-img" height="100%" preserveAspectRatio="xMidYMid slice" width="100%" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100%" height="100%" fill="var(--bs-secondary-color)"></rect>
+              </svg>
+              <div class="container">
+                <div class="carousel-caption text-end">
+                  <h1>One more for good measure.</h1>
+                  <p>
+                    Some representative placeholder content for the third slide of
+                    this carousel.
+                  </p>
+                  <p>
+                    <a class="btn btn-lg btn-primary" href="#">Browse gallery</a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+      </div>
+      <div class="col-6">
+        <h3 id="product-name"></h3>
+        <div id="product-rating">
+        </div>
+        <h5 id="product-price"></h5>
+        <p id="product-description"></p>
+      </div>
+    </div>
+
+
+    <!-- ======================================================================= -->
+
+    <!-- Theme placeholder -->
+    <!-- <div id="theme-placeholder"></div> -->
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <!-- Toast container -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastContainer">
+    <div id="loginToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <svg id="severityIndicator" class="bi me-2" width="8" height="8" fill="currentColor">
+          <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#circle-fill" />
+        </svg>
+        <strong class="me-auto">Toast title</strong>
+        <small class="text-body-secondary">just now</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        Toast body text
+      </div>
+    </div>
+  </div>
+
+  <!-- New way: Load layout first, then main.js as a module -->
+  <!-- 1. Load Layout (Orchestrator) -->
+  <script src="/frontend/js/layout.js"></script>
+
+  <!-- 2. Load Main App (Modular Entry Point) -->
+  <!-- Note: type="module" is required for import/export syntax -->
+  <script type="module" src="/frontend/js/main.js"></script>
+
+  <script type="module" src="/frontend/js/components/product.js"></script>
+</body>
+
+</html>

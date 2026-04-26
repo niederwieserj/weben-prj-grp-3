@@ -68,3 +68,78 @@ export function formatEuro(amount) {
 export function showAlert(container, type, message) {
     container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
 }
+
+export function createStarsFromRating(rating) {
+    let stars = [];
+
+    if (rating < 1) {
+        // No rating -> 5 empty stars
+        for (let i = 0; i < 5; i++) {
+            const star = createStar('star');
+            stars.push(star);
+        }
+    } else {
+        if (roundTo(rating % 1, 1) >= 0.8) {
+            rating = Math.ceil(rating);
+        }
+
+        // Full stars
+        for (let i = 0; i < Math.trunc(rating); i++) {
+            const star = createStar('star-fill', 'text-warning');
+            stars.push(star);
+        }
+
+        // Optional half star
+        if (roundTo(rating % 1, 1) > 0.2 && roundTo(rating % 1, 1) < 0.8) {
+            console.log(rating);
+            console.log(roundTo(rating % 1, 1));
+            const star = createStar('star-half', 'text-warning');
+            stars.push(star);
+            rating++; // We need one less empty star now
+        }
+
+        // Emtpy stars
+        for (let i = Math.trunc(rating); i < 5; i++) {
+            const star = createStar('star', 'text-warning');
+            stars.push(star);
+        }
+    }
+
+    return stars;
+}
+
+export function roundTo(n, digits) {
+    var negative = false;
+    if (digits === undefined) {
+        digits = 0;
+    }
+    if (n < 0) {
+        negative = true;
+        n = n * -1;
+    }
+    var multiplicator = Math.pow(10, digits);
+    n = parseFloat((n * multiplicator).toFixed(11));
+    n = (Math.round(n) / multiplicator).toFixed(digits);
+    if (negative) {
+        n = (n * -1).toFixed(digits);
+    }
+    return n;
+}
+
+export function createStar(iconName, textColor) {
+    const SVG_NS = 'http://www.w3.org/2000/svg';
+    const star = document.createElementNS(SVG_NS, 'svg');
+    star.classList.add('bi');
+    star.classList.add('me-1');
+    star.classList.add(textColor)
+    star.setAttribute('width', '14');
+    star.setAttribute('height', '14');
+    star.setAttribute('fill', 'currentColor');
+
+    const use = document.createElementNS(SVG_NS, 'use');
+    use.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href',
+        '/frontend/bootstrap-icons/bootstrap-icons.svg#' + iconName);
+
+    star.appendChild(use);
+    return star;
+}
