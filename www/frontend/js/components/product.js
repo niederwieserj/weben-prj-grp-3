@@ -15,6 +15,7 @@ async function loadProduct() {
         document.getElementById('content').style.display = 'none';
         document.querySelector('head title').innerHTML = 'Not found &#x2022; CoreGear';
         showError('Product not found.')
+        return;
     }
 
     const product = response['products']['product'];

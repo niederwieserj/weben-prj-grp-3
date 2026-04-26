@@ -13,6 +13,7 @@ const COMPONENTS = {
     head: '/frontend/components/head.html',
     navbar: '/frontend/components/navbar.html',
     footer: '/frontend/components/footer.html',
+    toast: '/frontend/components/toast.html',
     // theme: '/frontend/components/theme.html' // Uncomment if needed
 };
 
@@ -97,7 +98,8 @@ async function initLayout() {
     await Promise.all([
         insertResourceById('head-placeholder', COMPONENTS.head),
         insertResourceById('navbar-placeholder', COMPONENTS.navbar),
-        insertResourceById('footer-placeholder', COMPONENTS.footer)
+        insertResourceById('footer-placeholder', COMPONENTS.footer),
+        insertResourceById('toast-placeholder', COMPONENTS.toast)
     ]);
 
     // 2. Load Bootstrap Bundle (Required for dropdowns, modals, etc.)

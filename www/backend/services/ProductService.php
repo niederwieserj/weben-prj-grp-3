@@ -18,6 +18,10 @@ class ProductService
     {
         $products = $this->db->getAllProductsWithImages();
 
+        if (!$products) {
+            return ['success' => false, 'message' => 'Product not found.'];
+        }
+
         return ['success' => true, 'products' => $products];
     }
 
@@ -27,6 +31,10 @@ class ProductService
     public function getProductByIdWithImages(int $id): array
     {
         $products = $this->db->getProductByIdWithImages($id);
+
+        if (!$products) {
+            return ['success' => false, 'message' => 'Product not found.'];
+        }
 
         return ['success' => true, 'products' => $products];
     }

@@ -22,6 +22,12 @@ export function showToast(message, severity = 'info', delay = 4000, toastId = 'l
         return;
     }
 
+    // Update the toast title with the message
+    const toastTitle = toastEl.querySelector('#toast-title');
+    if (toastTitle) {
+        toastTitle.textContent = 'CoreGear';
+    }
+
     // Update the toast body with the message
     const toastBody = toastEl.querySelector('.toast-body');
     if (toastBody) {
