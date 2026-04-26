@@ -2,25 +2,34 @@
 import { apiGet } from '../modules/api.js';
 import { createStarsFromRating } from '../modules/utils.js';
 
+window.addEventListener('layout-ready', () => {
+    loadProducts();
+
+    // This is an example script, please modify as needed
+  const rangeInput = document.getElementById('range4');
+  const rangeOutput = document.getElementById('rangeValue');
+
+  // Set initial value
+  rangeOutput.textContent = '0 - ' + rangeInput.value + ' €';
+
+  rangeInput.addEventListener('input', function() {
+    rangeOutput.textContent = '0 - ' + this.value + ' €';
+  });
+});
+
 async function loadProducts() {
     const response = await fetch('/frontend/components/product-card.html');
     const productCardTemplate = await response.text();
 
-    // Parse the HTML string into a DOM element
     const parser = new DOMParser();
     const productCardDoc = parser.parseFromString(productCardTemplate, 'text/html');
 
-    // console.log(productCardDoc);
-
     const data = await apiGet('/backend/controllers/request_handler.php', {}, { action: 'getProductsWithImages' });
-    // console.log(data);
 
     const productGrid = document.getElementById('product-grid');
     const cardTemplate = productCardDoc.querySelector('#template')
 
     data['products'].forEach(row => {
-        // console.log(product);
-
         const productToInsert = cardTemplate.cloneNode(true);
 
         if (row['images'] === undefined || row['images'].length == 0) {
@@ -52,7 +61,3 @@ async function loadProducts() {
         productGrid.appendChild(productToInsert);
     });
 }
-
-window.addEventListener('layout-ready', () => {
-    loadProducts();
-});

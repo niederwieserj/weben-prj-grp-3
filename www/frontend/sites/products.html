@@ -19,7 +19,7 @@
   <main class="container-fluid mt-4 flex-grow-1">
     <!-- Layout placeholders -->
     <div id="navbar-placeholder"></div>
-    <div class="container mt-3 flex-grow-1" id="product-catalogue-container">
+    <div class="container-fluid mt-3 flex-grow-1" id="product-catalogue-container">
 
 
       <!-- ======================================================================= -->
@@ -29,19 +29,68 @@
         <section class="py-5 text-center container">
           <div class="row py-lg-5">
             <div class="col-lg-6 col-md-8 mx-auto">
-              <h1 class="fw-light">Graphics Cards</h1>
+              <h1 class="fw-light">Product Catalog</h1>
               <p class="lead">
-                Raw power for your favorite games.
+                All your favourite gaming hardware in one place.
               </p>
             </div>
           </div>
         </section>
-        <div class="album py-5">
-          <div class="container">
-            <div id="product-grid" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        <div class="row">
+          <div class="col-1"></div>
+          <div class="col-8">
+            <div class="album pb-5">
+              <div class="container-fluid">
+                <div id="product-grid" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="position-sticky" style="top: 2rem">
+              <div class="p-4 mb-3 border rounded">
+                <h4 class="fst-italic">Filter</h4>
+                <div class="row">
+                  <div class="col-3">
+                    <label for="range4" class="form-label">Price</label>
+                  </div>
+                  <div class="col-9">
+                    <input type="range" class="form-range" min="0" max="100" value="50" id="range4">
+                    <output for="range4" id="rangeValue" aria-hidden="true" class="font-monospace"></output>
+                  </div>
+                </div>
+                <hr>
+                <div>
+                  <div class="row">
+                    <div class="col-3">
+                      <p>Sort by</p>
+                    </div>
+                    <div class="col-9">
+                      <select class="form-select" aria-label="Default select example">
+                        <option selected>Price</option>
+                        <option value="1">Rating</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <div>
+                  <div class="row">
+                    <div class="col-3">
+                      <p>Min Rating</p>
+                    </div>
+                    <div class="col-9">
+                      
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
             </div>
           </div>
         </div>
+    </div>
     </div>
   </main>
 
@@ -53,6 +102,10 @@
 
   <div id="footer-placeholder"></div>
 
+
+  <script src="https://code.jquery.com/jquery-4.0.0.min.js" integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/ui/1.14.2/jquery-ui.min.js" integrity="sha256-mblSWfbYzaq/f+4akyMhE6XELCou4jbkgPv+JQPER2M=" crossorigin="anonymous"></script>
+
   <!-- New way: Load layout first, then main.js as a module -->
   <!-- 1. Load Layout (Orchestrator) -->
   <script src="/frontend/js/layout.js"></script>
@@ -63,8 +116,7 @@
 
   <script type="module" src="/frontend/js/components/products.js"></script>
 
-  <script src="https://code.jquery.com/jquery-4.0.0.min.js" integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
-  <script src="https://code.jquery.com/ui/1.14.2/jquery-ui.min.js" integrity="sha256-mblSWfbYzaq/f+4akyMhE6XELCou4jbkgPv+JQPER2M=" crossorigin="anonymous"></script>
+  
 </body>
 
 </html>
