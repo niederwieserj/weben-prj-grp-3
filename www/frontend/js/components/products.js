@@ -31,7 +31,6 @@ async function loadProducts() {
         }
         
         productToInsert.querySelector('#product-name').textContent = row['product']['name'];
-        // productToInsert.querySelector('#product-description').textContent = element['description'];
         productToInsert.querySelector('#product-price').textContent = row['product']['price'] + ' €';
 
         const stars = createStarsFromRating(row['product']['avg_rating']);

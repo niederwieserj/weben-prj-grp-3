@@ -7,9 +7,9 @@ async function loadProduct() {
     const url_string = window.location.href;
     const url = new URL(url_string);
     const id = url.searchParams.get("id");
-    console.log(id);
 
-    const response = await apiGet('/backend/controllers/request_handler.php', {}, { action: 'getProduct', product_id: id });
+    const response = await apiGet('/backend/controllers/request_handler.php', {}, { action: 'getProductWithImages', product_id: id });
+    // console.log(response);
 
     if(response['success'] === false) {
         document.getElementById('content').style.display = 'none';
@@ -17,15 +17,41 @@ async function loadProduct() {
         showError('Product not found.')
     }
 
-    const product = response['product'];
+    const product = response['products']['product'];
     document.querySelector('head title').innerHTML = product['name'] + ' &#x2022; CoreGear';
 
-    /*if (row['images'] === undefined || row['images'].length == 0) {
-        productToInsert.querySelector('.bd-placeholder-img').style.display = 'block';
+    const images = response['products']['images'];
+
+    console.log(images);
+
+    if (images === undefined || images.length == 0) {
+        console.log('empty');
     } else {
-        productToInsert.querySelector('img').src = row['images'][0]['image_url'];
-        productToInsert.querySelector('img').style.display = 'block';
-    }*/
+        const carouselInner = document.querySelector('.carousel-inner');
+
+        // Clear any existing placeholder items
+        carouselInner.innerHTML = '';
+
+        // Build carousel items
+        images.forEach((image, index) => {
+
+            const itemDiv = document.createElement('div');
+            itemDiv.classList.add('carousel-item');
+            if (index === 0) {
+                itemDiv.classList.add('active');
+            }
+            itemDiv.style.height = '400px';
+
+            const img = document.createElement('img');
+            img.id = `product-image-${index + 1}`;
+            img.classList.add('p-5');
+            img.src = image.image_url;
+            img.alt = image.alt_text || '';
+
+            itemDiv.appendChild(img);
+            carouselInner.appendChild(itemDiv);
+        });
+    }
 
     document.querySelector('#product-name').textContent = product['name'];
     document.querySelector('#product-price').textContent = product['price'] + ' €';

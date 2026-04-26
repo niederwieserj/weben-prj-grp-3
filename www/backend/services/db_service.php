@@ -72,7 +72,7 @@ class DbService
         // We use DISTINCT to avoid duplicates if a product has multiple images/ratings 
         // causing a Cartesian product explosion, OR we handle the grouping in PHP.
         // Here, we fetch raw data and group in PHP for maximum flexibility.
-        
+
         $sql = "
             SELECT 
                 *
@@ -98,7 +98,7 @@ class DbService
             if (!isset($groupedProducts[$pid])) {
                 // Instantiate the Product class (unchanged)
                 $productObj = new Product($row);
-                
+
                 // Initialize the container for this product
                 $groupedProducts[$pid] = [
                     'product' => $productObj,
@@ -114,6 +114,64 @@ class DbService
 
         // 5. Return as a numerically indexed array (optional, for cleaner consumption)
         return array_values($groupedProducts);
+    }
+
+    /**
+     * Fetches a single product by ID along with all its associated images.
+     * 
+     * @param int $productId The ID of the product to fetch.
+     * @return array|null Returns an associative array with 'product' (Product object) and 'images' (array of ProductImage objects), or null if not found.
+     */
+    public function getProductByIdWithImages(int $productId): ?array
+    {
+        // 1. The SQL Query
+        // We filter by product_id immediately to avoid fetching unnecessary data.
+        // We still join images to handle the 1:N relationship.
+        $sql = "
+        SELECT 
+            *
+        FROM products p
+        LEFT JOIN product_images i ON p.product_id = i.fk_product_id
+        WHERE p.product_id = ?
+    ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$productId]);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (empty($rows)) {
+            return null;
+        }
+
+        // 2. Grouping Logic
+        // Even though we filtered by ID, we might get multiple rows if there are multiple images.
+        // We reuse the grouping logic from getAllProductsWithImages to ensure consistency.
+
+        $groupedProducts = [];
+
+        foreach ($rows as $row) {
+            $pid = $row['product_id'];
+
+            // Initialize the product entry if it doesn't exist yet
+            if (!isset($groupedProducts[$pid])) {
+                // Instantiate the Product class
+                $productObj = new Product($row);
+
+                $groupedProducts[$pid] = [
+                    'product' => $productObj,
+                    'images' => []
+                ];
+            }
+
+            // Attach Images if they exist
+            if (!empty($row['image_id'])) {
+                $groupedProducts[$pid]['images'][] = new ProductImage($row);
+            }
+        }
+
+        // Since we queried for a specific ID, the array should contain exactly one entry.
+        // We return that single entry directly.
+        return array_values($groupedProducts)[0] ?? null;
     }
 
     /**

@@ -11,9 +11,6 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../sites/home.html" class="nav-link px-2 text-white">Overview</a>
-                </li>
-                <li>
                     <a href="../sites/products.html" class="nav-link px-2 text-white">Products</a>
                 </li>
             </ul>
@@ -46,10 +43,14 @@
                     <li><a class="dropdown-item" href="sign-in.html">Sign in</a></li>
                 </ul>
             </div>
-            <a class="navbar-cart " href="#">
+            <a class="navbar-cart position-relative" href="#">
                 <svg class="bi" width="32" height="32" fill="currentColor">
                     <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#cart" />
                 </svg>
+                <span class="position-absolute top-105 start-100 translate-middle badge rounded-pill bg-primary">
+                    3
+                    <span class="visually-hidden">items in cart</span>
+                </span>
             </a>
         </div>
     </div>

@@ -12,11 +12,21 @@ class ProductService
     }
 
     /**
-     * Get rating by ID.
+     * Get all products with images.
      */
     public function getProductsWithImages(): array
     {
         $products = $this->db->getAllProductsWithImages();
+
+        return ['success' => true, 'products' => $products];
+    }
+
+    /**
+     * Get single product by ID with images.
+     */
+    public function getProductByIdWithImages(int $id): array
+    {
+        $products = $this->db->getProductByIdWithImages($id);
 
         return ['success' => true, 'products' => $products];
     }

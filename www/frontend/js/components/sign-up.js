@@ -60,6 +60,4 @@ export function initSignUp() {
     }
     
     initBootstrapValidation();
-
-    console.log("here");
 }
