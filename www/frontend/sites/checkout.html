@@ -228,9 +228,13 @@
 
     <div id="footer-placeholder"></div>
 
-    <!-- Layout loader (must be last) -->
+    <!-- New way: Load layout first, then main.js as a module -->
+    <!-- 1. Load Layout (Orchestrator) -->
     <script src="/frontend/js/layout.js"></script>
-    <script src="/frontend/js/checkout.js" class="astro-vvvwv3sm"></script>
+
+    <!-- 2. Load Main App (Modular Entry Point) -->
+    <!-- Note: type="module" is required for import/export syntax -->
+    <script type="module" src="/frontend/js/main.js"></script>
 </body>
 
 </html>

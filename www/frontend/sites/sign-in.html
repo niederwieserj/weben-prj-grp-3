@@ -7,29 +7,34 @@
 
   <link href="/frontend/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="/frontend/css/sign-in.css" rel="stylesheet">
+
+  <link rel="icon" type="image/x-icon" href="/frontend/img/coreGear-logo-copy.png">
+  <title>Sign in &#x2022; CoreGear</title>
 </head>
 
 <body class="d-flex flex-column min-vh-100">
   <main class="container mt-4 flex-grow-1">
-    <div id="navbar-placeholder"></div>
+    <!--<div id="navbar-placeholder"></div>-->
 
     <div class="form-signin w-100 m-auto">
-      <form id="loginForm">
-        <img class="mb-4" src="/frontend/img/bootstrap-logo.svg" alt="" width="72" height="57" />
+      <form id="loginForm" class="needs-validation" novalidate>
+        <a href="/index.php">
+          <img class="mb-4" src="/frontend/img/coregear-logo-copy.png" alt="" width="72" />
+        </a>
         <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 
         <div class="form-floating">
-          <input type="email" class="form-control" id="identifier" name="identifier" placeholder="name@example.com" />
+          <input type="email" class="form-control" id="identifier" name="identifier" placeholder="name@example.com" required />
           <label for="identifier">Email address</label>
         </div>
 
         <div class="form-floating">
-          <input type="password" class="form-control" id="password" name="password" placeholder="Password" />
+          <input type="password" class="form-control" id="password" name="password" placeholder="Password" required />
           <label for="password">Password</label>
         </div>
 
         <div class="form-check text-start my-3">
-          <input class="form-check-input" type="checkbox" value="remember-me" name="remember-me" id="remember-me" />
+          <input class="form-check-input" type="checkbox" value="remember-me" name="remember-me" id="remember-me" checked />
           <label class="form-check-label" for="checkDefault">
             Remember me
           </label>
@@ -39,13 +44,17 @@
           Sign in
         </button>
 
-        <hr class="my-4">
+      </form>
+
+      <hr class="my-4">
+
+      <form id="resetPasswordRequestForm" class="needs-validation" novalidate>
 
         <h2 class="h5 mb-3">Forgot password?</h2>
 
         <div class="input-group mb-3">
-          <input type="text" id="resetEmail" class="form-control" placeholder="Email address" aria-label="Email address">
-          <button class="btn btn-outline-secondary" type="button" onclick="requestPasswordReset()">
+          <input type="text" id="resetEmail" class="form-control" placeholder="Email address" aria-label="Email address" required>
+          <button class="btn btn-outline-secondary" type="submit">
             <svg class="bi" width="24" height="24" fill="currentColor">
               <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#arrow-right-short" />
             </svg>
@@ -59,11 +68,17 @@
     </div>
   </main>
 
-  <div id="footer-placeholder"></div>
+  <!--<div id="footer-placeholder"></div>-->
 
-  <script src="/frontend/js/auth.js"></script>
-  <script src="/frontend/js/sign-in.js"></script>
+<div id="toast-placeholder"></div>
+
+  <!-- New way: Load layout first, then main.js as a module -->
+  <!-- 1. Load Layout (Orchestrator) -->
   <script src="/frontend/js/layout.js"></script>
+
+  <!-- 2. Load Main App (Modular Entry Point) -->
+  <!-- Note: type="module" is required for import/export syntax -->
+  <script type="module" src="/frontend/js/main.js"></script>
 </body>
 
 </html>

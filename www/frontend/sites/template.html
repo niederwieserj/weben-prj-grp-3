@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" data-bs-theme="dark">
 
 <head id="head-placeholder">
     <meta charset="UTF-8">
@@ -7,6 +7,9 @@
 
     <!-- Bootstrap CSS -->
     <link href="/frontend/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="icon" type="image/x-icon" href="/frontend/img/coreGear-logo-copy.png">
+    <title>Template &#x2022; CoreGear</title>
 </head>
 
 <body class="d-flex flex-column min-vh-100">
@@ -27,9 +30,15 @@
 
     <div id="footer-placeholder"></div>
 
-    <!-- Layout loader (must be last) -->
+<div id="toast-placeholder"></div>
+
+    <!-- New way: Load layout first, then main.js as a module -->
+    <!-- 1. Load Layout (Orchestrator) -->
     <script src="/frontend/js/layout.js"></script>
-    <script src="/frontend/js/auth.js"></script>
+
+    <!-- 2. Load Main App (Modular Entry Point) -->
+    <!-- Note: type="module" is required for import/export syntax -->
+    <script type="module" src="/frontend/js/main.js"></script>
 </body>
 
 </html>

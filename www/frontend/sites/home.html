@@ -11,11 +11,14 @@
     <!-- Custom CSS -->
     <link href="/frontend/css/home.css" rel="stylesheet">
     <link href="/frontend/css/style.css" rel="stylesheet">
+
+    <link rel="icon" type="image/x-icon" href="/frontend/img/coreGear-logo-copy.png">
+    <title>Home &#x2022; CoreGear</title>
 </head>
 
 <body class="d-flex">
     <main class="container-fluid">
-        
+
         <div id="navbar-placeholder"></div>
 
         <!-- ======================================================================= -->
@@ -36,7 +39,7 @@
                     </a>
                 </div>
             </div>
-            
+
         </div>
 
         <!-- explore shop categories: cards -->
@@ -59,8 +62,7 @@
                     <a href="#" class="stretched-link">Coolers</a>
 
                     <div class="image-container">
-                        <img src="./../img/icue-link-h100i-lcd-liquid-cooler.png" alt="white 4500x base frame"
-                            class="component-img">
+                        <img src="./../img/icue-link-h100i-lcd-liquid-cooler.png" alt="white 4500x base frame" class="component-img">
                     </div>
                 </div>
             </div>
@@ -86,7 +88,7 @@
         </div>
 
         <div class="row g-3 my-md-3 ps-md-3">
-           
+
             <div class="col-responsive">
                 <div class="card explore-card pt-md-5 px-md-5">
                     <a href="#" class="stretched-link">Power supply</a>
@@ -125,7 +127,7 @@
                 </div>
             </div>
         </div>
-        
+
 
         <!-- ======================================================================= -->
 
@@ -135,8 +137,13 @@
 
     <div id="footer-placeholder"></div>
 
+    <!-- New way: Load layout first, then main.js as a module -->
+    <!-- 1. Load Layout (Orchestrator) -->
     <script src="/frontend/js/layout.js"></script>
-    <script src="/frontend/js/auth.js"></script>
+
+    <!-- 2. Load Main App (Modular Entry Point) -->
+    <!-- Note: type="module" is required for import/export syntax -->
+    <script type="module" src="/frontend/js/main.js"></script>
 </body>
 
 </html>
