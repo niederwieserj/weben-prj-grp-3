@@ -11,6 +11,17 @@ class ProductService
         $this->db = new DbService();
     }
 
+    public function getCategories(): array
+    {
+        $categories = $this->db->getCategories();
+
+        if (!$categories) {
+            return ['success' => false, 'message' => 'Categories not found.'];
+        }
+
+        return ['success' => true, 'categories' => $categories];
+    }
+
     /**
      * Get all products with images.
      */

@@ -10,6 +10,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/user.class.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/product.class.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/productRating.class.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/productImage.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/category.class.php';
 
 class DbService
 {
@@ -28,6 +29,20 @@ class DbService
         } catch (PDOException $e) {
             throw new Exception("Database connection failed.");
         }
+    }
+
+    // --- Category Queries
+    public function getCategories(): array
+    {
+        $stmt = $this->pdo->query("SELECT category_id, name FROM categories ORDER BY name ASC");
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $categories = [];
+        foreach ($results as $row) {
+            $categories[] = new Category($row);
+        }
+
+        return $categories;
     }
 
     // --- Rating Queries

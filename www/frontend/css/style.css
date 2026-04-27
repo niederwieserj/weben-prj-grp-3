@@ -2,6 +2,9 @@
 /*global CSS */
 /*custom*/
 
+::selection {
+  background: rgb(167, 91, 255);
+}
 
 header,main,body{
     color: white;
