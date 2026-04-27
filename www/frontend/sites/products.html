@@ -52,26 +52,33 @@
               <div class="p-4 mb-3 border rounded">
                 <h4 class="fst-italic">Filter</h4>
 
-                <!-- Price Range (Collapsible) -->
+                <!-- Category (Collapsible) -->
                 <ul class="list-unstyled ps-0">
                   <li class="mb-1">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#price-collapse" aria-expanded="false">
-                      Price
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#category-collapse" aria-expanded="true">
+                      Categories
                     </button>
-                    <div class="collapse" id="price-collapse">
-                      <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                        <li class="p-2">
-                          <div class="row">
-                            <div class="col-3">
-                              <label for="range4" class="form-label">Range</label>
-                            </div>
-                            <div class="col-9">
-                              <input type="range" class="form-range" min="0" max="500" value="500" id="range4">
-                              <output for="range4" id="rangeValue" aria-hidden="true" class="font-monospace">0 - 500 €</output>
-                            </div>
-                          </div>
-                        </li>
+                    <!-- Updated Badge with ID -->
+                    <span id="category-badge" class="badge rounded-pill bg-primary">
+                      0
+                    </span>
+
+                    <div class="collapse show" id="category-collapse">
+                      <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 ms-4 ps-1 small" id="category-filters">
+                        <!-- Populated dynamically by JS -->
+                        <p class="text-muted small">Loading categories...</p>
                       </ul>
+                       <!-- New Action Buttons -->
+                      <div class="d-flex justify-content-start mb-2 ms-4 small">
+                        <button type="button" class="btn btn-sm btn-outline-light border-0 me-2" id="btn-cat-select-all">
+                          <svg class="bi" width="20" height="20" fill="currentColor">
+                                  <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#plus-circle" />
+                                </svg>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-light border-0" id="btn-cat-deselect-all"><svg class="bi" width="20" height="20" fill="currentColor">
+                                  <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#dash-circle" />
+                                </svg></button>
+                      </div>
                     </div>
                   </li>
                 </ul>
@@ -104,27 +111,25 @@
                   </li>
                 </ul>
 
-                <!-- Category (Collapsible) -->
+                <!-- Price Range (Collapsible) -->
                 <ul class="list-unstyled ps-0">
                   <li class="mb-1">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#category-collapse" aria-expanded="false">
-                      Categories
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#price-collapse" aria-expanded="false">
+                      Price
                     </button>
-                    <!-- Updated Badge with ID -->
-                    <span id="category-badge" class="badge rounded-pill bg-primary">
-                      0
-                    </span>
-
-                    <div class="collapse" id="category-collapse">
-                      <!-- New Action Buttons -->
-                      <div class="d-flex justify-content-between mb-2 small">
-                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btn-cat-select-all">Select All</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" id="btn-cat-deselect-all">Deselect All</button>
-                      </div>
-
-                      <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small" id="category-filters">
-                        <!-- Populated dynamically by JS -->
-                        <p class="text-muted small">Loading categories...</p>
+                    <div class="collapse" id="price-collapse">
+                      <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        <li class="p-2">
+                          <div class="row">
+                            <div class="col-3">
+                              <label for="range4" class="form-label">Range</label>
+                            </div>
+                            <div class="col-9">
+                              <input type="range" class="form-range" min="0" max="500" value="500" id="range4">
+                              <output for="range4" id="rangeValue" aria-hidden="true" class="font-monospace">0 - 500 €</output>
+                            </div>
+                          </div>
+                        </li>
                       </ul>
                     </div>
                   </li>
@@ -146,8 +151,8 @@
                             </div>
                             <div class="col-9">
                               <select class="form-select" id="sort-select">
+                                <option value="rating" selected>Rating</option>
                                 <option value="price">Price</option>
-                                <option value="rating">Rating</option>
                                 <option value="name">Name</option>
                                 <option value="stock">Stock</option>
                               </select>
@@ -160,12 +165,12 @@
                               <p>Order</p>
                             </div>
                             <div class="col-9">
-                              <button type="button" class="btn btn-sm btn-outline" id="sort-order-btn" data-order="asc">
+                              <button type="button" class="btn btn-sm btn-outline" id="sort-order-btn" data-order="desc">
                                 <svg class="bi" width="24" height="24" fill="currentColor">
-                                  <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#sort-up" />
+                                  <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#sort-down" />
                                 </svg>
-                                <span id="sort-order-label">Ascending</span>
                               </button>
+                              <span id="sort-order-label">Descending</span>
                             </div>
                           </div>
                         </li>

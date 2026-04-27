@@ -91,8 +91,6 @@ export function createStarsFromRating(rating) {
 
         // Optional half star
         if (roundTo(rating % 1, 1) > 0.2 && roundTo(rating % 1, 1) < 0.8) {
-            console.log(rating);
-            console.log(roundTo(rating % 1, 1));
             const star = createStar('star-half', 'text-warning');
             stars.push(star);
             rating++; // We need one less empty star now

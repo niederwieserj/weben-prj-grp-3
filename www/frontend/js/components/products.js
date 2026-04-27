@@ -7,19 +7,78 @@ let categoriesMap = {}; // category_id -> name lookup
 window.addEventListener('layout-ready', () => {
     loadCategories();
     loadProducts();
+    
+    // 1. Sync UI with URL, and add missing params to URL
+    syncUrlWithCurrentState();
+    
+    // 2. Initialize event listeners
     initFilters();
 });
 
-function updateCategoryBadge() {
-    const badge = document.getElementById('category-badge');
-    if (!badge) return;
+/**
+ * Reads URL parameters. If a parameter is missing, it takes the current 
+ * UI value and adds it to the URL. This ensures the URL always matches the state.
+ */
+function syncUrlWithCurrentState() {
+    const params = new URLSearchParams(window.location.search);
+    const currentPath = window.location.pathname;
+    let hasChanges = false;
 
-    const checkedCount = document.querySelectorAll('.category-filter:checked').length;
-    badge.textContent = checkedCount;
-    
-    // Optional: Hide badge if 0, or keep it showing 0
-    // if (checkedCount === 0) badge.style.display = 'none'; 
-    // else badge.style.display = 'inline-block';
+    // 1. Price Range
+    if (!params.has('price_max')) {
+        const rangeInput = document.getElementById('range4');
+        if (rangeInput) {
+            params.set('price_max', rangeInput.value);
+            hasChanges = true;
+        }
+    }
+
+    // 2. Min Rating
+    if (!params.has('min_rating')) {
+        const ratingSelect = document.getElementById('min-rating-select');
+        if (ratingSelect) {
+            params.set('min_rating', ratingSelect.value);
+            hasChanges = true;
+        }
+    }
+
+    // 3. Categories (Comma-separated)
+    if (!params.has('categories')) {
+        const checkedIds = Array.from(document.querySelectorAll('.category-filter:checked')).map(cb => cb.value);
+        if (checkedIds.length > 0) {
+            params.set('categories', checkedIds.join(','));
+            hasChanges = true;
+        }
+    }
+
+    // 4. Sort By
+    if (!params.has('sort_by')) {
+        const sortSelect = document.getElementById('sort-select');
+        if (sortSelect) {
+            params.set('sort_by', sortSelect.value);
+            hasChanges = true;
+        }
+    }
+
+    // 5. Sort Order
+    if (!params.has('sort_order')) {
+        const sortOrderBtn = document.getElementById('sort-order-btn');
+        if (sortOrderBtn) {
+            const order = sortOrderBtn.dataset.order || 'asc';
+            params.set('sort_order', order);
+            hasChanges = true;
+        }
+    }
+
+    // Update URL if we added missing parameters
+    if (hasChanges) {
+        const newUrl = `${currentPath}?${params.toString()}`;
+        // Replace state without reloading the page
+        history.replaceState(null, '', newUrl);
+    }
+
+    // Now apply the filters based on the (now complete) URL/UI state
+    applyFilters();
 }
 
 async function loadCategories() {
@@ -42,7 +101,8 @@ async function loadCategories() {
         input.type = 'checkbox';
         input.value = cat.category_id;
         input.id = 'cat-' + cat.category_id;
-        input.checked = true;
+        // Default checked if no URL param overrides it later
+        input.checked = true; 
 
         const label = document.createElement('label');
         label.className = 'form-check-label';
@@ -56,10 +116,10 @@ async function loadCategories() {
         input.addEventListener('change', () => {
             applyFilters();
             updateCategoryBadge();
+            updateUrlParams(); // Update URL on interaction
         });
     });
 
-    // Update badge AFTER all checkboxes are created
     updateCategoryBadge();
 
     // Setup Select All / Deselect All buttons
@@ -71,6 +131,7 @@ async function loadCategories() {
             document.querySelectorAll('.category-filter').forEach(cb => cb.checked = true);
             updateCategoryBadge();
             applyFilters();
+            updateUrlParams();
         });
     }
 
@@ -79,6 +140,7 @@ async function loadCategories() {
             document.querySelectorAll('.category-filter').forEach(cb => cb.checked = false);
             updateCategoryBadge();
             applyFilters();
+            updateUrlParams();
         });
     }
 }
@@ -139,17 +201,20 @@ async function loadProducts() {
         productGrid.appendChild(productToInsert);
     });
 
-        // Set max price based on most expensive product
+    // Set max price based on most expensive product
     const prices = allProducts.map(row => parseFloat(row['product']['price']));
     const maxPrice = Math.max(...prices, 0);
     const rangeInput = document.getElementById('range4');
     const rangeOutput = document.getElementById('rangeValue');
     if (rangeInput) {
         rangeInput.max = maxPrice;
-        rangeInput.value = maxPrice;
+        // If URL didn't set it, default to max
+        if (!rangeInput.value) rangeInput.value = maxPrice;
     }
     if (rangeOutput) {
-        rangeOutput.textContent = '0 - ' + maxPrice + ' €';
+        if (!rangeOutput.textContent) {
+             rangeOutput.textContent = '0 - ' + maxPrice + ' €';
+        }
     }
 
     updateResultCount();
@@ -160,26 +225,27 @@ function initFilters() {
     const rangeOutput = document.getElementById('rangeValue');
 
     if (rangeInput && rangeOutput) {
-        rangeOutput.textContent = '0 - ' + rangeInput.value + ' €';
-
         rangeInput.addEventListener('input', function () {
             rangeOutput.textContent = '0 - ' + this.value + ' €';
             applyFilters();
+            updateUrlParams(); // Update URL on interaction
         });
     }
 
-    // Sort criteria dropdown — target #sort-select specifically
+    // Sort criteria dropdown
     const sortSelect = document.getElementById('sort-select');
     if (sortSelect) {
         sortSelect.addEventListener('change', function () {
             sortProducts(this.value);
+            updateUrlParams(); // Update URL on interaction
         });
     }
 
-    const ratingSelect = document.querySelector('#min-rating-select');
+    const ratingSelect = document.getElementById('min-rating-select');
     if (ratingSelect) {
         ratingSelect.addEventListener('change', function () {
             applyFilters();
+            updateUrlParams(); // Update URL on interaction
         });
     }
 
@@ -193,19 +259,59 @@ function initFilters() {
 
             // Swap icon
             const iconUse = this.querySelector('svg use');
-            iconUse.setAttribute('xlink:href',
-                '/frontend/bootstrap-icons/bootstrap-icons.svg#' + (newOrder === 'asc' ? 'sort-up' : 'sort-down')
-            );
+            if(iconUse) {
+                iconUse.setAttribute('xlink:href',
+                    '/frontend/bootstrap-icons/bootstrap-icons.svg#' + (newOrder === 'asc' ? 'sort-up' : 'sort-down')
+                );
+            }
 
             // Swap label
-            document.getElementById('sort-order-label').textContent =
-                newOrder === 'asc' ? 'Ascending' : 'Descending';
+            const label = document.getElementById('sort-order-label');
+            if(label) {
+                label.textContent = newOrder === 'asc' ? 'Ascending' : 'Descending';
+            }
 
             // Re-sort with current criteria and new direction
             const currentCriteria = document.getElementById('sort-select')?.value || 'price';
             sortProducts(currentCriteria);
+            updateUrlParams(); // Update URL on interaction
         });
     }
+}
+
+/**
+ * Helper to update URL parameters based on current UI state without reloading.
+ * Called whenever a filter changes.
+ */
+function updateUrlParams() {
+    const params = new URLSearchParams(window.location.search);
+    
+    // Price
+    const rangeInput = document.getElementById('range4');
+    if (rangeInput) params.set('price_max', rangeInput.value);
+
+    // Rating
+    const ratingSelect = document.getElementById('min-rating-select');
+    if (ratingSelect) params.set('min_rating', ratingSelect.value);
+
+    // Categories
+    const checkedIds = Array.from(document.querySelectorAll('.category-filter:checked')).map(cb => cb.value);
+    if (checkedIds.length > 0) {
+        params.set('categories', checkedIds.join(','));
+    } else {
+        params.delete('categories');
+    }
+
+    // Sort By
+    const sortSelect = document.getElementById('sort-select');
+    if (sortSelect) params.set('sort_by', sortSelect.value);
+
+    // Sort Order
+    const sortOrderBtn = document.getElementById('sort-order-btn');
+    if (sortOrderBtn) params.set('sort_order', sortOrderBtn.dataset.order || 'asc');
+
+    const newUrl = `${window.location.pathname}?${params.toString()}`;
+    history.replaceState(null, '', newUrl);
 }
 
 function applyFilters() {
@@ -225,7 +331,7 @@ function applyFilters() {
 
         const matchesPrice = price <= maxPrice;
         const matchesRating = rating >= minRating;
-        // FIX: Show all if no categories selected, otherwise check if category matches
+        // Show none if no categories selected, otherwise check if category matches
         const matchesCategory = checkedCategories.has(category);
 
         if (matchesPrice && matchesRating && matchesCategory) {
@@ -235,6 +341,7 @@ function applyFilters() {
         }
     });
 
+    // Re-sort after filtering
     const currentCriteria = document.getElementById('sort-select')?.value || 'price';
     sortProducts(currentCriteria);
 
@@ -255,13 +362,13 @@ function sortProducts(criteria) {
         if (criteria === 'price') {
             return multiplier * (parseFloat($a.attr('data-price')) - parseFloat($b.attr('data-price')));
         } else if (criteria === 'rating') {
-            return multiplier * (parseFloat($b.attr('data-rating')) - parseFloat($a.attr('data-rating')));
+            return multiplier * (parseFloat($a.attr('data-rating')) - parseFloat($b.attr('data-rating')));
         } else if (criteria === 'name') {
             const nameA = ($a.attr('data-name') || '').toLowerCase();
             const nameB = ($b.attr('data-name') || '').toLowerCase();
             return multiplier * nameA.localeCompare(nameB);
         } else if (criteria === 'stock') {
-            return multiplier * (parseInt($b.attr('data-stock')) - parseInt($a.attr('data-stock')));
+            return multiplier * (parseInt($a.attr('data-stock')) - parseInt($b.attr('data-stock')));
         }
         return 0;
     });
@@ -286,4 +393,11 @@ function updateResultCount() {
     }
 
     counter.textContent = `${visibleCount} of ${totalCount} products shown`;
+}
+
+function updateCategoryBadge() {
+    const badge = document.getElementById('category-badge');
+    if (!badge) return;
+    const checkedCount = document.querySelectorAll('.category-filter:checked').length;
+    badge.textContent = checkedCount;
 }
