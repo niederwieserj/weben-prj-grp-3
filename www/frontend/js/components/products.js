@@ -2,83 +2,129 @@ import { apiGet } from '../modules/api.js';
 import { createStarsFromRating } from '../modules/utils.js';
 
 let allProducts = [];
-let categoriesMap = {}; // category_id -> name lookup
+let categoriesMap = {};
 
-window.addEventListener('layout-ready', () => {
-    loadCategories();
-    loadProducts();
-    
-    // 1. Sync UI with URL, and add missing params to URL
-    syncUrlWithCurrentState();
-    
-    // 2. Initialize event listeners
+// Store URL params once at module level so they survive across async calls
+let urlParams = new URLSearchParams(window.location.search);
+
+function applyUrlParamsToUI() {
+    // 1. Price Range (exists in HTML already)
+    if (urlParams.has('price_max')) {
+        const rangeInput = document.getElementById('range4');
+        const rangeOutput = document.getElementById('rangeValue');
+        if (rangeInput) {
+            rangeInput.value = urlParams.get('price_max');
+            if (rangeOutput) {
+                rangeOutput.textContent = '0 - ' + urlParams.get('price_max') + ' €';
+            }
+        }
+    }
+
+    // 2. Min Rating (exists in HTML already)
+    if (urlParams.has('min_rating')) {
+        const ratingSelect = document.getElementById('min-rating-select');
+        if (ratingSelect) {
+            ratingSelect.value = urlParams.get('min_rating');
+        }
+    }
+
+    // 3. Categories — DO NOT apply here, checkboxes don't exist yet.
+    //    Will be applied in loadCategories() after DOM elements are created.
+
+    // 4. Sort By (exists in HTML already)
+    if (urlParams.has('sort_by')) {
+        const sortSelect = document.getElementById('sort-select');
+        if (sortSelect) {
+            sortSelect.value = urlParams.get('sort_by');
+        }
+    }
+
+    // 5. Sort Order (exists in HTML already)
+    if (urlParams.has('sort_order')) {
+        const sortOrderBtn = document.getElementById('sort-order-btn');
+        if (sortOrderBtn) {
+            sortOrderBtn.dataset.order = urlParams.get('sort_order');
+
+            const iconUse = sortOrderBtn.querySelector('svg use');
+            if (iconUse) {
+                iconUse.setAttribute('xlink:href',
+                    '/frontend/bootstrap-icons/bootstrap-icons.svg#' +
+                    (urlParams.get('sort_order') === 'asc' ? 'sort-up' : 'sort-down')
+                );
+            }
+
+            const label = document.getElementById('sort-order-label');
+            if (label) {
+                label.textContent = urlParams.get('sort_order') === 'asc' ? 'Ascending' : 'Descending';
+            }
+        }
+    }
+}
+
+/**
+ * Apply URL category params to checkboxes. Called AFTER loadCategories()
+ * has populated the DOM with .category-filter elements.
+ */
+function applyUrlCategoryParams() {
+    if (urlParams.has('categories')) {
+        const categoryIds = urlParams.get('categories').split(',');
+        document.querySelectorAll('.category-filter').forEach(cb => {
+            cb.checked = categoryIds.includes(cb.value);
+        });
+    }
+}
+
+window.addEventListener('layout-ready', async () => {
+    // 1. Apply URL params for static HTML elements (price, rating, sort)
+    applyUrlParamsToUI();
+
+    // 2. Load categories FIRST (await so checkboxes exist)
+    await loadCategories();
+
+    // 3. NOW apply category URL params — checkboxes exist
+    applyUrlCategoryParams();
+    updateCategoryBadge();
+
+    // 4. Load products
+    await loadProducts();
+
+    // 5. Apply initial filter/sort based on all URL params
+    applyFilters();
+
+    // 6. Initialize event listeners
     initFilters();
 });
 
-/**
- * Reads URL parameters. If a parameter is missing, it takes the current 
- * UI value and adds it to the URL. This ensures the URL always matches the state.
- */
-function syncUrlWithCurrentState() {
-    const params = new URLSearchParams(window.location.search);
-    const currentPath = window.location.pathname;
-    let hasChanges = false;
+// =========================================================================
+// MODIFIED: Initialize with URL params BEFORE loading data
+// =========================================================================
+window.addEventListener('layout-ready', () => {
+    // 1. First, apply URL params to UI (so filters show correct values)
+    applyUrlParamsToUI();
+    
+    // 2. Load data
+    loadCategories();
+    loadProducts();
+    
+    // 3. After data loaded, apply initial filter/sort
+    setTimeout(() => {
+        applyFilters();
+        updateCategoryBadge();
+    }, 100); // Small delay to ensure DOM is ready
+    
+    // 4. Initialize event listeners
+    initFilters();
+});
 
-    // 1. Price Range
-    if (!params.has('price_max')) {
-        const rangeInput = document.getElementById('range4');
-        if (rangeInput) {
-            params.set('price_max', rangeInput.value);
-            hasChanges = true;
-        }
-    }
+// =========================================================================
+// EXISTING FUNCTIONS (keep as-is, but ensure they call updateUrlParams)
+// =========================================================================
 
-    // 2. Min Rating
-    if (!params.has('min_rating')) {
-        const ratingSelect = document.getElementById('min-rating-select');
-        if (ratingSelect) {
-            params.set('min_rating', ratingSelect.value);
-            hasChanges = true;
-        }
-    }
-
-    // 3. Categories (Comma-separated)
-    if (!params.has('categories')) {
-        const checkedIds = Array.from(document.querySelectorAll('.category-filter:checked')).map(cb => cb.value);
-        if (checkedIds.length > 0) {
-            params.set('categories', checkedIds.join(','));
-            hasChanges = true;
-        }
-    }
-
-    // 4. Sort By
-    if (!params.has('sort_by')) {
-        const sortSelect = document.getElementById('sort-select');
-        if (sortSelect) {
-            params.set('sort_by', sortSelect.value);
-            hasChanges = true;
-        }
-    }
-
-    // 5. Sort Order
-    if (!params.has('sort_order')) {
-        const sortOrderBtn = document.getElementById('sort-order-btn');
-        if (sortOrderBtn) {
-            const order = sortOrderBtn.dataset.order || 'asc';
-            params.set('sort_order', order);
-            hasChanges = true;
-        }
-    }
-
-    // Update URL if we added missing parameters
-    if (hasChanges) {
-        const newUrl = `${currentPath}?${params.toString()}`;
-        // Replace state without reloading the page
-        history.replaceState(null, '', newUrl);
-    }
-
-    // Now apply the filters based on the (now complete) URL/UI state
-    applyFilters();
+function updateCategoryBadge() {
+    const badge = document.getElementById('category-badge');
+    if (!badge) return;
+    const checkedCount = document.querySelectorAll('.category-filter:checked').length;
+    badge.textContent = checkedCount;
 }
 
 async function loadCategories() {
@@ -101,8 +147,7 @@ async function loadCategories() {
         input.type = 'checkbox';
         input.value = cat.category_id;
         input.id = 'cat-' + cat.category_id;
-        // Default checked if no URL param overrides it later
-        input.checked = true; 
+        input.checked = true; // Default, will be overridden by URL params
 
         const label = document.createElement('label');
         label.className = 'form-check-label';
@@ -116,13 +161,12 @@ async function loadCategories() {
         input.addEventListener('change', () => {
             applyFilters();
             updateCategoryBadge();
-            updateUrlParams(); // Update URL on interaction
+            updateUrlParams();
         });
     });
 
     updateCategoryBadge();
 
-    // Setup Select All / Deselect All buttons
     const btnSelectAll = document.getElementById('btn-cat-select-all');
     const btnDeselectAll = document.getElementById('btn-cat-deselect-all');
 
@@ -201,19 +245,17 @@ async function loadProducts() {
         productGrid.appendChild(productToInsert);
     });
 
-    // Set max price based on most expensive product
     const prices = allProducts.map(row => parseFloat(row['product']['price']));
     const maxPrice = Math.max(...prices, 0);
     const rangeInput = document.getElementById('range4');
     const rangeOutput = document.getElementById('rangeValue');
     if (rangeInput) {
         rangeInput.max = maxPrice;
-        // If URL didn't set it, default to max
         if (!rangeInput.value) rangeInput.value = maxPrice;
     }
     if (rangeOutput) {
         if (!rangeOutput.textContent) {
-             rangeOutput.textContent = '0 - ' + maxPrice + ' €';
+            rangeOutput.textContent = '0 - ' + maxPrice + ' €';
         }
     }
 
@@ -228,16 +270,15 @@ function initFilters() {
         rangeInput.addEventListener('input', function () {
             rangeOutput.textContent = '0 - ' + this.value + ' €';
             applyFilters();
-            updateUrlParams(); // Update URL on interaction
+            updateUrlParams();
         });
     }
 
-    // Sort criteria dropdown
     const sortSelect = document.getElementById('sort-select');
     if (sortSelect) {
         sortSelect.addEventListener('change', function () {
             sortProducts(this.value);
-            updateUrlParams(); // Update URL on interaction
+            updateUrlParams();
         });
     }
 
@@ -245,11 +286,10 @@ function initFilters() {
     if (ratingSelect) {
         ratingSelect.addEventListener('change', function () {
             applyFilters();
-            updateUrlParams(); // Update URL on interaction
+            updateUrlParams();
         });
     }
 
-    // Sort order toggle button
     const sortOrderBtn = document.getElementById('sort-order-btn');
     if (sortOrderBtn) {
         sortOrderBtn.addEventListener('click', function () {
@@ -257,44 +297,35 @@ function initFilters() {
             const newOrder = isAsc ? 'desc' : 'asc';
             this.dataset.order = newOrder;
 
-            // Swap icon
             const iconUse = this.querySelector('svg use');
-            if(iconUse) {
+            if (iconUse) {
                 iconUse.setAttribute('xlink:href',
-                    '/frontend/bootstrap-icons/bootstrap-icons.svg#' + (newOrder === 'asc' ? 'sort-up' : 'sort-down')
+                    '/frontend/bootstrap-icons/bootstrap-icons.svg#' + 
+                    (newOrder === 'asc' ? 'sort-up' : 'sort-down')
                 );
             }
 
-            // Swap label
             const label = document.getElementById('sort-order-label');
-            if(label) {
+            if (label) {
                 label.textContent = newOrder === 'asc' ? 'Ascending' : 'Descending';
             }
 
-            // Re-sort with current criteria and new direction
             const currentCriteria = document.getElementById('sort-select')?.value || 'price';
             sortProducts(currentCriteria);
-            updateUrlParams(); // Update URL on interaction
+            updateUrlParams();
         });
     }
 }
 
-/**
- * Helper to update URL parameters based on current UI state without reloading.
- * Called whenever a filter changes.
- */
 function updateUrlParams() {
     const params = new URLSearchParams(window.location.search);
     
-    // Price
     const rangeInput = document.getElementById('range4');
     if (rangeInput) params.set('price_max', rangeInput.value);
 
-    // Rating
     const ratingSelect = document.getElementById('min-rating-select');
     if (ratingSelect) params.set('min_rating', ratingSelect.value);
 
-    // Categories
     const checkedIds = Array.from(document.querySelectorAll('.category-filter:checked')).map(cb => cb.value);
     if (checkedIds.length > 0) {
         params.set('categories', checkedIds.join(','));
@@ -302,11 +333,9 @@ function updateUrlParams() {
         params.delete('categories');
     }
 
-    // Sort By
     const sortSelect = document.getElementById('sort-select');
     if (sortSelect) params.set('sort_by', sortSelect.value);
 
-    // Sort Order
     const sortOrderBtn = document.getElementById('sort-order-btn');
     if (sortOrderBtn) params.set('sort_order', sortOrderBtn.dataset.order || 'asc');
 
@@ -331,7 +360,6 @@ function applyFilters() {
 
         const matchesPrice = price <= maxPrice;
         const matchesRating = rating >= minRating;
-        // Show none if no categories selected, otherwise check if category matches
         const matchesCategory = checkedCategories.has(category);
 
         if (matchesPrice && matchesRating && matchesCategory) {
@@ -341,7 +369,6 @@ function applyFilters() {
         }
     });
 
-    // Re-sort after filtering
     const currentCriteria = document.getElementById('sort-select')?.value || 'price';
     sortProducts(currentCriteria);
 
@@ -362,13 +389,13 @@ function sortProducts(criteria) {
         if (criteria === 'price') {
             return multiplier * (parseFloat($a.attr('data-price')) - parseFloat($b.attr('data-price')));
         } else if (criteria === 'rating') {
-            return multiplier * (parseFloat($a.attr('data-rating')) - parseFloat($b.attr('data-rating')));
+            return multiplier * (parseFloat($b.attr('data-rating')) - parseFloat($a.attr('data-rating')));
         } else if (criteria === 'name') {
             const nameA = ($a.attr('data-name') || '').toLowerCase();
             const nameB = ($b.attr('data-name') || '').toLowerCase();
             return multiplier * nameA.localeCompare(nameB);
         } else if (criteria === 'stock') {
-            return multiplier * (parseInt($a.attr('data-stock')) - parseInt($b.attr('data-stock')));
+            return multiplier * (parseInt($b.attr('data-stock')) - parseInt($a.attr('data-stock')));
         }
         return 0;
     });
@@ -393,11 +420,4 @@ function updateResultCount() {
     }
 
     counter.textContent = `${visibleCount} of ${totalCount} products shown`;
-}
-
-function updateCategoryBadge() {
-    const badge = document.getElementById('category-badge');
-    if (!badge) return;
-    const checkedCount = document.querySelectorAll('.category-filter:checked').length;
-    badge.textContent = checkedCount;
 }
