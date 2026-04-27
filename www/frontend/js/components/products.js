@@ -96,27 +96,6 @@ window.addEventListener('layout-ready', async () => {
 });
 
 // =========================================================================
-// MODIFIED: Initialize with URL params BEFORE loading data
-// =========================================================================
-window.addEventListener('layout-ready', () => {
-    // 1. First, apply URL params to UI (so filters show correct values)
-    applyUrlParamsToUI();
-    
-    // 2. Load data
-    loadCategories();
-    loadProducts();
-    
-    // 3. After data loaded, apply initial filter/sort
-    setTimeout(() => {
-        applyFilters();
-        updateCategoryBadge();
-    }, 100); // Small delay to ensure DOM is ready
-    
-    // 4. Initialize event listeners
-    initFilters();
-});
-
-// =========================================================================
 // EXISTING FUNCTIONS (keep as-is, but ensure they call updateUrlParams)
 // =========================================================================
 
@@ -290,13 +269,17 @@ function initFilters() {
         });
     }
 
-    const sortOrderBtn = document.getElementById('sort-order-btn');
+        const sortOrderBtn = document.getElementById('sort-order-btn');
     if (sortOrderBtn) {
         sortOrderBtn.addEventListener('click', function () {
-            const isAsc = this.dataset.order === 'asc';
-            const newOrder = isAsc ? 'desc' : 'asc';
+            // 1. Determine the NEW order immediately
+            const currentOrder = this.dataset.order === 'asc' ? 'asc' : 'desc';
+            const newOrder = currentOrder === 'asc' ? 'desc' : 'asc';
+            
+            // 2. Update the dataset FIRST
             this.dataset.order = newOrder;
 
+            // 3. Update UI (Icon and Label) immediately
             const iconUse = this.querySelector('svg use');
             if (iconUse) {
                 iconUse.setAttribute('xlink:href',
@@ -304,15 +287,21 @@ function initFilters() {
                     (newOrder === 'asc' ? 'sort-up' : 'sort-down')
                 );
             }
-
+            
             const label = document.getElementById('sort-order-label');
             if (label) {
                 label.textContent = newOrder === 'asc' ? 'Ascending' : 'Descending';
             }
 
+            // 4. Update URL immediately so subsequent reads get the new value
+            updateUrlParams();
+
+            // 5. Now sort
             const currentCriteria = document.getElementById('sort-select')?.value || 'price';
             sortProducts(currentCriteria);
-            updateUrlParams();
+            
+            // 6. Ensure filters are applied (optional, but keeps state consistent)
+            // applyFilters(); // Only if you need to re-run the full filter logic
         });
     }
 }
@@ -389,7 +378,7 @@ function sortProducts(criteria) {
         if (criteria === 'price') {
             return multiplier * (parseFloat($a.attr('data-price')) - parseFloat($b.attr('data-price')));
         } else if (criteria === 'rating') {
-            return multiplier * (parseFloat($b.attr('data-rating')) - parseFloat($a.attr('data-rating')));
+            return multiplier * (parseFloat($a.attr('data-rating')) - parseFloat($b.attr('data-rating')));
         } else if (criteria === 'name') {
             const nameA = ($a.attr('data-name') || '').toLowerCase();
             const nameB = ($b.attr('data-name') || '').toLowerCase();
