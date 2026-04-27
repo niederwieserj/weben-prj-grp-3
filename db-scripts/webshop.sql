@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: database:3306
--- Generation Time: Apr 24, 2026 at 10:04 PM
+-- Generation Time: Apr 27, 2026 at 07:00 AM
 -- Server version: 10.6.25-MariaDB-ubu2204
 -- PHP Version: 8.3.26
 
@@ -43,7 +43,11 @@ CREATE TABLE `addresses` (
 
 INSERT INTO `addresses` (`address_id`, `fk_user_id`, `postal_code`, `address`, `city`, `country`, `created_at`) VALUES
 (1, 3, '1010', 'john doe st. 1', 'Vienna', 'Austria', '2026-04-13 19:12:26'),
-(2, 4, '1010', 'john doe st. 1', 'Vienna', 'Austria', '2026-04-13 19:14:42');
+(2, 4, '1010', 'john doe st. 1', 'Vienna', 'Austria', '2026-04-13 19:14:42'),
+(3, 12, '', 'john doe st. 1', 'Vienna', 'Austria', '2026-04-25 09:58:44'),
+(4, 13, '', 'john doe st. 1', 'Vienna', 'Austria', '2026-04-25 10:08:38'),
+(5, 14, '1010', 'john doe st. 1', 'Vienna', 'Austria', '2026-04-25 10:09:21'),
+(6, 16, '1111', 'Jakob Str. 1', 'Vienna', 'Austria', '2026-04-25 10:33:01');
 
 -- --------------------------------------------------------
 
@@ -68,6 +72,20 @@ CREATE TABLE `categories` (
   `category_id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `categories`
+--
+
+INSERT INTO `categories` (`category_id`, `name`) VALUES
+(1, 'Graphics cards'),
+(2, 'Cases'),
+(3, 'Coolers'),
+(4, 'RAM'),
+(5, 'Power Supplies'),
+(6, 'Fans'),
+(7, 'Motherboards'),
+(8, 'Storage');
 
 -- --------------------------------------------------------
 
@@ -115,6 +133,26 @@ CREATE TABLE `products` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `products`
+--
+
+INSERT INTO `products` (`product_id`, `name`, `description`, `avg_rating`, `total_ratings_count`, `price`, `stock_quantity`, `fk_category_id`, `created_at`) VALUES
+(1, 'RTX-5080', 'Wooow such a nice graphics card!', 4.8, 10, 499.00, 20, 1, '2026-04-25 11:20:10'),
+(2, 'RTX-5080', 'Wooow such a nice graphics card!', 2.2, 10, 135.00, 20, 1, '2026-04-25 11:52:44'),
+(3, 'RTX-5080', 'Wooow such a nice graphics card!', 2.3, 10, 280.00, 20, 1, '2026-04-25 11:53:00'),
+(4, 'RTX-5080', 'Wooow such a nice graphics card!', 2.7, 10, 499.00, 20, 1, '2026-04-25 11:53:00'),
+(5, 'RTX-5080', 'Wooow such a nice graphics card!', 2.8, 10, 499.00, 20, 1, '2026-04-25 11:53:00'),
+(6, 'RTX-5080', 'Wooow such a nice graphics card!', 4.2, 10, 499.00, 20, 1, '2026-04-25 11:53:00'),
+(7, 'RTX-5080', 'Wooow such a nice graphics card!', 4.8, 10, 499.00, 20, 1, '2026-04-25 11:53:00'),
+(8, 'RTX-5080', 'Wooow such a nice graphics card!', 4.8, 10, 499.00, 20, 1, '2026-04-25 11:53:00'),
+(9, 'RTX-5080', 'Wooow such a nice graphics card!', 4.8, 10, 499.00, 20, 1, '2026-04-25 11:53:00'),
+(10, 'RTX-5080', 'Wooow such a nice graphics card!', 4.8, 10, 499.00, 20, 1, '2026-04-25 11:53:00'),
+(11, 'RTX-5080', 'Wooow such a nice graphics card!', 4.8, 10, 499.00, 20, 1, '2026-04-25 11:53:00'),
+(12, 'RTX-5080', 'Wooow such a nice graphics card!', 3.6, 10, 499.00, 20, 1, '2026-04-25 11:53:00'),
+(13, 'RTX-5080', 'Wooow such a nice graphics card!', 3.4, 10, 499.00, 20, 1, '2026-04-25 11:53:00'),
+(14, 'RTX-5080', 'Wooow such a nice graphics card!', 0.0, 10, 499.00, 20, 1, '2026-04-26 11:30:59');
+
 -- --------------------------------------------------------
 
 --
@@ -131,6 +169,14 @@ CREATE TABLE `product_images` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `product_images`
+--
+
+INSERT INTO `product_images` (`image_id`, `fk_product_id`, `image_url`, `alt_text`, `sort_order`, `is_primary`, `created_at`) VALUES
+(1, 1, '/backend/product-pictures/RTX-5080-16g-vanguard-msi.png', 'RTX-5080 graphics card', 0, 1, '2026-04-26 10:04:02'),
+(2, 1, '/backend/product-pictures/RTX-5080-16g-vanguard-msi.png', 'RTX-5080 graphics card', 0, 0, '2026-04-26 10:38:01');
+
 -- --------------------------------------------------------
 
 --
@@ -145,6 +191,15 @@ CREATE TABLE `product_ratings` (
   `comment` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `product_ratings`
+--
+
+INSERT INTO `product_ratings` (`rating_id`, `product_id`, `user_id`, `score`, `comment`, `created_at`) VALUES
+(1, 1, 1, 4, 'Damn so nice', '2026-04-26 09:57:00'),
+(2, 2, 1, 5, 'Damn so nice', '2026-04-26 09:57:43'),
+(3, 3, 1, 3, 'Smelled a bit fishy. Sus', '2026-04-26 09:58:20');
 
 -- --------------------------------------------------------
 
@@ -174,7 +229,16 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`user_id`, `username`, `password_hash`, `email`, `first_name`, `last_name`, `is_admin`, `is_active`, `created_at`, `fk_title_id`, `reset_token`, `reset_token_expires`) VALUES
 (1, 'testuser', 'ae5deb822e0d71992900471a7199d0d95b8e7c9d05c40a8245a281fd2c1d6684', 'test@test.com', 'Max', 'Mustermännchen', 0, 1, '2026-04-11 10:26:29', NULL, '36ceae5ebf8509bb481d1486689ddbc736b8abb38e425fe5072f9130d5d32071', '2026-04-21 14:30:44'),
 (3, 'johndoe', '$2y$12$iyDZecLBc.TZ1sug74F7BOHIzifZffgLreg3iPcAFic5ncx4kYzZW', 'john@doe.com', 'John', 'Doe', 0, 1, '2026-04-13 19:12:26', NULL, NULL, NULL),
-(4, 'john2doe', 'c2713b62c903791bdefc5a6a99df04d4330de491bbc7a0ca6a5007337e4a6028', 'john2@doe.com', 'John', 'Doe', 0, 1, '2026-04-13 19:14:42', NULL, NULL, NULL);
+(4, 'john2doe', 'c2713b62c903791bdefc5a6a99df04d4330de491bbc7a0ca6a5007337e4a6028', 'john2@doe.com', 'John', 'Doe', 0, 1, '2026-04-13 19:14:42', NULL, NULL, NULL),
+(5, 'johndoe4', '$2y$12$Ji6V1eLWNtcUIwsILvlZeeMmUuzVHR3CGT7n36khZKA.lodfFXg8S', 'john4@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 09:10:08', 1, NULL, NULL),
+(6, 'johndoe5', '$2y$12$TRILSWa44VJc94iGXoTqIO3/v0pfRr088Qh6M8x8L0ZAy4P6cxjY2', 'john5@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 09:14:33', 1, NULL, NULL),
+(7, 'johndoe6', '$2y$12$z5q5ES3Xy8MB/QQW4mXD1.6DHdEm9J1hwrU4gsDJrznjOXyM8FY4u', 'john6@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 09:15:30', 1, NULL, NULL),
+(8, 'johndoe7', '$2y$12$th457wWp1mwZXZz50DMHk.d5kcYTbSYJKnWNewClxdwKcs4qx.n5i', 'john7@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 09:16:02', 1, NULL, NULL),
+(9, 'johndoe8', '$2y$12$yMwqUwo5aMfEQ6frqfYMmuFb3piZdmvUkC69SmH/CUSxdz4WAthVO', 'john8@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 09:30:01', 1, NULL, NULL),
+(12, 'johndoe11', '$2y$12$2aL5.HIzd2hFLWTyAuciH.wE68bJaTioejb4.BYFP5vea8qTDdDkC', 'john11@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 09:58:44', 1, NULL, NULL),
+(13, 'johndoe12', '$2y$12$wJvYGgdF0kZKpGNIQLBTDeuy2bTuJ38kxvNkrZDkW4MiMUvOX5hrC', 'john12@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 10:08:38', 1, NULL, NULL),
+(14, 'johndoe13', '$2y$12$gc6p4uqQap2vFPi56QkzzuX.bEa3Z.u4IrjdJ24S6wveTqxYKBUuO', 'john13@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 10:09:21', 1, NULL, NULL),
+(16, 'jakob', '$2y$12$KnhPc/E7DP2cus7wgFr8meSfgSH4TLh9Ddvlh0YL1dEFvRZwTcoa6', 'email@test.com', 'Jakob', 'Test', 0, 1, '2026-04-25 10:33:01', 4, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -302,7 +366,7 @@ ALTER TABLE `wishlist`
 -- AUTO_INCREMENT for table `addresses`
 --
 ALTER TABLE `addresses`
-  MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `cartItems`
@@ -314,7 +378,7 @@ ALTER TABLE `cartItems`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `orderItems`
@@ -332,25 +396,25 @@ ALTER TABLE `orders`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `product_images`
 --
 ALTER TABLE `product_images`
-  MODIFY `image_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `image_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `product_ratings`
 --
 ALTER TABLE `product_ratings`
-  MODIFY `rating_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `rating_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `user_titles`
