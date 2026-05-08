@@ -4,8 +4,8 @@ $(document).ready(function () {
     // bc of event handling issue with navbar-placeholder and searchbar not working
     // when specifically requesting for searchbar id on doc load
     $(document).on('keyup', '#search', function () { // check if potential keyup event comes from #search->continue
-        var query = $(this).val();
-        var $resultList = $('#result');
+        let query = $(this).val();
+        let $resultList = $('#result');
 
         
         //console.log("Searching for: " + query); zwecks debugging
@@ -20,8 +20,8 @@ $(document).ready(function () {
 
                     if (response.success && response.data.length > 0) {
                         response.data.forEach(function (product) {
-                            var li = $('<li>').addClass('list-group-item');
-                            var link = $('<a>')
+                            let li = $('<li>').addClass('dropdown-item list-group-item');
+                            let link = $('<a>')
                                 .attr('href', '/frontend/sites/product.html?id=' + product.product_id)
                                 .text(product.name)
                                 .addClass('text-decoration-none');
@@ -41,4 +41,7 @@ $(document).ready(function () {
             $resultList.empty().hide();
         }
     });
+
+   
 });
+

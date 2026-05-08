@@ -17,10 +17,14 @@
             </ul>
             <!-- searchbar -->
             <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" method="post">
-                <div class="form-group ajax-search">
-                    <input type="search" class="form-control" id="search" placeholder="Search..." name="search"
-                        aria-label="Search"/>
-                        <ul id="result"></ul>
+                <div class="form-group ajax-search" id="ajax-search">
+                    <div class="dropdown">
+                        <input type="search" class="form-control dropdown-toggle" id="search" placeholder="Search..."
+                            name="search" aria-label="Search" data-bs-toggle="dropdown" data-bs-auto-close="true"
+                            aria-expanded="false" />
+
+                        <ul class="dropdown-menu" id="result"></ul>
+                    </div>
                 </div>
             </form>
             <div class="dropdown text-end" id="nav-drop-logged-in" style="display: none;">
