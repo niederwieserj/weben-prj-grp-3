@@ -6,7 +6,8 @@
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-3 justify-content-center md-0">
                 <li class="justify-content-left">
                     <a class="navbar-brand px-2 " href="../sites/home.html" id="logo">
-                        <img src="./../img/coreGear-logo-copy.png" alt="Logo" width="48" height="48" class="d-inline-block align-text-center">
+                        <img src="./../img/coreGear-logo-copy.png" alt="Logo" width="48" height="48"
+                            class="d-inline-block align-text-center">
                         CoreGear
                     </a>
                 </li>
@@ -14,11 +15,17 @@
                     <a href="../sites/products.html" class="nav-link px-2 text-white">Products</a>
                 </li>
             </ul>
-            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-                <input type="search" class="form-control" placeholder="Search..." aria-label="Search" />
+            <!-- searchbar -->
+            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" method="post">
+                <div class="form-group ajax-search">
+                    <input type="search" class="form-control" id="search" placeholder="Search..." name="search"
+                        aria-label="Search"/>
+                        <ul id="result"></ul>
+                </div>
             </form>
             <div class="dropdown text-end" id="nav-drop-logged-in" style="display: none;">
-                <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
+                    data-bs-toggle="dropdown" aria-expanded="false">
                     <svg class="bi" width="32" height="32" fill="currentColor">
                         <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#person-circle" />
                     </svg>
@@ -34,7 +41,8 @@
                 </ul>
             </div>
             <div class="dropdown text-end" id="nav-drop-logged-out">
-                <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
+                    data-bs-toggle="dropdown" aria-expanded="false">
                     <svg class="bi" width="32" height="32" fill="currentColor">
                         <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#person-plus" />
                     </svg>

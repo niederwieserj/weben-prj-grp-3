@@ -325,13 +325,11 @@ class DbService
         ");
         $stmt->execute([$token]);
         $result = $stmt->fetch();
-        // Note: This query only selects user_id. 
-        // To return a full User object, we need the full row. 
-        // Ideally, change query to SELECT *, but for now we'll handle the partial data.
+        
         if (!$result)
             return null;
 
-        // Since we only have user_id, we fetch the full user to create the object
+        // fetch full user to create object
         return $this->getUserById((int) $result['user_id']);
     }
 
@@ -356,4 +354,18 @@ class DbService
     {
         $this->pdo->rollBack();
     }
+
+    // searchbar live product search query
+    public function searchProducts(string $search): array
+    {
+        $stmt = $this->pdo->prepare("SELECT name 
+                                    FROM products 
+                                    WHERE name 
+                                    LIKE ?");
+        $stmt->execute(["%$search%"]);
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+  
+
 }
