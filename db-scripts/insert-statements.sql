@@ -1,6 +1,6 @@
-INSERT INTO `products`(`name`, `description`, `avg_rating`, `total_ratings_count`, `price`, `stock_quantity`, `fk_category_id`) VALUES ('RTX-5080','Wooow such a nice graphics card!','4.8','10','499','20','1')
+INSERT INTO `products`(`name`, `description`, `avg_rating`, `total_ratings_count`, `price`, `stock_quantity`, `fk_category_id`) VALUES ('RTX-5080','Wooow such a nice graphics card!','4.8','10','499','20','1');
 
-INSERT INTO `categories`(`category_id`, `name`) VALUES ('1','Graphics cards')
+INSERT INTO `categories`(`category_id`, `name`) VALUES ('1','Graphics cards');
 
 
 INSERT INTO `product_ratings`(`product_id`, `user_id`, `score`, `comment`) VALUES ('1','1','4','Damn so nice');
