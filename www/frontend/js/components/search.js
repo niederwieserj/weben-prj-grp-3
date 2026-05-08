@@ -6,8 +6,8 @@ $(document).ready(function () {
     $(document).on('keyup', '#search', function () { // check if potential keyup event comes from #search->continue
         let query = $(this).val();
         let $resultList = $('#result');
-
         
+
         //console.log("Searching for: " + query); zwecks debugging
 
         if (query.length > 1) {
