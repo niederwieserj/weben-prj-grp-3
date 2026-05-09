@@ -176,11 +176,20 @@ async function loadProducts() {
     const productCardDoc = parser.parseFromString(productCardTemplate, 'text/html');
     const cardTemplate = productCardDoc.querySelector('#template');
 
+    //check if product searchterm exists. Do not modify blindly.
+    const urlParams = new URLSearchParams(window.location.search);
     const searchTerm = urlParams.get('product-search');
-    const data = await apiGet('/backend/controllers/request_handler.php', {}, { 
+    const queryParams = { action: 'getProductsWithImages' };
+    if (searchTerm && searchTerm.trim() !== "") {
+        queryParams.search = searchTerm;
+    }
+
+    /*const data = await apiGet('/backend/controllers/request_handler.php', {}, { 
         action: 'getProductsWithImages',
         search: searchTerm});
-    allProducts = data['products'];
+    allProducts = data['products'];*/
+    const data = await apiGet('/backend/controllers/request_handler.php', {}, queryParams);
+    allProducts = data['products'] || [];
 
     const productGrid = document.getElementById('product-grid');
     productGrid.innerHTML = '';

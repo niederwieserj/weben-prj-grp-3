@@ -29,7 +29,7 @@ class ProductService
     {
         $products = $this->db->getAllProductsWithImages($search);
 
-        if (!$products) {
+        if ($products === false) {
             return ['success' => false, 'message' => 'Product not found.'];
         }
 
