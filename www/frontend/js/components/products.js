@@ -183,11 +183,7 @@ async function loadProducts() {
     if (searchTerm && searchTerm.trim() !== "") {
         queryParams.search = searchTerm;
     }
-
-    /*const data = await apiGet('/backend/controllers/request_handler.php', {}, { 
-        action: 'getProductsWithImages',
-        search: searchTerm});
-    allProducts = data['products'];*/
+    
     const data = await apiGet('/backend/controllers/request_handler.php', {}, queryParams);
     allProducts = data['products'] || [];
 
