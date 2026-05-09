@@ -80,23 +80,36 @@ class DbService
      * 
      * Note: We do NOT modify the Product, or Image classes.
      */
-    public function getAllProductsWithImages(): array
+    public function getAllProductsWithImages(?string $searchTerm = null): array
     {
         // 1. The SQL Query
         // We join ratings and images. 
         // We use DISTINCT to avoid duplicates if a product has multiple images/ratings 
         // causing a Cartesian product explosion, OR we handle the grouping in PHP.
         // Here, we fetch raw data and group in PHP for maximum flexibility.
-
+        
+        // if product search POST, dann ein modfiziertes query
+        
         $sql = "
             SELECT 
                 *
             FROM products p
             LEFT JOIN product_images i ON p.product_id = i.fk_product_id
-            ORDER BY p.product_id ASC
         ";
+        
+        if($searchTerm){
+            $sql .= " WHERE p.name LIKE ?";
+        }
 
-        $stmt = $this->pdo->query($sql);
+        $sql .= " ORDER BY p.product_id ASC";
+
+        $stmt = $this->pdo->prepare($sql);
+    
+        if ($searchTerm) {
+            $stmt->execute(["%$searchTerm%"]);
+        } else {
+            $stmt->execute();
+        }
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if (empty($rows)) {
@@ -325,13 +338,11 @@ class DbService
         ");
         $stmt->execute([$token]);
         $result = $stmt->fetch();
-        // Note: This query only selects user_id. 
-        // To return a full User object, we need the full row. 
-        // Ideally, change query to SELECT *, but for now we'll handle the partial data.
+        
         if (!$result)
             return null;
 
-        // Since we only have user_id, we fetch the full user to create the object
+        // fetch full user to create object
         return $this->getUserById((int) $result['user_id']);
     }
 
@@ -356,4 +367,18 @@ class DbService
     {
         $this->pdo->rollBack();
     }
+
+    // searchbar live product search query
+    public function searchProducts(string $search): array
+    {
+        $stmt = $this->pdo->prepare("SELECT name, product_id 
+                                    FROM products 
+                                    WHERE name 
+                                    LIKE ?");
+        $stmt->execute(["%$search%"]);
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+  
+
 }

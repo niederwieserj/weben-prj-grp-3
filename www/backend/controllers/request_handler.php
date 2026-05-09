@@ -121,14 +121,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $response = $productService->getAllProducts();
             break;
 
-        case 'getProductsWithImages':
-            $response = $productService->getProductsWithImages();
-            break;
+        //case 'getProductsWithImages':
+        //    $response = $productService->getProductsWithImages();
+        //    break;
 
         case 'getProductWithImages':
             $product_id = (int)$_GET['product_id'] ?? 0;
             $response = $productService->getProductByIdWithImages($product_id);
             break;
+           
+        case 'getProductsWithImages':
+            $searchTerm = $_GET['search'] ?? null; 
+            $response = $productService->getProductsWithImages($searchTerm);
+            break;    
 
         case 'getRatingById':
             $product_id = (int)$_GET['product_id'] ?? 0;

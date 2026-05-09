@@ -25,11 +25,11 @@ class ProductService
     /**
      * Get all products with images.
      */
-    public function getProductsWithImages(): array
+    public function getProductsWithImages(?string $search = null): array
     {
-        $products = $this->db->getAllProductsWithImages();
+        $products = $this->db->getAllProductsWithImages($search);
 
-        if (!$products) {
+        if ($products === false) {
             return ['success' => false, 'message' => 'Product not found.'];
         }
 
