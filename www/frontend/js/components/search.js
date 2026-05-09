@@ -7,7 +7,6 @@ $(document).ready(function () {
         let query = $(this).val();
         let $resultList = $('#result');
         
-
         //console.log("Searching for: " + query); zwecks debugging
 
         if (query.length > 1) {

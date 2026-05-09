@@ -16,18 +16,18 @@
                 </li>
             </ul>
             <!-- searchbar -->
-            <!--<form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" method="post">-->
-            <div class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">  
+            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" autocomplete="off" name="product-search" role="search" method="get" action="/frontend/sites/products.html">
+              
                 <div class="form-group ajax-search" id="ajax-search">
                     <div class="dropdown">
                         <input type="search" class="form-control dropdown-toggle" id="search" placeholder="Search..."
-                            name="search" aria-label="Search" data-bs-toggle="dropdown" data-bs-auto-close="true"
+                            name="product-search" aria-label="Search" data-bs-toggle="dropdown" data-bs-auto-close="true"
                             aria-expanded="false" />
 
                         <ul class="dropdown-menu" id="result"></ul>
                     </div>
                 </div>
-            <!--</form>--></div>  
+            </form>  
             <div class="dropdown text-end" id="nav-drop-logged-in" style="display: none;">
                 <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
                     data-bs-toggle="dropdown" aria-expanded="false">

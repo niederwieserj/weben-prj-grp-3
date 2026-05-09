@@ -176,7 +176,10 @@ async function loadProducts() {
     const productCardDoc = parser.parseFromString(productCardTemplate, 'text/html');
     const cardTemplate = productCardDoc.querySelector('#template');
 
-    const data = await apiGet('/backend/controllers/request_handler.php', {}, { action: 'getProductsWithImages' });
+    const searchTerm = urlParams.get('product-search');
+    const data = await apiGet('/backend/controllers/request_handler.php', {}, { 
+        action: 'getProductsWithImages',
+        search: searchTerm});
     allProducts = data['products'];
 
     const productGrid = document.getElementById('product-grid');

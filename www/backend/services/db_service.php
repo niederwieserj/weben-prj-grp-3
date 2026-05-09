@@ -80,23 +80,36 @@ class DbService
      * 
      * Note: We do NOT modify the Product, or Image classes.
      */
-    public function getAllProductsWithImages(): array
+    public function getAllProductsWithImages(?string $searchTerm = null): array
     {
         // 1. The SQL Query
         // We join ratings and images. 
         // We use DISTINCT to avoid duplicates if a product has multiple images/ratings 
         // causing a Cartesian product explosion, OR we handle the grouping in PHP.
         // Here, we fetch raw data and group in PHP for maximum flexibility.
-
+        
+        // if product search POST, dann ein modfiziertes query
+        
         $sql = "
             SELECT 
                 *
             FROM products p
             LEFT JOIN product_images i ON p.product_id = i.fk_product_id
-            ORDER BY p.product_id ASC
         ";
+        
+        if($searchTerm){
+            $sql .= " WHERE p.name LIKE ?";
+        }
 
-        $stmt = $this->pdo->query($sql);
+        $sql .= " ORDER BY p.product_id ASC";
+
+        $stmt = $this->pdo->prepare($sql);
+    
+        if ($searchTerm) {
+            $stmt->execute(["%$searchTerm%"]);
+        } else {
+            $stmt->execute();
+        }
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if (empty($rows)) {
