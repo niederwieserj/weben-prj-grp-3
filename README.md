@@ -18,41 +18,12 @@ in this folder (the root folder of the git repo).
 | Bootstrap icons       | 1.13.1  | 15.03.2026 |                         |
 | Bootstrap color modes | -       | 15.03.2026 | From Bootstrap examples |
 
+
 ```
 weben-prj-grp-3
 ├─ .env
 ├─ bin
-│  ├─ mariadb103
-│  │  └─ Dockerfile
-│  ├─ mariadb104
-│  │  └─ Dockerfile
-│  ├─ mariadb105
-│  │  └─ Dockerfile
 │  ├─ mariadb106
-│  │  └─ Dockerfile
-│  ├─ mysql57
-│  │  └─ Dockerfile
-│  ├─ mysql8
-│  │  └─ Dockerfile
-│  ├─ php54
-│  │  └─ Dockerfile
-│  ├─ php56
-│  │  └─ Dockerfile
-│  ├─ php71
-│  │  └─ Dockerfile
-│  ├─ php72
-│  │  └─ Dockerfile
-│  ├─ php73
-│  │  └─ Dockerfile
-│  ├─ php74
-│  │  └─ Dockerfile
-│  ├─ php8
-│  │  └─ Dockerfile
-│  ├─ php81
-│  │  └─ Dockerfile
-│  ├─ php82
-│  │  └─ Dockerfile
-│  ├─ php83
 │  │  └─ Dockerfile
 │  └─ php84
 │     └─ Dockerfile
@@ -62,32 +33,32 @@ weben-prj-grp-3
 │  │  └─ my.cnf
 │  ├─ php
 │  │  └─ php.ini
+│  ├─ ssl
 │  └─ vhosts
 │     └─ default.conf
 ├─ db-scripts
-│  └─ users.sql
+│  ├─ insert-statements.sql
+│  └─ webshop.sql
 ├─ docker-compose.yml
 ├─ README.md
 └─ www
    ├─ backend
-   │  ├─ config
-   │  │  ├─ constants.php
-   │  │  └─ db_access.php
-   │  ├─ logic
-   │  │  ├─ admin.php
-   │  │  ├─ auth.php
-   │  │  ├─ cart.php
-   │  │  ├─ orders.php
-   │  │  ├─ products.php
-   │  │  └─ request_handler.php
+   │  ├─ controllers
+   │  │  ├─ request_handler.php
+   │  │  └─ search_controller.php
    │  ├─ models
-   │  │  ├─ cart_item.class.php
-   │  │  ├─ coupon.class.php
-   │  │  ├─ order.class.php
+   │  │  ├─ address.class.php
+   │  │  ├─ category.class.php
    │  │  ├─ product.class.php
+   │  │  ├─ productImage.class.php
+   │  │  ├─ productRating.class.php
    │  │  └─ user.class.php
-   │  └─ product-pictures
-   │     └─ placeholder.txt
+   │  ├─ product-pictures
+   │  │  └─ RTX-5080-16g-vanguard-msi.png
+   │  └─ services
+   │     ├─ auth_service.php
+   │     ├─ db_service.php
+   │     └─ ProductService.php
    ├─ frontend
    │  ├─ bootstrap
    │  │  ├─ color-modes
@@ -145,29 +116,59 @@ weben-prj-grp-3
    │  │  ├─ footer.html
    │  │  ├─ head.html
    │  │  ├─ navbar.html
-   │  │  └─ theme.html
+   │  │  ├─ product-card.html
+   │  │  ├─ theme.html
+   │  │  └─ toast.html
    │  ├─ css
    │  │  ├─ checkout.css
    │  │  ├─ headers.css
+   │  │  ├─ home.css
    │  │  ├─ product.css
+   │  │  ├─ products.css
    │  │  ├─ sign-in.css
-   │  │  ├─ style.css
-   │  │  └─ theme.css
+   │  │  └─ style.css
    │  ├─ img
-   │  │  └─ bootstrap-logo.svg
+   │  │  ├─ base-frame-4500x-config.png
+   │  │  ├─ bootstrap-logo.svg
+   │  │  ├─ case-white-3500x.png
+   │  │  ├─ coreGear-logo-copy.png
+   │  │  ├─ coreGear-logo.png
+   │  │  ├─ icue-link-h100i-lcd-liquid-cooler.png
+   │  │  ├─ icue-link-rx140-max-rgb140mm-pwm-w.png
+   │  │  ├─ m370-NVMe-m.2.png
+   │  │  ├─ mag-z890-tomahawk-wifi_II-mb.png
+   │  │  ├─ rmx-series-rm750x-corsair.png
+   │  │  ├─ RTX-5080-16g-vanguard-msi.png
+   │  │  ├─ vengeance-ddr5-blk.png
+   │  │  └─ vengeance-gaming-pc-hero.png
    │  ├─ js
-   │  │  ├─ app.js
-   │  │  ├─ auth.js
-   │  │  ├─ cart.js
-   │  │  ├─ checkout.js
+   │  │  ├─ components
+   │  │  │  ├─ auth.js
+   │  │  │  ├─ checkout.js
+   │  │  │  ├─ product.js
+   │  │  │  ├─ products.js
+   │  │  │  ├─ profile.js
+   │  │  │  ├─ reset-password.js
+   │  │  │  ├─ search.js
+   │  │  │  └─ sign-up.js
    │  │  ├─ layout.js
-   │  │  └─ search.js
+   │  │  ├─ main.js
+   │  │  └─ modules
+   │  │     ├─ api.js
+   │  │     ├─ toast.js
+   │  │     ├─ utils.js
+   │  │     └─ validators.js
    │  └─ sites
    │     ├─ checkout.html
    │     ├─ home.html
+   │     ├─ product.html
    │     ├─ products.html
+   │     ├─ profile.html
+   │     ├─ reset-password.html
    │     ├─ sign-in.html
+   │     ├─ sign-up.html
    │     └─ template.html
+   ├─ index.php
    └─ legacy
       ├─ assets
       │  ├─ css

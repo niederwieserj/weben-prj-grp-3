@@ -16,18 +16,19 @@
                 </li>
             </ul>
             <!-- searchbar -->
-            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" autocomplete="off" name="product-search" role="search" method="get" action="/frontend/sites/products.html">
-              
+            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" autocomplete="off" name="product-search" role="search"
+                method="get" action="/frontend/sites/products.html">
+
                 <div class="form-group ajax-search" id="ajax-search">
                     <div class="dropdown">
                         <input type="search" class="form-control dropdown-toggle" id="search" placeholder="Search..."
-                            name="product-search" aria-label="Search" data-bs-toggle="dropdown" data-bs-auto-close="true"
-                            aria-expanded="false" />
+                            name="product-search" aria-label="Search" data-bs-toggle="dropdown"
+                            data-bs-auto-close="true" aria-expanded="false" />
 
                         <ul class="dropdown-menu" id="result"></ul>
                     </div>
                 </div>
-            </form>  
+            </form>
             <div class="dropdown text-end" id="nav-drop-logged-in" style="display: none;">
                 <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
                     data-bs-toggle="dropdown" aria-expanded="false">
@@ -56,12 +57,13 @@
                     <li><a class="dropdown-item" href="sign-in.html">Sign in</a></li>
                 </ul>
             </div>
-            <a class="navbar-cart position-relative" href="#">
+            <a class="navbar-cart position-relative ms-3 text-white" href="/frontend/sites/checkout.html">
                 <svg class="bi" width="32" height="32" fill="currentColor">
                     <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#cart" />
                 </svg>
-                <span class="position-absolute top-105 start-100 translate-middle badge rounded-pill bg-primary">
-                    3
+                <span id="cart-badge"
+                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
+                    0
                     <span class="visually-hidden">items in cart</span>
                 </span>
             </a>

@@ -11,7 +11,7 @@ async function loadProduct() {
     const response = await apiGet('/backend/controllers/request_handler.php', {}, { action: 'getProductWithImages', product_id: id });
     // console.log(response);
 
-    if(response['success'] === false) {
+    if (response['success'] === false) {
         document.getElementById('content').style.display = 'none';
         document.querySelector('head title').innerHTML = 'Not found &#x2022; CoreGear';
         showError('Product not found.')
@@ -71,6 +71,20 @@ async function loadProduct() {
     document.querySelector('#product-rating').appendChild(ratingNumber);
 
     document.querySelector('#product-description').innerHTML = product['description'];
+
+    const cartActions = document.getElementById('product-cart-actions');
+
+    if (cartActions) {
+        cartActions.setAttribute('data-product-id', product['product_id']);
+        cartActions.setAttribute('data-product-name', product['name']);
+        cartActions.setAttribute('data-product-price', product['price']);
+
+        if (images !== undefined && images.length > 0) {
+            cartActions.setAttribute('data-product-image', images[0]['image_url']);
+        } else {
+            cartActions.setAttribute('data-product-image', '');
+        }
+    }
 }
 
 window.addEventListener('layout-ready', () => {
