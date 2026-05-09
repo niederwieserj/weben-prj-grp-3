@@ -358,7 +358,7 @@ class DbService
     // searchbar live product search query
     public function searchProducts(string $search): array
     {
-        $stmt = $this->pdo->prepare("SELECT name 
+        $stmt = $this->pdo->prepare("SELECT name, product_id 
                                     FROM products 
                                     WHERE name 
                                     LIKE ?");
