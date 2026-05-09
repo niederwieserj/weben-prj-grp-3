@@ -109,7 +109,7 @@ function updateCategoryBadge() {
 async function loadCategories() {
     const data = await apiGet('/backend/controllers/request_handler.php', {}, { action: 'getCategories' });
     const categories = data['categories'];
-    
+
     const container = document.getElementById('category-filters');
     if (!container || !Array.isArray(categories)) return;
 
@@ -183,7 +183,7 @@ async function loadProducts() {
     if (searchTerm && searchTerm.trim() !== "") {
         queryParams.search = searchTerm;
     }
-    
+
     const data = await apiGet('/backend/controllers/request_handler.php', {}, queryParams);
     allProducts = data['products'] || [];
 
@@ -195,6 +195,7 @@ async function loadProducts() {
         const product = row['product'];
 
         productToInsert.classList.add('product-card');
+
         productToInsert.setAttribute('data-product-id', product['product_id']);
         productToInsert.setAttribute('data-price', product['price']);
         productToInsert.setAttribute('data-rating', product['avg_rating']);
@@ -202,13 +203,21 @@ async function loadProducts() {
         productToInsert.setAttribute('data-name', product['name']);
         productToInsert.setAttribute('data-category', product['fk_category_id'] || 'uncategorized');
 
+        productToInsert.setAttribute('data-cart-product', '');
+        productToInsert.setAttribute('data-product-name', product['name']);
+        productToInsert.setAttribute('data-product-price', product['price']);
+        productToInsert.setAttribute('data-product-image', '');
+
         if (row['images'] === undefined || row['images'].length === 0) {
             productToInsert.querySelector('.bd-placeholder-img').style.display = 'block';
+            productToInsert.setAttribute('data-product-image', '');
         } else {
             const img = productToInsert.querySelector('img');
+
             if (img) {
                 img.src = row['images'][0]['image_url'];
                 img.style.display = 'block';
+                productToInsert.setAttribute('data-product-image', row['images'][0]['image_url']);
             }
         }
 
@@ -277,13 +286,13 @@ function initFilters() {
         });
     }
 
-        const sortOrderBtn = document.getElementById('sort-order-btn');
+    const sortOrderBtn = document.getElementById('sort-order-btn');
     if (sortOrderBtn) {
         sortOrderBtn.addEventListener('click', function () {
             // 1. Determine the NEW order immediately
             const currentOrder = this.dataset.order === 'asc' ? 'asc' : 'desc';
             const newOrder = currentOrder === 'asc' ? 'desc' : 'asc';
-            
+
             // 2. Update the dataset FIRST
             this.dataset.order = newOrder;
 
@@ -291,11 +300,11 @@ function initFilters() {
             const iconUse = this.querySelector('svg use');
             if (iconUse) {
                 iconUse.setAttribute('xlink:href',
-                    '/frontend/bootstrap-icons/bootstrap-icons.svg#' + 
+                    '/frontend/bootstrap-icons/bootstrap-icons.svg#' +
                     (newOrder === 'asc' ? 'sort-up' : 'sort-down')
                 );
             }
-            
+
             const label = document.getElementById('sort-order-label');
             if (label) {
                 label.textContent = newOrder === 'asc' ? 'Ascending' : 'Descending';
@@ -307,7 +316,7 @@ function initFilters() {
             // 5. Now sort
             const currentCriteria = document.getElementById('sort-select')?.value || 'price';
             sortProducts(currentCriteria);
-            
+
             // 6. Ensure filters are applied (optional, but keeps state consistent)
             // applyFilters(); // Only if you need to re-run the full filter logic
         });
@@ -316,7 +325,7 @@ function initFilters() {
 
 function updateUrlParams() {
     const params = new URLSearchParams(window.location.search);
-    
+
     const rangeInput = document.getElementById('range4');
     if (rangeInput) params.set('price_max', rangeInput.value);
 

@@ -1,3 +1,42 @@
-.container {
-  max-width: 960px;
+.cart-item {
+    display: grid;
+    grid-template-columns: 55px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 12px;
+}
+
+.cart-item img {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+}
+
+.cart-item-info {
+    min-width: 0;
+}
+
+.cart-item-title {
+    margin: 0;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cart-item-price {
+    margin: 2px 0;
+    font-size: 0.9rem;
+}
+
+.cart-item-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: nowrap;
+}
+
+.cart-item-controls button {
+    min-width: 32px;
+    height: 32px;
 }
