@@ -8,6 +8,8 @@
  * 4. Signal 'app-ready' when everything is initialized.
  */
 
+import { apiPost } from "./modules/api.js";
+
 // Configuration
 const COMPONENTS = {
     head: '/frontend/components/head.html',
@@ -62,20 +64,18 @@ function loadScript(src) {
  */
 async function loadUserState() {
     try {
-        const response = await fetch("/backend/controllers/request_handler.php", {
+        /*const response = await fetch("/backend/request-handler.php", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ action: "getUserState" })
-        });
+            body: JSON.stringify({ controller: "user", action: "getUserState" })
+        });*/
 
-        if (!response.ok) throw new Error("Network response was not ok");
-
-        const state = await response.json();
-        
         const dropLoggedOut = document.getElementById('nav-drop-logged-out');
         const dropLoggedIn = document.getElementById('nav-drop-logged-in');
 
-        if (state.logged_in) {
+        const result = await apiPost("user", "getUserState");
+        
+        if (result.response.ok && result.logged_in) {
             if (dropLoggedOut) dropLoggedOut.style.display = 'none';
             if (dropLoggedIn) dropLoggedIn.style.display = 'block';
         } else {

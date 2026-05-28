@@ -22,7 +22,7 @@ async function handleSignUp(e) {
 
     const data = Object.fromEntries(formData.entries());
 
-    console.log(data);
+    //console.log(data);
     
     // Add action for backend routing
     data.action = 'sign-up';
@@ -33,9 +33,9 @@ async function handleSignUp(e) {
     try {
         submitBtn.disabled = true;
         
-        const result = await apiPost('sign-up', data);
+        const result = await apiPost('user', 'sign-up', data);
         
-        if (result.success) {
+        if (result.response.ok) {
             showSuccess(result.message || 'Registration successful! Redirecting...');
             
             setTimeout(() => {

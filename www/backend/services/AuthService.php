@@ -1,7 +1,7 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/services/db_service.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/user.class.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/address.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/services/DbService.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/User.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/Address.php';
 
 class AuthService
 {
@@ -16,24 +16,24 @@ class AuthService
     {
         // 1. Validation
         if (empty($data['username']) || empty($data['email']) || empty($data['password'])) {
-            return ["success" => false, "message" => "Missing required fields."];
+            throw new InvalidArgumentException("Missing required fields.");
         }
 
         if ($data['password'] !== $data['confirm_password']) {
-            return ["success" => false, "message" => "Passwords do not match."];
+            throw new InvalidArgumentException("Passwords do not match.");
         }
 
         if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            return ["success" => false, "message" => "Invalid email format."];
+            throw new InvalidArgumentException("Invalid email format.");
         }
 
         // 2. Check Existence (Now returns User object or null)
         if ($this->db->getUserByEmailOrUsername($data['username'])) {
-            return ["success" => false, "message" => "Username already exists."];
+            throw new InvalidArgumentException("Username already exists.");
         }
 
         if ($this->db->getUserByEmailOrUsername($data['email'])) {
-            return ["success" => false, "message" => "Email already exists."];
+            throw new InvalidArgumentException("Email already exists.");
         }
 
         // 3. Hash Password
@@ -57,11 +57,11 @@ class AuthService
             $this->loginUser($newUser);
 
             // Return the User object converted to array for JSON response
-            return ["success" => true, "message" => "Registration successful.", "user" => $newUser->toArray()];
+            return ["user" => $newUser->toArray()];
         } catch (Exception $e) {
             $this->db->rollback();
-            // Log error internally if possible
-            return ["success" => false, "message" => "Registration failed."];
+
+            throw new RuntimeException("Registration failed.");
         }
     }
 
@@ -71,40 +71,39 @@ class AuthService
         $user = $this->db->getUserByEmailOrUsername($identifier);
 
         if (!$user) {
-            return ["success" => false, "message" => "Invalid credentials."];
+            throw new InvalidArgumentException("Invalid user.");
         }
 
         if (!$user->isActive()) {
-            return ['success' => false, 'message' => 'Account is deactivated. Contact support.'];
+            throw new RuntimeException('Account is deactivated.');
         }
 
         // Verify password using the User object's hash
         if (password_verify($password, $user->getPasswordHash())) {
             $this->loginUser($user, $rememberMe);
-            return ["success" => true, "message" => "Login successful.", "user" => $user->toArray()];
+            return ["user" => $user->toArray()];
         }
 
-        return ["success" => false, "message" => "Invalid credentials."];
+        throw new InvalidArgumentException("Invalid credentials.");
     }
 
-    public function logout(): array
+    public function logout(): void
     {
         session_destroy();
         if (isset($_COOKIE['remember_me'])) {
             setcookie('remember_me', '', time() - 3600, '/');
         }
-        return ["success" => true, "message" => "Logged out."];
     }
 
     public function requestPasswordReset(string $email): array
     {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return ["success" => false, "message" => "Invalid email."];
+            throw new InvalidArgumentException("Invalid email.");
         }
 
         $user = $this->db->getUserByEmailOrUsername($email);
         if (!$user) {
-            return ["success" => true, "message" => "If the email exists, a reset link has been sent."];
+            throw new InvalidArgumentException("Invalid user.");
         }
 
         $token = bin2hex(random_bytes(32));
@@ -112,45 +111,45 @@ class AuthService
 
         if ($this->db->setResetToken($user->getUserId(), $token, $expires)) {
             $link = "http://localhost/frontend/sites/reset-password.html?token=" . $token;
-            return ["success" => true, "message" => "Reset link generated.", "reset_link" => $link];
+            return ["reset_link" => $link];
         }
 
-        return ["success" => false, "message" => "Failed to generate reset token."];
+        throw new RuntimeException("Failed to generate reset token.");
     }
 
-    public function resetPassword(string $token, string $newPassword): array
+    public function resetPassword(string $token, string $newPassword): void
     {
         if (strlen($newPassword) < 6) {
-            return ["success" => false, "message" => "Password too short."];
+            throw new InvalidArgumentException("Password too short.");
         }
 
         $user = $this->db->getUserByToken($token);
         if (!$user) {
-            return ["success" => false, "message" => "Invalid or expired token."];
+            throw new InvalidArgumentException("Invalid or expired token.");
         }
 
         $hash = password_hash($newPassword, PASSWORD_DEFAULT); // Switched to password_hash for consistency
-        if ($this->db->updatePassword($user->getUserId(), $hash)) {
-            return ["success" => true, "message" => "Password reset successful."];
-        }
-
-        return ["success" => false, "message" => "Failed to reset password."];
+        
+        $this->db->updatePassword($user->getUserId(), $hash);
     }
 
     public function getUserData(int $userId): array
     {
         $user = $this->db->getUserById($userId);
+        
         if (!$user) {
-            return ["success" => false, "message" => "User not found."];
+            throw new InvalidArgumentException("User not found.");
         }
-        return ["success" => true, "user" => $user->toArray()];
+
+        return ["user" => $user->toArray()];
     }
 
-    public function updateUserData(int $userId, array $input): array
+    public function updateUserData(int $userId, array $input): void
     {
         $user = $this->db->getUserById($userId);
+
         if (!$user) {
-            return ['success' => false, 'message' => 'User not found.'];
+            throw new InvalidArgumentException("User not found.");
         }
 
         // Apply only the fields that were submitted
@@ -165,8 +164,7 @@ class AuthService
         if (isset($input['username']))
             $user->setUsername($input['username']);
 
-        $success = $this->db->updateUser($user);
-        return ['success' => true, 'message' => 'User updated.'];
+        $this->db->updateUser($user);
     }
     // Helper to set session and cookie
     private function loginUser(User $user, bool $rememberMe = false): void

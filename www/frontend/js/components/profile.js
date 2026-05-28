@@ -26,11 +26,11 @@ function setFormDisabled(disabled) {
 
 async function loadProfile() {
     try {
-        const res = await apiPost('getUserData');
+        const res = await apiPost('user', 'getUserData');
 
         console.info(res);
 
-        if (res.success && res.user) {
+        if (res.response.ok && res.user) {
             const u = res.user;
             getElement('title').value       = u.title       ?? '';
             getElement('username').value    = u.username     ?? '';
@@ -68,7 +68,7 @@ async function saveProfile(event) {
     setFormDisabled(true);
 
     try {
-        const res = await apiPost('updateUserData', payload);
+        const res = await apiPost('user', 'updateUserData', payload);
 
         if (res.success) {
             showSuccess('Profile updated successfully.');

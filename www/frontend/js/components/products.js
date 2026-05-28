@@ -75,6 +75,8 @@ function applyUrlCategoryParams() {
 }
 
 window.addEventListener('layout-ready', async () => {
+    console.debug("HERE");
+
     // 1. Apply URL params for static HTML elements (price, rating, sort)
     applyUrlParamsToUI();
 
@@ -107,8 +109,7 @@ function updateCategoryBadge() {
 }
 
 async function loadCategories() {
-    const data = await apiGet('/backend/controllers/request_handler.php', {}, { action: 'getCategories' });
-    const categories = data['categories'];
+    const categories = await apiGet('/backend/request-handler.php', {}, { controller: 'product', action: 'getCategories' });
 
     const container = document.getElementById('category-filters');
     if (!container || !Array.isArray(categories)) return;
@@ -179,18 +180,18 @@ async function loadProducts() {
     //check if product searchterm exists. Do not modify blindly.
     const urlParams = new URLSearchParams(window.location.search);
     const searchTerm = urlParams.get('product-search');
-    const queryParams = { action: 'getProductsWithImages' };
+    const queryParams = { controller: 'product', action: 'getProductsWithImages' };
     if (searchTerm && searchTerm.trim() !== "") {
         queryParams.search = searchTerm;
     }
 
-    const data = await apiGet('/backend/controllers/request_handler.php', {}, queryParams);
-    allProducts = data['products'] || [];
+    const products = await apiGet('/backend/request-handler.php', {}, queryParams);
+    allProducts = products;
 
     const productGrid = document.getElementById('product-grid');
     productGrid.innerHTML = '';
 
-    data['products'].forEach(row => {
+    products.forEach(row => {
         const productToInsert = cardTemplate.cloneNode(true);
         const product = row['product'];
 

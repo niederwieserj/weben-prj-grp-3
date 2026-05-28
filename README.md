@@ -18,6 +18,8 @@ in this folder (the root folder of the git repo).
 | Bootstrap icons       | 1.13.1  | 15.03.2026 |                         |
 | Bootstrap color modes | -       | 15.03.2026 | From Bootstrap examples |
 
+# Naming Conventions
+[PHP Naming Conventions - Compile N Run](https://www.compilenrun.com/docs/language/php/php-best-practices/php-naming-conventions)
 
 ```
 weben-prj-grp-3
