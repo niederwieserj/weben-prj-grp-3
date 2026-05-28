@@ -9,7 +9,7 @@ class UserController
     {
         $authService = new AuthService();
         $result = null;
-        $action = $input['action'];
+        $action = $getParams['action'] ?? null;
 
         if ($requestMethod == 'GET') {
             switch ($action) {
@@ -85,6 +85,6 @@ class UserController
             }
         }
 
-        return $result;
+        return $result ?? [];
     }
 }

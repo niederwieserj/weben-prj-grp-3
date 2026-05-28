@@ -15,21 +15,24 @@ const API_ENDPOINT = '/backend/request-handler.php';
  * @returns {Promise<Object>} parsed JSON response
  * @throws {Error} on network failure or non-OK status
  */
-export async function apiPost(action, payload = {}, options = {}) {
-    const body = { action, ...payload };
+export async function apiPost(controller, action, payload = {}, options = {}) {
+    const body = { ...payload };
+    let url = API_ENDPOINT;
 
-    const response = await fetch(API_ENDPOINT, {
+    const queryString = new URLSearchParams({controller, action}).toString();
+    url += `?${queryString}`;
+
+    const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
         ...options
     });
 
-    if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
+    let returnVal = await response.json(); // Add json result to return value
+    returnVal['response'] = response; // Add response to return value (for http status codes)
 
-    return response.json();
+    return returnVal;
 }
 
 /**
@@ -50,9 +53,12 @@ export async function apiGet(endpoint, options = {}, params = {}) {
     ...options
   });
 
-  if (!response.ok) {
+  /*if (!response.ok) {
     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-  }
+  }*/
 
-  return response.json();
+  let returnVal = await response.json(); // Add json result to return value
+  returnVal['response'] = response; // Add response to return value (for http status codes)
+
+  return returnVal;
 }

@@ -38,7 +38,7 @@ async function handleResetPassword(e) {
     }
 
     try {
-        const data = await apiPost('resetPassword', { token, newPassword });
+        const data = await apiPost('user', 'resetPassword', { token, newPassword });
 
         if (data.success) {
             messageBox.innerHTML = `

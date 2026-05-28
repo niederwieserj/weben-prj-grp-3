@@ -9,7 +9,7 @@ class ProductController
     {
         $productService = new ProductService();
         $result = null;
-        $action = $input['action'];
+        $action = $getParams['action'] ?? null;
 
         if ($requestMethod == 'GET') {
             switch ($action) {

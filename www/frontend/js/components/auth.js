@@ -28,12 +28,14 @@ async function handleLogin(e) {
     data.action = 'login';
     data['remember-me'] = document.getElementById('remember-me')?.checked || false;
 
-    console.log('Login data:', data);
+    // console.log('Login data:', data);
 
     try {
-        const result = await apiPost('login', data);
+        const result = await apiPost('user', 'login', data);
 
-        if (result.success) {
+        console.log(result);
+
+        if (result.response.ok) {
             // Update navigation dropdowns
             toggleVisibility('nav-drop-logged-in', 'nav-drop-logged-out');
 
@@ -74,7 +76,7 @@ async function signOut(e) {
     e.stopPropagation();
 
     try {
-        const result = await apiPost('signout');
+        const result = await apiPost('user', 'signout');
 
         if (result.success) {
             toggleVisibility('nav-drop-logged-out', 'nav-drop-logged-in');
@@ -111,7 +113,7 @@ async function handlePasswordResetRequest(e) {
     }
 
     try {
-        const data = await apiPost('requestPasswordReset', { email });
+        const data = await apiPost('user', 'requestPasswordReset', { email });
 
         if (data.success) {
             showAlert(messageBox, 'success',
