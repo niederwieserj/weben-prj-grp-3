@@ -1,6 +1,6 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/services/db_service.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/product.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/services/DbService.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/Product.php';
 
 class ProductService
 {
@@ -13,13 +13,7 @@ class ProductService
 
     public function getCategories(): array
     {
-        $categories = $this->db->getCategories();
-
-        if (!$categories) {
-            return ['success' => false, 'message' => 'Categories not found.'];
-        }
-
-        return ['success' => true, 'categories' => $categories];
+        return $this->db->getCategories();
     }
 
     /**
@@ -27,13 +21,7 @@ class ProductService
      */
     public function getProductsWithImages(?string $search = null): array
     {
-        $products = $this->db->getAllProductsWithImages($search);
-
-        if ($products === false) {
-            return ['success' => false, 'message' => 'Product not found.'];
-        }
-
-        return ['success' => true, 'products' => $products];
+        return $this->db->getAllProductsWithImages($search);
     }
 
     /**
@@ -44,38 +32,38 @@ class ProductService
         $products = $this->db->getProductByIdWithImages($id);
 
         if (!$products) {
-            return ['success' => false, 'message' => 'Product not found.'];
+            throw new OutOfBoundsException('Product no found.');
         }
 
-        return ['success' => true, 'products' => $products];
+        return $products;
     }
 
     /**
      * Get rating by ID.
      */
-    public function getRatingById(int $id): array
+    public function getRatingById(int $id): ProductRating
     {
         $rating = $this->db->getRatingById($id);
 
         if (!$rating) {
-            return ['success' => false, 'message' => 'No rating found for product.'];
+            throw new OutOfBoundsException('Product rating not found.');
         }
 
-        return ['success' => true, 'rating' => $rating->toArray()];
+        return $rating;
     }
 
     /**
      * Get a single product by ID.
      */
-    public function getProduct(int $productId): array
+    public function getProduct(int $productId): Product
     {
         $product = $this->db->getProductById($productId);
 
         if (!$product) {
-            return ['success' => false, 'message' => 'Product not found.'];
+            throw new OutOfBoundsException('Product not found.');
         }
 
-        return ['success' => true, 'product' => $product->toArray()];
+        return $product;
     }
 
     /**
@@ -85,6 +73,6 @@ class ProductService
     {
         $products = $this->db->getAllProducts();
 
-        return ['success' => true, 'products' => array_map(fn($p) => $p->toArray(), $products)];
+        return array_map(fn($p) => $p->toArray(), $products);
     }
 }

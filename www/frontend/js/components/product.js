@@ -8,8 +8,7 @@ async function loadProduct() {
     const url = new URL(url_string);
     const id = url.searchParams.get("id");
 
-    const response = await apiGet('/backend/controllers/request_handler.php', {}, { action: 'getProductWithImages', product_id: id });
-    // console.log(response);
+    const response = await apiGet('/backend/request-handler.php', {}, { action: 'getProductWithImages', product_id: id });
 
     if (response['success'] === false) {
         document.getElementById('content').style.display = 'none';

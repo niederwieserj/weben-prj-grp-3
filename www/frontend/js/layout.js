@@ -62,7 +62,7 @@ function loadScript(src) {
  */
 async function loadUserState() {
     try {
-        const response = await fetch("/backend/controllers/request_handler.php", {
+        const response = await fetch("/backend/request-handler.php", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ action: "getUserState" })

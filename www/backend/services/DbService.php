@@ -6,11 +6,11 @@ define('DB_NAME', 'webshop');
 define('DB_USER', 'root');
 define('DB_PASS', 'tiger');
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/user.class.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/product.class.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/productRating.class.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/productImage.class.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/category.class.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/User.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/Product.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/ProductRating.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/ProductImage.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/Category.php';
 
 class DbService
 {

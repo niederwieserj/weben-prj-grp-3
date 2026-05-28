@@ -1,10 +1,10 @@
 /**
  * api.js — Centralised HTTP helper for all backend communication.
- * Every request goes through /backend/controllers/request_handler.php
+ * Every request goes through /backend/request-handler.php
  * with a JSON body containing an "action" key.
  */
 
-const API_ENDPOINT = '/backend/controllers/request_handler.php';
+const API_ENDPOINT = '/backend/request-handler.php';
 
 /**
  * Send a POST request to the backend handler.
