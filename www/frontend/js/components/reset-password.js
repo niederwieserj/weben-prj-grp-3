@@ -40,10 +40,10 @@ async function handleResetPassword(e) {
     try {
         const data = await apiPost('user', 'resetPassword', { token, newPassword });
 
-        if (data.success) {
+        if (data.response.ok) {
             messageBox.innerHTML = `
                 <div class="alert alert-success">
-                    ${data.message}<br>
+                    Password reset successful.<br>
                     <a href="/frontend/sites/sign-in.html">Back to sign in</a>
                 </div>
             `;

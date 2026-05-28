@@ -8,19 +8,19 @@ async function loadProduct() {
     const url = new URL(url_string);
     const id = url.searchParams.get("id");
 
-    const response = await apiGet('/backend/request-handler.php', {}, { action: 'getProductWithImages', product_id: id });
+    const response = await apiGet('/backend/request-handler.php', {}, { controller: 'product', action: 'getProductWithImages', product_id: id });
 
-    if (response['success'] === false) {
+    if (!response.response.ok) {
         document.getElementById('content').style.display = 'none';
         document.querySelector('head title').innerHTML = 'Not found &#x2022; CoreGear';
         showError('Product not found.')
         return;
     }
 
-    const product = response['products']['product'];
+    const product = response['product'];
     document.querySelector('head title').innerHTML = product['name'] + ' &#x2022; CoreGear';
 
-    const images = response['products']['images'];
+    const images = response['images'];
 
     console.log(images);
 

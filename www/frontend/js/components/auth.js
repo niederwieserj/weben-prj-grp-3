@@ -49,12 +49,6 @@ async function handleLogin(e) {
         } else {
             // Show error toast
             showError(result.message || 'Invalid username or password.');
-
-            // Also update logo text (from your original code)
-            const logo = getElement('logo');
-            if (logo) {
-                logo.innerText = result.message;
-            }
         }
     } catch (error) {
         console.error('Login error:', error);
@@ -78,9 +72,14 @@ async function signOut(e) {
     try {
         const result = await apiPost('user', 'signout');
 
-        if (result.success) {
+        if (result.response.ok) {
             toggleVisibility('nav-drop-logged-out', 'nav-drop-logged-in');
             showSuccess('You have been logged out.');
+
+            // Redirect to home page
+            setTimeout(() => {
+                window.location.replace('home.html');
+            }, 500);
         }
     } catch (error) {
         console.error('Logout error:', error);
@@ -115,9 +114,9 @@ async function handlePasswordResetRequest(e) {
     try {
         const data = await apiPost('user', 'requestPasswordReset', { email });
 
-        if (data.success) {
+        if (data.response.ok) {
             showAlert(messageBox, 'success',
-                `${data.message}<br><a href="${data.reset_link}">Open reset page</a>`);
+                `Reset link generated<br><a href="${data.reset_link}">Open reset page</a>`);
             showSuccess('Password reset link sent!');
         } else {
             showError(data.message);

@@ -30,7 +30,7 @@ async function loadProfile() {
 
         console.info(res);
 
-        if (res.success && res.user) {
+        if (res.response.ok && res.user) {
             const u = res.user;
             getElement('title').value       = u.title       ?? '';
             getElement('username').value    = u.username     ?? '';

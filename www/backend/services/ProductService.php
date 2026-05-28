@@ -32,7 +32,7 @@ class ProductService
         $products = $this->db->getProductByIdWithImages($id);
 
         if (!$products) {
-            throw new OutOfBoundsException('Product no found.');
+            throw new OutOfBoundsException('Product not found.');
         }
 
         return $products;

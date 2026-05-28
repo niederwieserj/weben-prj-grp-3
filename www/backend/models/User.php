@@ -20,8 +20,8 @@ class User {
         $this->username = $data['username'] ?? '';
         $this->email = $data['email'] ?? '';
         $this->passwordHash = $data['password_hash'] ?? '';
-        $this->firstName = $data['firstName'] ?? '';
-        $this->lastName = $data['lastName'] ?? '';
+        $this->firstName = $data['first_name'] ?? '';
+        $this->lastName = $data['last_name'] ?? '';
         $this->title_id = (int)$data['title_id'] ?? 1;
         $this->isAdmin = (bool)($data['is_admin'] ?? false);
         $this->isActive = (bool)($data['is_active'] ?? false);
