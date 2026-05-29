@@ -21,6 +21,7 @@ in this folder (the root folder of the git repo).
 # Naming Conventions
 [PHP Naming Conventions - Compile N Run](https://www.compilenrun.com/docs/language/php/php-best-practices/php-naming-conventions)
 
+
 ```
 weben-prj-grp-3
 ├─ .env
@@ -35,7 +36,6 @@ weben-prj-grp-3
 │  │  └─ my.cnf
 │  ├─ php
 │  │  └─ php.ini
-│  ├─ ssl
 │  └─ vhosts
 │     └─ default.conf
 ├─ db-scripts
@@ -46,20 +46,21 @@ weben-prj-grp-3
 └─ www
    ├─ backend
    │  ├─ controllers
-   │  │  ├─ request_handler.php
-   │  │  └─ search_controller.php
+   │  │  ├─ ProductController.php
+   │  │  └─ UserController.php
    │  ├─ models
-   │  │  ├─ address.class.php
-   │  │  ├─ category.class.php
-   │  │  ├─ product.class.php
-   │  │  ├─ productImage.class.php
-   │  │  ├─ productRating.class.php
-   │  │  └─ user.class.php
+   │  │  ├─ Address.php
+   │  │  ├─ Category.php
+   │  │  ├─ Product.php
+   │  │  ├─ ProductImage.php
+   │  │  ├─ ProductRating.php
+   │  │  └─ User.php
    │  ├─ product-pictures
    │  │  └─ RTX-5080-16g-vanguard-msi.png
+   │  ├─ request-handler.php
    │  └─ services
-   │     ├─ auth_service.php
-   │     ├─ db_service.php
+   │     ├─ AuthService.php
+   │     ├─ DbService.php
    │     └─ ProductService.php
    ├─ frontend
    │  ├─ bootstrap
@@ -146,6 +147,7 @@ weben-prj-grp-3
    │  ├─ js
    │  │  ├─ components
    │  │  │  ├─ auth.js
+   │  │  │  ├─ cart.js
    │  │  │  ├─ checkout.js
    │  │  │  ├─ product.js
    │  │  │  ├─ products.js
@@ -157,6 +159,7 @@ weben-prj-grp-3
    │  │  ├─ main.js
    │  │  └─ modules
    │  │     ├─ api.js
+   │  │     ├─ cart.js
    │  │     ├─ toast.js
    │  │     ├─ utils.js
    │  │     └─ validators.js
