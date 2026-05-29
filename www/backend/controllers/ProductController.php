@@ -52,6 +52,14 @@ class ProductController
                     $result = $productService->getProductByIdWithImages($postParams['search']);
                     break;
 
+                case 'createProduct':
+                    $result = $productService->createProduct($input);
+                    break;
+
+                case 'updateProduct':
+                    $result = $productService->updateProduct($input);
+                    break;
+
                 default:
                     throw new InvalidArgumentException('Invalid action.');
             }

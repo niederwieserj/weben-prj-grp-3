@@ -87,24 +87,24 @@ class DbService
         // We use DISTINCT to avoid duplicates if a product has multiple images/ratings 
         // causing a Cartesian product explosion, OR we handle the grouping in PHP.
         // Here, we fetch raw data and group in PHP for maximum flexibility.
-        
+
         // if product search POST, dann ein modfiziertes query
-        
+
         $sql = "
             SELECT 
                 *
             FROM products p
             LEFT JOIN product_images i ON p.product_id = i.fk_product_id
         ";
-        
-        if($searchTerm){
+
+        if ($searchTerm) {
             $sql .= " WHERE p.name LIKE ?";
         }
 
         $sql .= " ORDER BY p.product_id ASC";
 
         $stmt = $this->pdo->prepare($sql);
-    
+
         if ($searchTerm) {
             $stmt->execute(["%$searchTerm%"]);
         } else {
@@ -142,6 +142,168 @@ class DbService
 
         // 5. Return as a numerically indexed array (optional, for cleaner consumption)
         return array_values($groupedProducts);
+    }
+
+    public function createProduct(array $data): int
+    {
+        $stmt = $this->pdo->prepare("
+        INSERT INTO products 
+            (name, description, price, stock_quantity, fk_category_id)
+        VALUES 
+            (?, ?, ?, ?, ?)
+    ");
+
+        $stmt->execute([
+            $data['name'],
+            $data['description'],
+            $data['price'],
+            $data['stock_quantity'],
+            $data['fk_category_id']
+        ]);
+
+        return (int) $this->pdo->lastInsertId();
+    }
+
+    public function updateProduct(int $productId, array $data): bool
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE products SET
+            name = ?,
+            description = ?,
+            price = ?,
+            stock_quantity = ?,
+            fk_category_id = ?
+        WHERE product_id = ?
+    ");
+
+        $stmt->execute([
+            $data['name'],
+            $data['description'],
+            $data['price'],
+            $data['stock_quantity'],
+            $data['fk_category_id'],
+            $productId
+        ]);
+
+        return $stmt->rowCount() > 0;
+    }
+
+    public function createProductImage(int $productId, string $imageUrl, string $altText): int
+    {
+        $stmt = $this->pdo->prepare("
+        INSERT INTO product_images 
+            (fk_product_id, image_url, alt_text, sort_order, is_primary)
+        VALUES 
+            (?, ?, ?, 0, 1)
+    ");
+
+        $stmt->execute([
+            $productId,
+            $imageUrl,
+            $altText
+        ]);
+
+        return (int) $this->pdo->lastInsertId();
+    }
+
+    public function upsertPrimaryProductImage(int $productId, string $imageUrl, string $altText): void
+    {
+        $stmt = $this->pdo->prepare("
+        SELECT image_id 
+        FROM product_images 
+        WHERE fk_product_id = ? AND is_primary = 1
+        LIMIT 1
+    ");
+        $stmt->execute([$productId]);
+        $existingImage = $stmt->fetch();
+
+        if ($existingImage) {
+            $updateStmt = $this->pdo->prepare("
+            UPDATE product_images SET
+                image_url = ?,
+                alt_text = ?
+            WHERE image_id = ?
+        ");
+
+            $updateStmt->execute([
+                $imageUrl,
+                $altText,
+                $existingImage['image_id']
+            ]);
+        } else {
+            $this->createProductImage($productId, $imageUrl, $altText);
+        }
+    }
+
+    public function getAllOrdersForAdmin(): array
+    {
+        $stmt = $this->pdo->prepare("
+        SELECT 
+            o.order_id,
+            o.fk_user_id,
+            o.total_amount,
+            o.status,
+            o.created_at,
+            u.username,
+            u.email,
+            oi.order_item_id,
+            oi.fk_product_id,
+            oi.quantity,
+            oi.price,
+            p.name AS product_name
+        FROM orders o
+        INNER JOIN users u ON o.fk_user_id = u.user_id
+        LEFT JOIN orderItems oi ON o.order_id = oi.fk_order_id
+        LEFT JOIN products p ON oi.fk_product_id = p.product_id
+        ORDER BY o.created_at DESC, o.order_id DESC
+    ");
+
+        $stmt->execute();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $orders = [];
+
+        foreach ($rows as $row) {
+            $orderId = $row['order_id'];
+
+            if (!isset($orders[$orderId])) {
+                $orders[$orderId] = [
+                    'order_id' => (int) $row['order_id'],
+                    'fk_user_id' => (int) $row['fk_user_id'],
+                    'username' => $row['username'],
+                    'email' => $row['email'],
+                    'total_amount' => (float) $row['total_amount'],
+                    'status' => $row['status'],
+                    'created_at' => $row['created_at'],
+                    'items' => []
+                ];
+            }
+
+            if (!empty($row['order_item_id'])) {
+                $orders[$orderId]['items'][] = [
+                    'order_item_id' => (int) $row['order_item_id'],
+                    'fk_product_id' => (int) $row['fk_product_id'],
+                    'product_name' => $row['product_name'],
+                    'quantity' => (int) $row['quantity'],
+                    'price' => (float) $row['price']
+                ];
+            }
+        }
+
+        return array_values($orders);
+    }
+
+    public function updateOrderStatus(int $orderId, string $status): bool
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE orders 
+        SET status = ?
+        WHERE order_id = ?
+    ");
+
+        $stmt->execute([$status, $orderId]);
+
+        return $stmt->rowCount() > 0;
     }
 
     /**
@@ -338,7 +500,7 @@ class DbService
         ");
         $stmt->execute([$token]);
         $result = $stmt->fetch();
-        
+
         if (!$result)
             return null;
 
@@ -376,9 +538,9 @@ class DbService
                                     WHERE name 
                                     LIKE ?");
         $stmt->execute(["%$search%"]);
-        
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-  
+
 
 }

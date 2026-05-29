@@ -6,6 +6,7 @@ $input = json_decode(file_get_contents("php://input"), true) ?? [];
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/controllers/ProductController.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/controllers/UserController.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/controllers/OrderController.php';
 
 $result = null;
 
@@ -17,6 +18,10 @@ try {
 
         case 'user':
             $result = UserController::action($_SERVER['REQUEST_METHOD'], $input, $_GET, $_POST);
+            break;
+
+        case 'order':
+            $result = OrderController::action($_SERVER['REQUEST_METHOD'], $input, $_GET, $_POST);
             break;
 
         default:
