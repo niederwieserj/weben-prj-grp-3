@@ -71,17 +71,20 @@ async function loadProduct() {
 
     document.querySelector('#product-description').innerHTML = product['description'];
 
-    const cartActions = document.getElementById('product-cart-actions');
+    // ***************************** cart *****************************
+    const cartWrapper = document.getElementById('product-cart-actions');
 
-    if (cartActions) {
-        cartActions.setAttribute('data-product-id', product['product_id']);
-        cartActions.setAttribute('data-product-name', product['name']);
-        cartActions.setAttribute('data-product-price', product['price']);
-
-        if (images !== undefined && images.length > 0) {
-            cartActions.setAttribute('data-product-image', images[0]['image_url']);
+    if (cartWrapper) {
+        // ****** add data attributes for cart js to "add to product" cart wrapper *******
+        cartWrapper.setAttribute('data-product-id', product.product_id); 
+        cartWrapper.setAttribute('data-product-name', product.name);
+        cartWrapper.setAttribute('data-product-price', product.price);
+        
+        
+        if (product.images && product.images.length > 0) {
+            cartWrapper.setAttribute('data-product-image', product.images[0].image_url);
         } else {
-            cartActions.setAttribute('data-product-image', '');
+            cartWrapper.setAttribute('data-product-image', '');
         }
     }
 }

@@ -542,5 +542,73 @@ class DbService
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // ********** Cart Queries **********
+
+    public function getCartItems(int $userId): array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT 
+                p.product_id AS id,
+                p.name,
+                p.price,
+                i.image_url AS imageUrl,
+                c.quantity
+            FROM cartItems c
+            JOIN products p ON c.fk_product_id = p.product_id
+            LEFT JOIN product_images i ON p.product_id = i.fk_product_id AND i.is_primary = 1
+            WHERE c.fk_user_id = ?
+        ");
+        $stmt->execute([$userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function addCartItem(int $userId, int $productId): void
+    {
+        // first check if item already exists in users cart
+        $stmt = $this->pdo->prepare("SELECT quantity FROM cartItems WHERE fk_user_id = ? AND fk_product_id = ?");
+        $stmt->execute([$userId, $productId]);
+        $row = $stmt->fetch();
+
+        if ($row) {
+            $this->increaseCartItemQuantity($userId, $productId);
+        } else {
+            $stmt = $this->pdo->prepare("INSERT INTO cartItems (fk_user_id, fk_product_id, quantity) VALUES (?, ?, 1)");
+            $stmt->execute([$userId, $productId]);
+        }
+    }
+
+    public function increaseCartItemQuantity(int $userId, int $productId): void
+    {
+        $stmt = $this->pdo->prepare("UPDATE cartItems SET quantity = quantity + 1 WHERE fk_user_id = ? AND fk_product_id = ?");
+        $stmt->execute([$userId, $productId]);
+    }
+
+    public function decreaseCartItemQuantity(int $userId, int $productId): void
+    {
+        $stmt = $this->pdo->prepare("SELECT quantity FROM cartItems WHERE fk_user_id = ? AND fk_product_id = ?");
+        $stmt->execute([$userId, $productId]);
+        $row = $stmt->fetch();
+
+        if ($row) {
+            if ($row['quantity'] <= 1) {
+                $this->removeCartItem($userId, $productId);
+            } else {
+                $stmt = $this->pdo->prepare("UPDATE cartItems SET quantity = quantity - 1 WHERE fk_user_id = ? AND fk_product_id = ?");
+                $stmt->execute([$userId, $productId]);
+            }
+        }
+    }
+
+    public function removeCartItem(int $userId, int $productId): void
+    {
+        $stmt = $this->pdo->prepare("DELETE FROM cartItems WHERE fk_user_id = ? AND fk_product_id = ?");
+        $stmt->execute([$userId, $productId]);
+    }
+
+    public function clearCart(int $userId): void
+    {
+        $stmt = $this->pdo->prepare("DELETE FROM cartItems WHERE fk_user_id = ?");
+        $stmt->execute([$userId]);
+    }
 
 }

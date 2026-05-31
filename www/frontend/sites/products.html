@@ -211,16 +211,17 @@
   <script src="https://code.jquery.com/ui/1.14.2/jquery-ui.min.js"
     integrity="sha256-mblSWfbYzaq/f+4akyMhE6XELCou4jbkgPv+JQPER2M=" crossorigin="anonymous"></script>
 
-  <!-- New way: Load layout first, then main.js as a module -->
+  
   <!-- 1. Load Layout (Orchestrator) -->
   <script type="module" src="/frontend/js/layout.js"></script>
 
   <!-- 2. Load Main App (Modular Entry Point) -->
-  <!-- Note: type="module" is required for import/export syntax -->
+  
   <script type="module" src="/frontend/js/main.js"></script>
 
   <script type="module" src="/frontend/js/components/products.js"></script>
   <script src="/frontend/js/components/search.js"></script>
+  <script src="/frontend/js/components/cart.js"></script>
 </body>
 
 </html>

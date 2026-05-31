@@ -1,174 +1,144 @@
-/**
- * cart.js — Shopping cart UI logic.
- * Depends on: modules/cart.js, modules/utils.js, modules/toast.js
- */
-
+// ********** UI logic for cart **********
 import {
+    getCart,
     addCartItem,
     removeCartItem,
     increaseCartItemQuantity,
     decreaseCartItemQuantity,
-    clearCart,
-    getCart,
-    getCartItemCount,
-    getCartTotalPrice
+    clearCart
 } from '../modules/cart.js';
 
 import { formatEuro } from '../modules/utils.js';
 import { showSuccess } from '../modules/toast.js';
 
-function getProductFromButton(button) {
-    const productElement = button.closest('[data-cart-product]');
+// refresh cart elements
+function updateCartUI(cartItems) {
+    const items = Array.isArray(cartItems) ? cartItems : [];
+    
+    // calculate item counts
+    const itemCount = items.reduce((sum, item) => sum + Number(item.quantity), 0);
+    const $badge = $('#cart-badge');
+    
+    $badge.text(itemCount).toggle(itemCount > 0);
 
-    if (!productElement) {
-        return null;
+    // get checkout elements
+    const $cartList = $('#checkout-cart-list');
+    const $cartBadge = $('#checkout-cart-count');
+    const $totalElement = $('#checkout-cart-total');
+
+    if (!$cartList.length) return;
+
+    if ($cartBadge.length) {
+        $cartBadge.text(itemCount);
     }
 
-    return {
-        id: productElement.dataset.productId,
-        name: productElement.dataset.productName,
-        price: productElement.dataset.productPrice,
-        imageUrl: productElement.dataset.productImage || ''
-    };
-}
+    $cartList.empty();
 
-function handleAddToCart(button) {
-    const product = getProductFromButton(button);
-
-    if (!product) {
-        console.warn('No product data found for add-to-cart button.');
-        return;
-    }
-
-    addCartItem(product);
-    updateCartBadge();
-    renderCheckoutCart();
-
-    showSuccess(`${product.name} added to cart.`);
-}
-
-function updateCartBadge() {
-    const badge = document.getElementById('cart-badge');
-
-    if (!badge) {
-        return;
-    }
-
-    const itemCount = getCartItemCount();
-
-    badge.textContent = itemCount;
-    badge.style.display = itemCount > 0 ? 'inline-block' : 'none';
-}
-
-function renderCheckoutCart() {
-    const cartList = document.getElementById('checkout-cart-list');
-    const cartBadge = document.getElementById('checkout-cart-count');
-    const totalElement = document.getElementById('checkout-cart-total');
-
-    if (!cartList) {
-        return;
-    }
-
-    const cart = getCart();
-
-    cartList.innerHTML = '';
-
-    if (cartBadge) {
-        cartBadge.textContent = getCartItemCount();
-    }
-
-    if (cart.length === 0) {
-        cartList.innerHTML = `
+    // render empty cart list
+    if (items.length === 0) {
+        $cartList.html(`
             <li class="list-group-item text-body-secondary">
                 Your cart is empty.
             </li>
-        `;
-
-        if (totalElement) {
-            totalElement.textContent = formatEuro(0);
+        `);
+        if ($totalElement.length) {
+            $totalElement.text(formatEuro(0));
         }
-
         return;
     }
 
-    cart.forEach(item => {
-        const listItem = document.createElement('li');
-        listItem.className = 'list-group-item d-flex justify-content-between align-items-center gap-3';
+    // display cart items
+    let totalPrice = 0;
 
-        listItem.innerHTML = `
-            <div class="d-flex align-items-center gap-3">
-                ${item.imageUrl ? `<img src="${item.imageUrl}" alt="${item.name}" width="48" height="48" class="object-fit-contain">` : ''}
-                <div>
-                    <h6 class="my-0">${item.name}</h6>
-                    <small class="text-body-secondary">
-                        ${formatEuro(item.price)} × ${item.quantity}
-                    </small>
+    items.forEach(item => {
+        totalPrice += Number(item.price) * Number(item.quantity);
+
+        const listItem = `
+            <li class="list-group-item d-flex justify-content-between align-items-center gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    ${item.imageUrl ? `<img src="${item.imageUrl}" alt="${item.name}" width="48" height="48" class="object-fit-contain">` : ''}
+                    <div>
+                        <h6 class="my-0">${item.name}</h6>
+                        <small class="text-body-secondary">
+                            ${formatEuro(item.price)} × ${item.quantity}
+                        </small>
+                    </div>
                 </div>
-            </div>
 
-            <div class="d-flex align-items-center gap-2">
-                <button type="button" class="btn btn-sm btn-outline-light" data-cart-decrease="${item.id}">−</button>
-                <span>${item.quantity}</span>
-                <button type="button" class="btn btn-sm btn-outline-light" data-cart-increase="${item.id}">+</button>
-                <button type="button" class="btn btn-sm btn-outline-danger" data-cart-remove="${item.id}">
-                    Remove
-                </button>
-            </div>
+                <div class="d-flex align-items-center gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-light" data-cart-decrease="${item.id}">−</button>
+                    <span>${item.quantity}</span>
+                    <button type="button" class="btn btn-sm btn-outline-light" data-cart-increase="${item.id}">+</button>
+                    <button type="button" class="btn btn-sm btn-outline-danger" data-cart-remove="${item.id}">
+                        Remove
+                    </button>
+                </div>
+            </li>
         `;
-
-        cartList.appendChild(listItem);
+        $cartList.append(listItem);
     });
 
-    if (totalElement) {
-        totalElement.textContent = formatEuro(getCartTotalPrice());
+    if ($totalElement.length) {
+        $totalElement.text(formatEuro(totalPrice));
     }
 }
 
-function handleCartClick(event) {
-    const addButton = event.target.closest('[data-cart-add]');
-    const removeButton = event.target.closest('[data-cart-remove]');
-    const increaseButton = event.target.closest('[data-cart-increase]');
-    const decreaseButton = event.target.closest('[data-cart-decrease]');
-    const clearButton = event.target.closest('[data-cart-clear]');
+function handleAddToCart($button) {
+    const $productElement = $button.closest('[data-cart-product]');
+    if (!$productElement.length) return;
 
-    if (addButton) {
-        event.preventDefault();
-        event.stopPropagation();
-        handleAddToCart(addButton);
-        return;
-    }
+    // get details of products
+    const payload = {
+        product_id: $productElement.attr('data-product-id'),
+        name: $productElement.attr('data-product-name'),
+        price: parseFloat($productElement.attr('data-product-price')) || 0,
+        imageUrl: $productElement.attr('data-product-image') || ''
+    };
 
-    if (removeButton) {
-        removeCartItem(removeButton.dataset.cartRemove);
-        updateCartBadge();
-        renderCheckoutCart();
-        return;
-    }
-
-    if (increaseButton) {
-        increaseCartItemQuantity(increaseButton.dataset.cartIncrease);
-        updateCartBadge();
-        renderCheckoutCart();
-        return;
-    }
-
-    if (decreaseButton) {
-        decreaseCartItemQuantity(decreaseButton.dataset.cartDecrease);
-        updateCartBadge();
-        renderCheckoutCart();
-        return;
-    }
-
-    if (clearButton) {
-        clearCart();
-        updateCartBadge();
-        renderCheckoutCart();
-    }
+    $.ajax({
+        url: '/backend/request-handler.php?controller=cart&action=add',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(payload)
+    })
+    .done(function(updatedCart) {
+        updateCartUI(updatedCart);
+        
+    })
+    .fail(function(xhr) {
+        console.error("Cart error:", xhr);
+    });
 }
 
 export function initCart() {
-    document.addEventListener('click', handleCartClick);
+    // fetch to create UI on load
+    getCart().done(updateCartUI);
 
-    updateCartBadge();
-    renderCheckoutCart();
+    // event handlers removed before adding them, so the script doesnt add 2 event handlers when running multiple times
+    $(document).off('click', '[data-cart-add]').on('click', '[data-cart-add]', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        handleAddToCart($(this));
+    });
+
+    $(document).off('click', '[data-cart-remove]').on('click', '[data-cart-remove]', function() {
+        const productId = $(this).data('cartRemove');
+        removeCartItem(productId).done(updateCartUI);
+    });
+
+    $(document).off('click', '[data-cart-increase]').on('click', '[data-cart-increase]', function() {
+        const productId = $(this).data('cartIncrease');
+        increaseCartItemQuantity(productId).done(updateCartUI);
+    });
+
+    $(document).off('click', '[data-cart-decrease]').on('click', '[data-cart-decrease]', function() {
+        const productId = $(this).data('cartDecrease');
+        decreaseCartItemQuantity(productId).done(updateCartUI);
+    });
+
+    $(document).off('click', '[data-cart-clear]').on('click', '[data-cart-clear]', function() {
+        clearCart().done(function() {
+            updateCartUI([]);
+        });
+    });    
 }
