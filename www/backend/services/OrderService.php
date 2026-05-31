@@ -18,6 +18,55 @@ class OrderService
         }
     }
 
+
+    public function createNewOrder(int $userId): array
+    {
+        if (!$userId) {
+            return [
+                "success" => false,
+                "message" => "You must be logged in to place an order."
+            ];
+        }
+
+        try {
+            
+            $cartItems = $this->db->getCartItems($userId);
+
+            if (empty($cartItems)) {
+                return [
+                    "success" => false,
+                    "message" => "Your cart is empty."
+                ];
+            }
+
+            $totalAmount = 0.0;
+            foreach ($cartItems as $item) {
+                $totalAmount += (float)$item['price'] * (int)$item['quantity'];
+            }
+
+            $this->db->beginTransaction();
+
+            $orderId = $this->db->createNewOrder($userId, $totalAmount, $cartItems);
+
+            $this->db->clearCart($userId);
+
+            $this->db->commit();
+            
+            return [
+                "success" => true,
+                "message" => "Order confirmed successfully!",
+                "order_id" => $orderId
+            ];
+        } catch (Exception $e) {
+            $this->db->rollback();
+            
+            return [
+                "success" => false,
+                "message" => "Order couldn't be completed: " . $e->getMessage()
+            ];
+        }
+    }
+
     public function getAllOrders(): array
     {
         $this->requireAdmin();

@@ -235,76 +235,6 @@ class DbService
         }
     }
 
-    public function getAllOrdersForAdmin(): array
-    {
-        $stmt = $this->pdo->prepare("
-        SELECT 
-            o.order_id,
-            o.fk_user_id,
-            o.total_amount,
-            o.status,
-            o.created_at,
-            u.username,
-            u.email,
-            oi.order_item_id,
-            oi.fk_product_id,
-            oi.quantity,
-            oi.price,
-            p.name AS product_name
-        FROM orders o
-        INNER JOIN users u ON o.fk_user_id = u.user_id
-        LEFT JOIN orderItems oi ON o.order_id = oi.fk_order_id
-        LEFT JOIN products p ON oi.fk_product_id = p.product_id
-        ORDER BY o.created_at DESC, o.order_id DESC
-    ");
-
-        $stmt->execute();
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        $orders = [];
-
-        foreach ($rows as $row) {
-            $orderId = $row['order_id'];
-
-            if (!isset($orders[$orderId])) {
-                $orders[$orderId] = [
-                    'order_id' => (int) $row['order_id'],
-                    'fk_user_id' => (int) $row['fk_user_id'],
-                    'username' => $row['username'],
-                    'email' => $row['email'],
-                    'total_amount' => (float) $row['total_amount'],
-                    'status' => $row['status'],
-                    'created_at' => $row['created_at'],
-                    'items' => []
-                ];
-            }
-
-            if (!empty($row['order_item_id'])) {
-                $orders[$orderId]['items'][] = [
-                    'order_item_id' => (int) $row['order_item_id'],
-                    'fk_product_id' => (int) $row['fk_product_id'],
-                    'product_name' => $row['product_name'],
-                    'quantity' => (int) $row['quantity'],
-                    'price' => (float) $row['price']
-                ];
-            }
-        }
-
-        return array_values($orders);
-    }
-
-    public function updateOrderStatus(int $orderId, string $status): bool
-    {
-        $stmt = $this->pdo->prepare("
-        UPDATE orders 
-        SET status = ?
-        WHERE order_id = ?
-    ");
-
-        $stmt->execute([$status, $orderId]);
-
-        return $stmt->rowCount() > 0;
-    }
 
     /**
      * Fetches a single product by ID along with all its associated images.
@@ -530,7 +460,12 @@ class DbService
         $this->pdo->rollBack();
     }
 
+
+
+    
+    // ***********************************
     // searchbar live product search query
+    // ***********************************
     public function searchProducts(string $search): array
     {
         $stmt = $this->pdo->prepare("SELECT name, product_id 
@@ -542,8 +477,10 @@ class DbService
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // ********** Cart Queries **********
 
+    // **********************************
+    // ********** Cart Queries **********
+    // **********************************
     public function getCartItems(int $userId): array
     {
         $stmt = $this->pdo->prepare("
@@ -609,6 +546,112 @@ class DbService
     {
         $stmt = $this->pdo->prepare("DELETE FROM cartItems WHERE fk_user_id = ?");
         $stmt->execute([$userId]);
+    }
+
+
+
+    // ***********************************
+    // ********** order queries **********
+    // ***********************************
+
+
+    public function createNewOrder(int $userId, float $totalAmount, array $cartItems): int
+    {
+        $stmtOrder = $this->pdo->prepare("
+            INSERT INTO orders (fk_user_id, total_amount, status, created_at)
+            VALUES (?, ?, 'pending', NOW())
+        ");
+        $stmtOrder->execute([$userId, $totalAmount]);
+       
+        $orderId = (int) $this->pdo->lastInsertId();
+       
+        $stmtItems = $this->pdo->prepare("
+            INSERT INTO orderItems (fk_order_id, fk_product_id, quantity, price)
+            VALUES (?, ?, ?, ?)
+        ");
+
+        foreach ($cartItems as $item) {
+            $stmtItems->execute([
+                $orderId,
+                $item['id'], 
+                $item['quantity'],
+                $item['price']
+            ]);
+        }
+
+        return $orderId;
+    }
+
+
+    public function getAllOrdersForAdmin(): array
+    {
+        $stmt = $this->pdo->prepare("
+        SELECT 
+            o.order_id,
+            o.fk_user_id,
+            o.total_amount,
+            o.status,
+            o.created_at,
+            u.username,
+            u.email,
+            oi.order_item_id,
+            oi.fk_product_id,
+            oi.quantity,
+            oi.price,
+            p.name AS product_name
+        FROM orders o
+        INNER JOIN users u ON o.fk_user_id = u.user_id
+        LEFT JOIN orderItems oi ON o.order_id = oi.fk_order_id
+        LEFT JOIN products p ON oi.fk_product_id = p.product_id
+        ORDER BY o.created_at DESC, o.order_id DESC
+    ");
+
+        $stmt->execute();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $orders = [];
+
+        foreach ($rows as $row) {
+            $orderId = $row['order_id'];
+
+            if (!isset($orders[$orderId])) {
+                $orders[$orderId] = [
+                    'order_id' => (int) $row['order_id'],
+                    'fk_user_id' => (int) $row['fk_user_id'],
+                    'username' => $row['username'],
+                    'email' => $row['email'],
+                    'total_amount' => (float) $row['total_amount'],
+                    'status' => $row['status'],
+                    'created_at' => $row['created_at'],
+                    'items' => []
+                ];
+            }
+
+            if (!empty($row['order_item_id'])) {
+                $orders[$orderId]['items'][] = [
+                    'order_item_id' => (int) $row['order_item_id'],
+                    'fk_product_id' => (int) $row['fk_product_id'],
+                    'product_name' => $row['product_name'],
+                    'quantity' => (int) $row['quantity'],
+                    'price' => (float) $row['price']
+                ];
+            }
+        }
+
+        return array_values($orders);
+    }
+
+    public function updateOrderStatus(int $orderId, string $status): bool
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE orders 
+        SET status = ?
+        WHERE order_id = ?
+    ");
+
+        $stmt->execute([$status, $orderId]);
+
+        return $stmt->rowCount() > 0;
     }
 
 }

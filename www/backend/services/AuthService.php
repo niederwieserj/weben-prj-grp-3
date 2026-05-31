@@ -158,7 +158,8 @@ class AuthService
         if (isset($input['last_name']))
             $user->setLastName($input['last_name']);
         if (isset($input['title']))
-            $user->setTitleId((int) $input['title']);
+            $titleId = ($input['title'] !== '') ? (int) $input['title'] : null;
+            $user->setTitleId($titleId);
         if (isset($input['email']))
             $user->setEmail($input['email']);
         if (isset($input['username']))

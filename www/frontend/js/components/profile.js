@@ -18,7 +18,7 @@ const FIELD_IDS = ['title', 'username', 'first_name', 'last_name', 'email'];
 /* ── Helpers ─────────────────────────────────────────────── */
 
 function setFormDisabled(disabled) {
-    const inputs = $(FORM_ID).querySelectorAll('input, select, button');
+    const inputs = getElement(FORM_ID).querySelectorAll('input, select, button');
     inputs.forEach(el => { el.disabled = disabled; });
 }
 
@@ -50,7 +50,7 @@ async function loadProfile() {
 async function saveProfile(event) {
     event.preventDefault();
 
-    const form = $(FORM_ID);
+    const form = getElement(FORM_ID);
 
     // Bootstrap 5 native validation
     if (!form.checkValidity()) {
@@ -59,10 +59,10 @@ async function saveProfile(event) {
     }
 
     const payload = {
-        title:      $('title').value,
-        first_name: $('first_name').value,
-        last_name:  $('last_name').value,
-        email:      $('email').value
+        title:      getElement('title').value,
+        first_name: getElement('first_name').value,
+        last_name:  getElement('last_name').value,
+        email:      getElement('email').value
     };
 
     setFormDisabled(true);

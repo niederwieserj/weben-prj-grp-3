@@ -27,16 +27,16 @@
 
                         <div id="profile-alert" class="alert d-none" role="alert"></div>
 
-                        <form id="profile-form" novalidate>
+                        <form id="profile-form">
                             <div class="row g-3">
 
                                 <div class="col-md-6">
                                     <label for="title" class="form-label">Title</label>
                                     <select id="title" class="form-select">
                                         <option value="">—</option>
-                                        <option value="Mr">Mr</option>
-                                        <option value="Mrs">Mrs</option>
-                                        <option value="Dr">Dr</option>
+                                        <option value="1">Mr</option>
+                                        <option value="2">Mrs</option>
+                                        <option value="3">Dr</option>
                                     </select>
                                 </div>
 
@@ -91,9 +91,11 @@
     </main>
 
     <div id="toast-placeholder"></div>
-
     <div id="footer-placeholder"></div>
 
+    <script src="https://code.jquery.com/jquery-4.0.0.min.js"
+    integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
+ 
     <script type="module" src="/frontend/js/layout.js"></script>
     <script type="module" src="/frontend/js/main.js"></script>
     <script type="module" src="/frontend/js/components/profile.js"></script>
