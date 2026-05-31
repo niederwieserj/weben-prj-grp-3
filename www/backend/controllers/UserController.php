@@ -70,6 +70,7 @@ class UserController
                         throw new RuntimeException('User not logged in.');
                     } else {
                         $authService->updateUserData($userId, $input);
+                        $result = ["success" => true];
                     }
                     break;
 

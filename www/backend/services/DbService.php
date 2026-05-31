@@ -530,7 +530,12 @@ class DbService
         $this->pdo->rollBack();
     }
 
+
+
+    
+    // ***********************************
     // searchbar live product search query
+    // ***********************************
     public function searchProducts(string $search): array
     {
         $stmt = $this->pdo->prepare("SELECT name, product_id 
@@ -542,8 +547,10 @@ class DbService
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // ********** Cart Queries **********
 
+    // **********************************
+    // ********** Cart Queries **********
+    // **********************************
     public function getCartItems(int $userId): array
     {
         $stmt = $this->pdo->prepare("
