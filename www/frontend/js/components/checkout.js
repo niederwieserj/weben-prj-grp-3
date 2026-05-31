@@ -23,4 +23,9 @@ export function initCheckout() {
             }
         });
     });
+
+    const confirmOrder = getElement('confirmOrderBtn');
 }
+
+
+

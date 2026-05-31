@@ -18,6 +18,23 @@ class OrderService
         }
     }
 
+
+    public function createNewOrder(): array
+    {
+        $orderCreated = $this->db->createNewOrder();
+        if(!$orderCreated){
+            return [
+                "success" => false,
+                "message" => "Order couldn't be completed"
+            ];
+        } else {
+            return [
+                "success" => true,
+                "message" => "Order confirmed"
+            ];
+        }
+    }
+
     public function getAllOrders(): array
     {
         $this->requireAdmin();

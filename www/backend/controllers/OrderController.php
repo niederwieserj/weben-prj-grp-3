@@ -8,6 +8,7 @@ class OrderController
     {
         $orderService = new OrderService();
         $action = $getParams['action'] ?? null;
+        $userId = $_SESSION['user_id'] ?? null;
 
         if ($requestMethod === 'GET') {
             switch ($action) {
@@ -20,7 +21,14 @@ class OrderController
         }
 
         if ($requestMethod === 'POST') {
+            $productId = (int)($input['product_id'] ?? 0);
+
             switch ($action) {
+                case 'createNewOrder':
+                    $orderSerive->createNewOrder($userId, $productId);
+                break;
+                    
+                
                 case 'updateOrderStatus':
                     $orderId = (int)($input['order_id'] ?? 0);
                     $status = $input['status'] ?? '';
