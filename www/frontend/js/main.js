@@ -27,10 +27,11 @@ function bootstrapApp() {
     // But let's keep it inside the components for clarity.
 
     initAuth();
+    initCart();
     initCheckout();
     initResetPassword();
     initSignUp();
-    initCart();
+    
     // initProducts();
     
     console.log('App: Ready.');

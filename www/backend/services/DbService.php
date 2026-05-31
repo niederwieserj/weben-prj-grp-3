@@ -555,19 +555,31 @@ class DbService
     // ***********************************
 
 
-    public function createNewOrder(int $userId, int $productId): void{
-        $stmt1 = $this->pdo->pepare("
-                INSERT INTO orders (order_id, fk_user_id, total_amount, status, created_at)
-                VALUES (?, ?, ?, active, ?)
-                ");
+    public function createNewOrder(int $userId, float $totalAmount, array $cartItems): int
+    {
+        $stmtOrder = $this->pdo->prepare("
+            INSERT INTO orders (fk_user_id, total_amount, status, created_at)
+            VALUES (?, ?, 'pending', NOW())
+        ");
+        $stmtOrder->execute([$userId, $totalAmount]);
+       
+        $orderId = (int) $this->pdo->lastInsertId();
+       
+        $stmtItems = $this->pdo->prepare("
+            INSERT INTO orderItems (fk_order_id, fk_product_id, quantity, price)
+            VALUES (?, ?, ?, ?)
+        ");
 
-        $stmt2 = $this->pdo->prepare("
-                 INSERT INTO orderItems (order_item_id, fk_order_id, fk_product_id, quantity, price)
-                 VALUES (?, ?, ?, ?, ?)
-                 ");
+        foreach ($cartItems as $item) {
+            $stmtItems->execute([
+                $orderId,
+                $item['id'], 
+                $item['quantity'],
+                $item['price']
+            ]);
+        }
 
-        $stmt1->execute([$userId, $productId]);
-        $stmt2->execute([$userId, $productId]);
+        return $orderId;
     }
 
 

@@ -19,18 +19,50 @@ class OrderService
     }
 
 
-    public function createNewOrder(): array
+    public function createNewOrder(int $userId): array
     {
-        $orderCreated = $this->db->createNewOrder();
-        if(!$orderCreated){
+        if (!$userId) {
             return [
                 "success" => false,
-                "message" => "Order couldn't be completed"
+                "message" => "You must be logged in to place an order."
             ];
-        } else {
+        }
+
+        try {
+            
+            $cartItems = $this->db->getCartItems($userId);
+
+            if (empty($cartItems)) {
+                return [
+                    "success" => false,
+                    "message" => "Your cart is empty."
+                ];
+            }
+
+            $totalAmount = 0.0;
+            foreach ($cartItems as $item) {
+                $totalAmount += (float)$item['price'] * (int)$item['quantity'];
+            }
+
+            $this->db->beginTransaction();
+
+            $orderId = $this->db->createNewOrder($userId, $totalAmount, $cartItems);
+
+            $this->db->clearCart($userId);
+
+            $this->db->commit();
+            
             return [
                 "success" => true,
-                "message" => "Order confirmed"
+                "message" => "Order confirmed successfully!",
+                "order_id" => $orderId
+            ];
+        } catch (Exception $e) {
+            $this->db->rollback();
+            
+            return [
+                "success" => false,
+                "message" => "Order couldn't be completed: " . $e->getMessage()
             ];
         }
     }

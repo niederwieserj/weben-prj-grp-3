@@ -25,9 +25,7 @@ class OrderController
 
             switch ($action) {
                 case 'createNewOrder':
-                    $orderSerive->createNewOrder($userId, $productId);
-                break;
-                    
+                    return $orderService->createNewOrder($userId);
                 
                 case 'updateOrderStatus':
                     $orderId = (int)($input['order_id'] ?? 0);
