@@ -1,94 +1,139 @@
-/**
- * cart.js — Local shopping cart storage logic.
- * Handles cart data only. No DOM manipulation here.
- */
+const BASE_URL = '/backend/request-handler.php?controller=cart';
+const GUEST_CART_KEY = 'coregear_cart';
 
-const CART_STORAGE_KEY = 'coregear_cart';
 
-export function getCart() {
-    const cartJson = localStorage.getItem(CART_STORAGE_KEY);
-
-    if (!cartJson) {
-        return [];
-    }
-
-    try {
-        return JSON.parse(cartJson);
-    } catch (error) {
-        console.error('Could not parse cart:', error);
-        return [];
-    }
+function getGuestCart() {
+    return JSON.parse(localStorage.getItem(GUEST_CART_KEY) || '[]');
 }
 
-export function saveCart(cart) {
-    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+function saveGuestCart(cart) {
+    localStorage.setItem(GUEST_CART_KEY, JSON.stringify(cart));
+}
+
+// ************* check db first, and, if user not logged in, fallback to guest cart logic ***************
+function handleCartRequest(ajaxPromise, guestFallbackLogic) {
+    const deferred = $.Deferred();
+    
+    ajaxPromise
+        .done(data => deferred.resolve(data))
+        .fail(xhr => {
+            if (xhr.status === 401) {
+                // ** fallback **
+                const updatedGuestCart = guestFallbackLogic();
+                deferred.resolve(updatedGuestCart);
+            } else {
+                console.error("Cart error:", xhr);
+                deferred.reject(xhr);
+            }
+        });
+        
+    return deferred.promise();
+}
+
+// *************** exported cart actions ****************
+
+export function getCart() {
+    return handleCartRequest(
+        $.ajax({ url: `${BASE_URL}&action=get`, method: 'GET', dataType: 'json' }),
+        () => getGuestCart()
+    );
 }
 
 export function addCartItem(product) {
-    const cart = getCart();
-
-    const existingItem = cart.find(item => String(item.id) === String(product.id));
-
-    if (existingItem) {
-        existingItem.quantity += 1;
-    } else {
-        cart.push({
-            id: product.id,
-            name: product.name,
-            price: Number(product.price),
-            imageUrl: product.imageUrl || '',
-            quantity: 1
-        });
-    }
-
-    saveCart(cart);
-    return cart;
+    return handleCartRequest(
+        $.ajax({
+            url: `${BASE_URL}&action=add`,
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ product_id: product.id })
+        }),
+        () => {
+            let cart = getGuestCart();
+            let item = cart.find(i => String(i.id) === String(product.id));
+            
+            if (item) {
+                item.quantity += 1;
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: Number(product.price),
+                    imageUrl: product.imageUrl || '',
+                    quantity: 1
+                });
+            }
+            saveGuestCart(cart);
+            return cart;
+        }
+    );
 }
 
 export function removeCartItem(productId) {
-    const cart = getCart().filter(item => String(item.id) !== String(productId));
-    saveCart(cart);
-    return cart;
+    return handleCartRequest(
+        $.ajax({
+            url: `${BASE_URL}&action=remove`,
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ product_id: productId })
+        }),
+        () => {
+            let cart = getGuestCart().filter(i => String(i.id) !== String(productId));
+            saveGuestCart(cart);
+            return cart;
+        }
+    );
 }
 
 export function increaseCartItemQuantity(productId) {
-    const cart = getCart();
-
-    const item = cart.find(item => String(item.id) === String(productId));
-
-    if (item) {
-        item.quantity += 1;
-    }
-
-    saveCart(cart);
-    return cart;
+    return handleCartRequest(
+        $.ajax({
+            url: `${BASE_URL}&action=increase`,
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ product_id: productId })
+        }),
+        () => {
+            let cart = getGuestCart();
+            let item = cart.find(i => String(i.id) === String(productId));
+            if (item) item.quantity += 1;
+            saveGuestCart(cart);
+            return cart;
+        }
+    );
 }
 
 export function decreaseCartItemQuantity(productId) {
-    const cart = getCart();
-
-    const item = cart.find(item => String(item.id) === String(productId));
-
-    if (item) {
-        item.quantity -= 1;
-    }
-
-    const cleanedCart = cart.filter(item => item.quantity > 0);
-
-    saveCart(cleanedCart);
-    return cleanedCart;
+    return handleCartRequest(
+        $.ajax({
+            url: `${BASE_URL}&action=decrease`,
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ product_id: productId })
+        }),
+        () => {
+            let cart = getGuestCart();
+            let item = cart.find(i => String(i.id) === String(productId));
+            if (item) {
+                item.quantity -= 1;
+                if (item.quantity <= 0) {
+                    cart = cart.filter(i => String(i.id) !== String(productId));
+                }
+            }
+            saveGuestCart(cart);
+            return cart;
+        }
+    );
 }
 
 export function clearCart() {
-    localStorage.removeItem(CART_STORAGE_KEY);
-}
-
-export function getCartItemCount() {
-    return getCart().reduce((sum, item) => sum + item.quantity, 0);
-}
-
-export function getCartTotalPrice() {
-    return getCart().reduce((sum, item) => {
-        return sum + item.price * item.quantity;
-    }, 0);
+    return handleCartRequest(
+        $.ajax({
+            url: `${BASE_URL}&action=clear`,
+            method: 'POST'
+        }),
+        () => {
+            localStorage.removeItem(GUEST_CART_KEY);
+            return [];
+        }
+    );
 }

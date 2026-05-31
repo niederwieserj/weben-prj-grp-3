@@ -18,19 +18,14 @@
         <div id="navbar-placeholder"></div>
 
         <!-- ======================================================================= -->
-        <!-- Content goes here -->
+        
 
         <div class="container">
             <main>
                 <div class="py-5 text-center">
-                    <img class="d-block mx-auto mb-4" src="/frontend/img/bootstrap-logo.svg" alt="" width="72"
-                        height="57" />
+                    
                     <h1 class="h2">Checkout form</h1>
-                    <p class="lead">
-                        Below is an example form built entirely with Bootstrap’s form
-                        controls. Each required form group has a validation state that can
-                        be triggered by attempting to submit the form without completing it.
-                    </p>
+                    
                 </div>
                 <div class="row g-5">
                     <div class="col-md-5 col-lg-4 order-md-last">
@@ -217,13 +212,14 @@
     </main>
 
     <div id="footer-placeholder"></div>
-
-    <!-- New way: Load layout first, then main.js as a module -->
+    <script src="https://code.jquery.com/jquery-4.0.0.min.js"
+    integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
+    
     <!-- 1. Load Layout (Orchestrator) -->
     <script type="module" src="/frontend/js/layout.js"></script>
 
     <!-- 2. Load Main App (Modular Entry Point) -->
-    <!-- Note: type="module" is required for import/export syntax -->
+    
     <script type="module" src="/frontend/js/main.js"></script>
     <script src="/frontend/js/components/search.js"></script>
 </body>

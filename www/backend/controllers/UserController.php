@@ -45,12 +45,16 @@ class UserController
                             "username" => $_SESSION['username'] ?? null
                         ];
                     } else {
-                        throw new RuntimeException('User not logged in.');
+                        //throw new RuntimeException('User not logged in.');
+                        $result = [
+                            "success" => true,
+                            "logged_in" => false
+                        ];
                     }
                     break;
 
                 case 'getUserData':
-                    // Properly use session user_id, fallback to null if not logged in
+                    
                     $userId = $_SESSION['user_id'] ?? null;
                     if (!$userId) {
                         throw new RuntimeException('User not logged in.');
