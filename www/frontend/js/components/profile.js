@@ -84,6 +84,27 @@ async function loadUserOrders(){
             </a>
         `).join('');
 
+        // ****** directly link to opened invoice modal ******
+        const urlParams = new URLSearchParams(window.location.search);
+        const openOrderId = urlParams.get('open_order_id');
+
+        if (openOrderId) {
+            const orderIdInt = parseInt(openOrderId, 10);
+            
+            const orderExists = userOrders.some(o => o.order_id === orderIdInt);
+            
+            if (orderExists) {
+                
+                viewOrderDetails(orderIdInt);
+                
+                const modalElement = document.getElementById('invoiceModal');
+                if (modalElement) {
+                    const invoiceModal = new bootstrap.Modal(modalElement);
+                    invoiceModal.show();
+                }
+            }
+        }
+
     } catch (err) {
         console.error("Error loading history:", err);
         const container = document.getElementById('order-history-container');

@@ -71,7 +71,7 @@ async function handleCheckoutSubmit(e) {
             await clearCart(); // clear cart if order is successfully completed
             
             alert('Order confirmed! Order ID: ' + data.order_id);
-            window.location.href = '/frontend/sites/profile.html'; 
+            window.location.href = `/frontend/sites/profile.html?open_order_id=${data.order_id}`; 
         } else {
             alert('Error: ' + data.message);
             
