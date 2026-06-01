@@ -74,7 +74,7 @@
                     </div>
                 </div>
 
-                <div class="card border-secondary">
+                <div class="card border-secondary mb-4">
                     <div class="card-header">
                         <h5 class="mb-0">Account Actions</h5>
                     </div>
@@ -87,15 +87,41 @@
                 </div>
 
             </div>
-        </div>
+            <div class="col-12 col-md-8 col-lg-6">
+
+                <div class="card border-secondary mb-4">
+                    <div class="card-header text-center">
+                        <h3 class="mb-0">My Orders</h3>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="list-group list-group-light" id="order-history-container">
+                            <!-- *********** invoice history populated via profile.js *********** -->
+                        </div>
+                    </div>
+                </div>
+            </div>
     </main>
+    <div class="modal fade" id="invoiceModal" tabindex="-1" aria-labelledby="invoiceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content bg-dark text-light border-secondary">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title" id="invoiceModalLabel">Order Invoice Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0" id="invoice-modal-body">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+
 
     <div id="toast-placeholder"></div>
     <div id="footer-placeholder"></div>
 
     <script src="https://code.jquery.com/jquery-4.0.0.min.js"
-    integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
- 
+        integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
+
     <script type="module" src="/frontend/js/layout.js"></script>
     <script type="module" src="/frontend/js/main.js"></script>
     <script type="module" src="/frontend/js/components/profile.js"></script>
