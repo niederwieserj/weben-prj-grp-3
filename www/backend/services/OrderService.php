@@ -67,11 +67,15 @@ class OrderService
         }
     }
 
+
+
     public function getAllOrders(): array
     {
         $this->requireAdmin();
         return $this->db->getAllOrdersForAdmin();
     }
+
+
 
     public function updateOrderStatus(int $orderId, string $status): array
     {
@@ -94,4 +98,13 @@ class OrderService
             'message' => 'Order status updated.'
         ];
     }
+
+
+    public function getOrdersByUserId(int $userId): array
+    {
+        if(!$userId){
+            throw new Exception("Must be a registered user");
+        } return $this->db->getOrdersByUserId($userId);
+    }
+
 }

@@ -74,20 +74,12 @@ class DbService
         return $result ? new Product($result) : null;
     }
 
-    /**
-     * Fetches all products with their associated images.
-     * Returns an array of arrays: [ [Product, Image[]], ... ]
-     * 
-     * Note: We do NOT modify the Product, or Image classes.
+    /*
+      Fetch all products with their associated images.
+      Returns an array of arrays: [ [Product, Image[]], ... ]
      */
     public function getAllProductsWithImages(?string $searchTerm = null): array
     {
-        // 1. The SQL Query
-        // We join ratings and images. 
-        // We use DISTINCT to avoid duplicates if a product has multiple images/ratings 
-        // causing a Cartesian product explosion, OR we handle the grouping in PHP.
-        // Here, we fetch raw data and group in PHP for maximum flexibility.
-
         // if product search POST, dann ein modfiziertes query
 
         $sql = "
@@ -244,9 +236,7 @@ class DbService
      */
     public function getProductByIdWithImages(int $productId): ?array
     {
-        // 1. The SQL Query
-        // We filter by product_id immediately to avoid fetching unnecessary data.
-        // We still join images to handle the 1:N relationship.
+
         $sql = "
         SELECT 
             *
@@ -263,10 +253,7 @@ class DbService
             return null;
         }
 
-        // 2. Grouping Logic
-        // Even though we filtered by ID, we might get multiple rows if there are multiple images.
-        // We reuse the grouping logic from getAllProductsWithImages to ensure consistency.
-
+        // grouping
         $groupedProducts = [];
 
         foreach ($rows as $row) {
@@ -289,13 +276,12 @@ class DbService
             }
         }
 
-        // Since we queried for a specific ID, the array should contain exactly one entry.
-        // We return that single entry directly.
+        // return single entry directly
         return array_values($groupedProducts)[0] ?? null;
     }
 
     /**
-     * Returns an array of Product objects.
+     * Return an array of Product objects
      *
      * @return Product[]
      */
@@ -464,7 +450,7 @@ class DbService
 
     
     // ***********************************
-    // searchbar live product search query
+    // ********** search query ***********
     // ***********************************
     public function searchProducts(string $search): array
     {
@@ -478,9 +464,13 @@ class DbService
     }
 
 
+
+
+
     // **********************************
     // ********** Cart Queries **********
     // **********************************
+
     public function getCartItems(int $userId): array
     {
         $stmt = $this->pdo->prepare("
@@ -499,6 +489,8 @@ class DbService
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+
+
     public function addCartItem(int $userId, int $productId): void
     {
         // first check if item already exists in users cart
@@ -514,11 +506,15 @@ class DbService
         }
     }
 
+
+
     public function increaseCartItemQuantity(int $userId, int $productId): void
     {
         $stmt = $this->pdo->prepare("UPDATE cartItems SET quantity = quantity + 1 WHERE fk_user_id = ? AND fk_product_id = ?");
         $stmt->execute([$userId, $productId]);
     }
+
+
 
     public function decreaseCartItemQuantity(int $userId, int $productId): void
     {
@@ -536,17 +532,22 @@ class DbService
         }
     }
 
+
+
     public function removeCartItem(int $userId, int $productId): void
     {
         $stmt = $this->pdo->prepare("DELETE FROM cartItems WHERE fk_user_id = ? AND fk_product_id = ?");
         $stmt->execute([$userId, $productId]);
     }
 
+
+
     public function clearCart(int $userId): void
     {
         $stmt = $this->pdo->prepare("DELETE FROM cartItems WHERE fk_user_id = ?");
         $stmt->execute([$userId]);
     }
+
 
 
 
@@ -641,6 +642,9 @@ class DbService
         return array_values($orders);
     }
 
+
+
+
     public function updateOrderStatus(int $orderId, string $status): bool
     {
         $stmt = $this->pdo->prepare("
@@ -652,6 +656,45 @@ class DbService
         $stmt->execute([$status, $orderId]);
 
         return $stmt->rowCount() > 0;
+    }
+
+
+
+    public function getOrdersByUserId(int $userId): array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT o.*, oi.order_item_id, oi.fk_product_id, p.name as product_name, oi.quantity, oi.price
+            FROM orders o
+            LEFT JOIN orderItems oi ON o.order_id = oi.fk_order_id
+            LEFT JOIN products p ON oi.fk_product_id = p.product_id
+            WHERE o.fk_user_id = ?
+            ORDER BY o.created_at DESC
+        ");
+        $stmt->execute([$userId]);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        
+        $orders = [];
+        foreach ($rows as $row) {
+            $orderId = $row['order_id'];
+            if (!isset($orders[$orderId])) {
+                $orders[$orderId] = [
+                    'order_id' => $orderId,
+                    'status' => $row['status'],
+                    'total_amount' => $row['total_amount'],
+                    'created_at' => $row['created_at'],
+                    'items' => []
+                ];
+            }
+            if (!empty($row['order_item_id'])) {
+                $orders[$orderId]['items'][] = [
+                    'product_name' => $row['product_name'],
+                    'quantity' => $row['quantity'],
+                    'price' => $row['price']
+                ];
+            }
+        }
+        return array_values($orders);
     }
 
 }

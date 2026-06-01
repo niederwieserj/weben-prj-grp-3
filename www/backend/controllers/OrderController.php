@@ -14,6 +14,9 @@ class OrderController
             switch ($action) {
                 case 'getAllOrders':
                     return $orderService->getAllOrders();
+                
+                case 'getOrdersByUserId':
+                    return $orderService->getOrdersByUserId($userId);    
 
                 default:
                     throw new InvalidArgumentException('Invalid action.');
