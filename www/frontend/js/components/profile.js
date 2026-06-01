@@ -66,14 +66,14 @@ async function loadUserOrders(){
         
         userOrders = res;
 
-        // 
+        // order history list
         container.innerHTML = res.map(order => `
             <a href="#" class="list-group-item list-group-item-action px-3 border-1 rounded-2 mb-2" 
                data-bs-toggle="modal" data-bs-target="#invoiceModal" 
                onclick="viewOrderDetails(${order.order_id}); return false;">
 
                 <div class="d-flex w-100 justify-content-between">
-                    <h5 class="order-number mb-1">Your order #${order.order_id}</h5>
+                    <h5 class="order-number mb-1">Your order #CG-${order.order_id}</h5>
                     <small class="order-date text-muted">${order.created_at}</small>
                 </div>
                 
@@ -100,9 +100,9 @@ function viewOrderDetails(orderId) {
     if (!order) return;
 
     
-    const firstName = getElement('first_name')?.value || 'Customer';
-    const lastName  = getElement('last_name')?.value || '';
-    const email     = getElement('email')?.value || '';
+    const firstName = getElement('first_name').value;
+    const lastName  = getElement('last_name').value;
+    const email     = getElement('email').value;
 
     
     let badgeColor = 'bg-warning text-black';
