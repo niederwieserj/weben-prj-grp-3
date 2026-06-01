@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: database:3306
--- Generation Time: Apr 27, 2026 at 07:00 AM
+-- Generation Time: Jun 01, 2026 at 10:17 AM
 -- Server version: 10.6.25-MariaDB-ubu2204
--- PHP Version: 8.3.26
+-- PHP Version: 8.3.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -47,7 +47,8 @@ INSERT INTO `addresses` (`address_id`, `fk_user_id`, `postal_code`, `address`, `
 (3, 12, '', 'john doe st. 1', 'Vienna', 'Austria', '2026-04-25 09:58:44'),
 (4, 13, '', 'john doe st. 1', 'Vienna', 'Austria', '2026-04-25 10:08:38'),
 (5, 14, '1010', 'john doe st. 1', 'Vienna', 'Austria', '2026-04-25 10:09:21'),
-(6, 16, '1111', 'Jakob Str. 1', 'Vienna', 'Austria', '2026-04-25 10:33:01');
+(6, 16, '1111', 'Jakob Str. 1', 'Vienna', 'Austria', '2026-04-25 10:33:01'),
+(7, 17, '1100', 'eine adresse 15', 'Vienna', 'Austria', '2026-05-29 18:17:29');
 
 -- --------------------------------------------------------
 
@@ -101,6 +102,21 @@ CREATE TABLE `orderItems` (
   `price` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `orderItems`
+--
+
+INSERT INTO `orderItems` (`order_item_id`, `fk_order_id`, `fk_product_id`, `quantity`, `price`) VALUES
+(1, 5, 1, 1, 499.00),
+(2, 5, 7, 2, 499.00),
+(3, 6, 1, 1, 499.00),
+(4, 6, 7, 2, 499.00),
+(5, 7, 1, 2, 499.00),
+(6, 7, 8, 2, 499.00),
+(7, 7, 9, 1, 499.00),
+(8, 8, 1, 1, 499.00),
+(9, 9, 10, 2, 499.00);
+
 -- --------------------------------------------------------
 
 --
@@ -114,6 +130,17 @@ CREATE TABLE `orders` (
   `status` varchar(50) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`order_id`, `fk_user_id`, `total_amount`, `status`, `created_at`) VALUES
+(5, 17, 1497.00, 'pending', '2026-05-31 15:27:15'),
+(6, 17, 1497.00, 'pending', '2026-05-31 15:35:10'),
+(7, 17, 2495.00, 'cancelled', '2026-05-31 15:36:20'),
+(8, 17, 499.00, 'pending', '2026-06-01 09:23:40'),
+(9, 17, 998.00, 'pending', '2026-06-01 09:36:29');
 
 -- --------------------------------------------------------
 
@@ -230,15 +257,16 @@ INSERT INTO `users` (`user_id`, `username`, `password_hash`, `email`, `first_nam
 (1, 'testuser', 'ae5deb822e0d71992900471a7199d0d95b8e7c9d05c40a8245a281fd2c1d6684', 'test@test.com', 'Max', 'Mustermännchen', 0, 1, '2026-04-11 10:26:29', NULL, '36ceae5ebf8509bb481d1486689ddbc736b8abb38e425fe5072f9130d5d32071', '2026-04-21 14:30:44'),
 (3, 'johndoe', '$2y$12$iyDZecLBc.TZ1sug74F7BOHIzifZffgLreg3iPcAFic5ncx4kYzZW', 'john@doe.com', 'John', 'Doe', 0, 1, '2026-04-13 19:12:26', NULL, NULL, NULL),
 (4, 'john2doe', 'c2713b62c903791bdefc5a6a99df04d4330de491bbc7a0ca6a5007337e4a6028', 'john2@doe.com', 'John', 'Doe', 0, 1, '2026-04-13 19:14:42', NULL, NULL, NULL),
-(5, 'johndoe4', '$2y$12$Ji6V1eLWNtcUIwsILvlZeeMmUuzVHR3CGT7n36khZKA.lodfFXg8S', 'john4@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 09:10:08', 1, NULL, NULL),
-(6, 'johndoe5', '$2y$12$TRILSWa44VJc94iGXoTqIO3/v0pfRr088Qh6M8x8L0ZAy4P6cxjY2', 'john5@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 09:14:33', 1, NULL, NULL),
-(7, 'johndoe6', '$2y$12$z5q5ES3Xy8MB/QQW4mXD1.6DHdEm9J1hwrU4gsDJrznjOXyM8FY4u', 'john6@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 09:15:30', 1, NULL, NULL),
-(8, 'johndoe7', '$2y$12$th457wWp1mwZXZz50DMHk.d5kcYTbSYJKnWNewClxdwKcs4qx.n5i', 'john7@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 09:16:02', 1, NULL, NULL),
-(9, 'johndoe8', '$2y$12$yMwqUwo5aMfEQ6frqfYMmuFb3piZdmvUkC69SmH/CUSxdz4WAthVO', 'john8@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 09:30:01', 1, NULL, NULL),
-(12, 'johndoe11', '$2y$12$2aL5.HIzd2hFLWTyAuciH.wE68bJaTioejb4.BYFP5vea8qTDdDkC', 'john11@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 09:58:44', 1, NULL, NULL),
-(13, 'johndoe12', '$2y$12$wJvYGgdF0kZKpGNIQLBTDeuy2bTuJ38kxvNkrZDkW4MiMUvOX5hrC', 'john12@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 10:08:38', 1, NULL, NULL),
-(14, 'johndoe13', '$2y$12$gc6p4uqQap2vFPi56QkzzuX.bEa3Z.u4IrjdJ24S6wveTqxYKBUuO', 'john13@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 10:09:21', 1, NULL, NULL),
-(16, 'jakob', '$2y$12$KnhPc/E7DP2cus7wgFr8meSfgSH4TLh9Ddvlh0YL1dEFvRZwTcoa6', 'email@test.com', 'Jakob', 'Test', 0, 1, '2026-04-25 10:33:01', 4, NULL, NULL);
+(5, 'johndoe4', '$2y$12$Ji6V1eLWNtcUIwsILvlZeeMmUuzVHR3CGT7n36khZKA.lodfFXg8S', 'john4@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 09:10:08', NULL, NULL, NULL),
+(6, 'johndoe5', '$2y$12$TRILSWa44VJc94iGXoTqIO3/v0pfRr088Qh6M8x8L0ZAy4P6cxjY2', 'john5@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 09:14:33', NULL, NULL, NULL),
+(7, 'johndoe6', '$2y$12$z5q5ES3Xy8MB/QQW4mXD1.6DHdEm9J1hwrU4gsDJrznjOXyM8FY4u', 'john6@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 09:15:30', NULL, NULL, NULL),
+(8, 'johndoe7', '$2y$12$th457wWp1mwZXZz50DMHk.d5kcYTbSYJKnWNewClxdwKcs4qx.n5i', 'john7@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 09:16:02', NULL, NULL, NULL),
+(9, 'johndoe8', '$2y$12$yMwqUwo5aMfEQ6frqfYMmuFb3piZdmvUkC69SmH/CUSxdz4WAthVO', 'john8@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 09:30:01', NULL, NULL, NULL),
+(12, 'johndoe11', '$2y$12$2aL5.HIzd2hFLWTyAuciH.wE68bJaTioejb4.BYFP5vea8qTDdDkC', 'john11@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 09:58:44', NULL, NULL, NULL),
+(13, 'johndoe12', '$2y$12$wJvYGgdF0kZKpGNIQLBTDeuy2bTuJ38kxvNkrZDkW4MiMUvOX5hrC', 'john12@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 10:08:38', NULL, NULL, NULL),
+(14, 'johndoe13', '$2y$12$gc6p4uqQap2vFPi56QkzzuX.bEa3Z.u4IrjdJ24S6wveTqxYKBUuO', 'john13@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 10:09:21', NULL, NULL, NULL),
+(16, 'jakob', '$2y$12$KnhPc/E7DP2cus7wgFr8meSfgSH4TLh9Ddvlh0YL1dEFvRZwTcoa6', 'email@test.com', 'Jakob', 'Test', 0, 1, '2026-04-25 10:33:01', NULL, NULL, NULL),
+(17, 'lintaf', '$2y$12$WhA517iYrnHNIRkRkZjdwepW7h2yEfpSWNMJb6KfDxR8IDHRq6QTa', 'lin.taf@gmail.com', 'lindores', 'tafernur', 1, 1, '2026-05-29 18:17:29', 2, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -257,10 +285,9 @@ CREATE TABLE `user_titles` (
 --
 
 INSERT INTO `user_titles` (`title_id`, `title_value`, `created_at`) VALUES
-(1, '', '2026-04-24 21:19:49'),
-(2, 'Ms', '2026-04-24 21:19:49'),
-(3, 'Mrs', '2026-04-24 21:19:49'),
-(4, 'Mr', '2026-04-24 21:19:49');
+(1, 'Ms', '2026-04-24 21:19:49'),
+(2, 'Mrs', '2026-04-24 21:19:49'),
+(3, 'Mr', '2026-04-24 21:19:49');
 
 -- --------------------------------------------------------
 
@@ -366,13 +393,13 @@ ALTER TABLE `wishlist`
 -- AUTO_INCREMENT for table `addresses`
 --
 ALTER TABLE `addresses`
-  MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `cartItems`
 --
 ALTER TABLE `cartItems`
-  MODIFY `cart_item_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `cart_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -384,13 +411,13 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `orderItems`
 --
 ALTER TABLE `orderItems`
-  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -414,7 +441,7 @@ ALTER TABLE `product_ratings`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `user_titles`
@@ -470,12 +497,6 @@ ALTER TABLE `product_images`
 ALTER TABLE `product_ratings`
   ADD CONSTRAINT `fk_product_ratings_product_id` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_product_ratings_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
-
---
--- Constraints for table `users`
---
-ALTER TABLE `users`
-  ADD CONSTRAINT `fk_users_title_id` FOREIGN KEY (`fk_title_id`) REFERENCES `user_titles` (`title_id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `wishlist`
