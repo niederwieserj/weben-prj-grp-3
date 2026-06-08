@@ -322,6 +322,13 @@ function initFilters() {
             // applyFilters(); // Only if you need to re-run the full filter logic
         });
     }
+
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', function () {
+            applyFilters();
+        });
+    }
 }
 
 function updateUrlParams() {
@@ -359,17 +366,25 @@ function applyFilters() {
         checkedCategories.add(cb.value);
     });
 
+    const searchInput = document.getElementById('search-input');
+    let searchTerm = '';
+    if (searchInput) {
+        searchTerm = searchInput.value.trim().toLowerCase();
+    }
+
     $('.product-card').each(function () {
         const $card = $(this);
         const price = parseFloat($card.attr('data-price'));
         const rating = parseFloat($card.attr('data-rating'));
         const category = $card.attr('data-category');
+        const name = ($card.attr('data-name') || '').toLowerCase();
 
         const matchesPrice = price <= maxPrice;
         const matchesRating = rating >= minRating;
         const matchesCategory = checkedCategories.has(category);
+        const matchesSearch = !searchTerm || name.includes(searchTerm);
 
-        if (matchesPrice && matchesRating && matchesCategory) {
+        if (matchesPrice && matchesRating && matchesCategory && matchesSearch) {
             $card.fadeIn(200);
         } else {
             $card.fadeOut(200, updateResultCount);
