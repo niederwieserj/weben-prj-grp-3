@@ -372,7 +372,7 @@ function applyFilters() {
         if (matchesPrice && matchesRating && matchesCategory) {
             $card.fadeIn(200);
         } else {
-            $card.hide();
+            $card.fadeOut(200, updateResultCount);
         }
     });
 
@@ -427,4 +427,11 @@ function updateResultCount() {
     }
 
     counter.textContent = `${visibleCount} of ${totalCount} products shown`;
+
+    if (visibleCount <= 0) {
+        document.getElementById('info-card-zero-products').classList.remove('d-none');
+    } else {
+        document.getElementById('info-card-zero-products').classList.add('d-none');
+    }
+    
 }

@@ -22,10 +22,7 @@ class OrderService
     public function createNewOrder(int $userId): array
     {
         if (!$userId) {
-            return [
-                "success" => false,
-                "message" => "You must be logged in to place an order."
-            ];
+            throw new RuntimeException('You must be logged in to place an order.');
         }
 
         try {
@@ -33,10 +30,7 @@ class OrderService
             $cartItems = $this->db->getCartItems($userId);
 
             if (empty($cartItems)) {
-                return [
-                    "success" => false,
-                    "message" => "Your cart is empty."
-                ];
+                throw new RuntimeException('Your cart is empty.');
             }
 
             $totalAmount = 0.0;
@@ -56,10 +50,7 @@ class OrderService
         } catch (Exception $e) {
             $this->db->rollback();
             
-            return [
-                "success" => false,
-                "message" => "Order couldn't be completed: " . $e->getMessage()
-            ];
+            throw new RuntimeException("Order couldn't be completed.");
         }
     }
 
@@ -99,5 +90,4 @@ class OrderService
             throw new Exception("Must be a registered user");
         } return $this->db->getOrdersByUserId($userId);
     }
-
 }

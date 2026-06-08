@@ -59,10 +59,12 @@ h4{
     position: relative;
     height: 100%;
     padding: 1rem;
+    box-shadow: 0px 0px 0px 0px rgba(238, 46, 255, 0);
+    transition: box-shadow 0.15s ease-in-out;
 }
 
 .explore-card:hover{
-    border-color:rgb(167, 91, 255);
+    box-shadow: 0px 0px 15px 4px rgba(238, 46, 255, 0.9);
 }
 
 .stretched-link{
@@ -70,11 +72,6 @@ h4{
     color:white;
     font-size:40px;
     text-decoration: none;
-}
-
-
-.stretched-link:hover{
-    color:rgb(255, 230, 0);
 }
 
 .image-container{
@@ -90,8 +87,6 @@ h4{
     height:240px;
     object-fit: contain;
 }
-
-
 
 .col-responsive {
     flex: 0 0 100%;

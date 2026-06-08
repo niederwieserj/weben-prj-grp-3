@@ -14,7 +14,10 @@ class UserController
         if ($requestMethod == 'GET') {
             switch ($action) {
                 case 'getAllUsers':
-                    // TODO: Admin check
+                    if (!isset($_SESSION['user_id']) || empty($_SESSION['is_admin'])) {
+                        throw new RuntimeException('Admin access required.');
+                    }
+                    
                     $result = $userService->getAllUsers();
                     break;
 
@@ -54,7 +57,7 @@ class UserController
                     break;
 
                 case 'getUserData':
-                    
+
                     $userId = $_SESSION['user_id'] ?? null;
                     if (!$userId) {
                         throw new RuntimeException('User not logged in.');
@@ -73,7 +76,7 @@ class UserController
                         $result = [];
                     }
                     break;
-                
+
                 case 'updateUserDataById':
                     // Require authentication for updates
                     // TODO admin check
