@@ -12,17 +12,9 @@ import { initBootstrapValidation } from '../modules/validators.js';
 async function handleSignUp(e) {
     e.preventDefault();
 
-    console.log("here2");
-    
     const form = e.target;
-    console.log(form);
-
     const formData = new FormData(form);
-    console.log(formData);
-
     const data = Object.fromEntries(formData.entries());
-
-    //console.log(data);
     
     // Add action for backend routing
     data.action = 'sign-up';

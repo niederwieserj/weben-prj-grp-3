@@ -18,89 +18,99 @@
     <main class="container py-5">
         <div class="row justify-content-center">
             <div class="col-12 col-md-8 col-lg-6">
+                <h3 class="">Hello, <span id="firstName2"></span>!</h3>
 
-                <div class="card border-secondary mb-4">
-                    <div class="card-header text-center">
-                        <h3 class="mb-0">My Profile</h3>
+                <form id="profile-form">
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label for="title" class="form-label">Title</label>
+                            <select id="title" class="form-select">
+                                <option value="1">Ms</option>
+                                <option value="2">Mrs</option>
+                                <option value="3">Mr</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" id="username" class="form-control" readonly disabled>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="first_name" class="form-label">First Name</label>
+                            <input type="text" id="first_name" class="form-control" required>
+                            <div class="invalid-feedback">First name is required.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="last_name" class="form-label">Last Name</label>
+                            <input type="text" id="last_name" class="form-control" required>
+                            <div class="invalid-feedback">Last name is required.</div>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" id="email" class="form-control" required>
+                            <div class="invalid-feedback">Please enter a valid email.</div>
+                        </div>
+
+                        <div class="col-12 d-grid mt-4">
+                            <button type="submit" id="btn-save" class="btn btn-primary btn-lg">Save
+                                Changes</button>
+                        </div>
                     </div>
-                    <div class="card-body p-4">
-
-                        <div id="profile-alert" class="alert d-none" role="alert"></div>
-
-                        <form id="profile-form">
-                            <div class="row g-3">
-
-                                <div class="col-md-6">
-                                    <label for="title" class="form-label">Title</label>
-                                    <select id="title" class="form-select">
-                                        <option value="1">Mr</option>
-                                        <option value="2">Mrs</option>
-                                        <option value="3">Dr</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="username" class="form-label">Username</label>
-                                    <input type="text" id="username" class="form-control" readonly disabled>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="first_name" class="form-label">First Name</label>
-                                    <input type="text" id="first_name" class="form-control" required>
-                                    <div class="invalid-feedback">First name is required.</div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label for="last_name" class="form-label">Last Name</label>
-                                    <input type="text" id="last_name" class="form-control" required>
-                                    <div class="invalid-feedback">Last name is required.</div>
-                                </div>
-
-                                <div class="col-12">
-                                    <label for="email" class="form-label">Email Address</label>
-                                    <input type="email" id="email" class="form-control" required>
-                                    <div class="invalid-feedback">Please enter a valid email.</div>
-                                </div>
-
-                                <div class="col-12 d-grid mt-4">
-                                    <button type="submit" id="btn-save" class="btn btn-primary btn-lg">Save
-                                        Changes</button>
-                                </div>
-
-                            </div>
-                        </form>
-
-                    </div>
-                </div>
-
-            </div>
-            
-    </main>
-    <div class="modal fade" id="invoiceModal" tabindex="-1" aria-labelledby="invoiceModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable">
-            <div class="modal-content bg-dark text-light border-secondary">
-                <div class="modal-header border-secondary">
-                    <h5 class="modal-title" id="invoiceModalLabel">Order Invoice Details</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-0" id="invoice-modal-body">
-                    </div>
+                </form>
             </div>
         </div>
-    </div>
+        <div class="row justify-content-center mt-5">
+            <div class="col-12 col-md-8 col-lg-6">
+                <h4 class="mb-3">Billing address</h4>
+                <form class="needs-validation" novalidate>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="address" class="form-label">Address</label>
+                            <input type="text" class="form-control" id="address" placeholder="Hauptstraße 1" required />
+                            <div class="invalid-feedback">
+                                Please enter your shipping address.
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <label for="country" class="form-label">Country</label>
+                            <input type="text" class="form-control" id="country" placeholder="Austria" required />
+                            <div class="invalid-feedback">
+                                Please enter a valid country.
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="state" class="form-label">City</label>
+                            <input type="text" class="form-control" id="city" placeholder="Vienna" required />
+                            <div class="invalid-feedback">
+                                Please enter a valid city.
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="zip" class="form-label">Zip</label>
+                            <input type="text" class="form-control" id="zip" placeholder="1010" required />
+                            <div class="invalid-feedback">Zip code required.</div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
 
+
+    </main>
 
 
     <div id="toast-placeholder"></div>
     <div id="footer-placeholder"></div>
 
-    <script src="https://code.jquery.com/jquery-4.0.0.min.js"
-        integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-4.0.0.min.js" integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
 
     <script type="module" src="/frontend/js/layout.js"></script>
     <script type="module" src="/frontend/js/main.js"></script>
     <script type="module" src="/frontend/js/components/profile.js"></script>
-    <script src="/frontend/js/components/search.js"></script>
 
 </body>
 

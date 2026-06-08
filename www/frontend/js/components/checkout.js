@@ -21,7 +21,6 @@ async function initCheckout() {
     if (result.response.ok && result.logged_in) {
         loadUserData();
     } else {
-        console.log('hihihi');
         showWarning('Log in to finish checkout.');
     }
 
@@ -58,8 +57,6 @@ async function loadUserData() {
 
     try {
         const result = await apiGet({ controller: 'user', action: 'getAddressByUserId', user_id: user.user_id });
-
-        console.log(result);
         
         if (result.response.ok && result.address) {
             const address = result.address;

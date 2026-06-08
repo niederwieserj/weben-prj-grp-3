@@ -22,8 +22,6 @@ async function loadProduct() {
 
     const images = response['images'];
 
-    console.log(images);
-
     if (images === undefined || images.length == 0) {
         console.log('empty');
     } else {

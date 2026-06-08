@@ -28,12 +28,8 @@ async function handleLogin(e) {
     data.action = 'login';
     data['remember-me'] = document.getElementById('remember-me')?.checked || false;
 
-    // console.log('Login data:', data);
-
     try {
         const result = await apiPost('user', 'login', data);
-
-        console.log(result);
 
         if (result.response.ok) {
             // Update navigation dropdowns
