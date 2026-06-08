@@ -18,43 +18,36 @@ class OrderService
         }
     }
 
-
     public function createNewOrder(int $userId): array
     {
         if (!$userId) {
             throw new RuntimeException('You must be logged in to place an order.');
         }
 
+        $cartItems = $this->db->getCartItems($userId);
+
+        if (empty($cartItems)) {
+            throw new RuntimeException('Your cart is empty.');
+        }
+
         try {
-            
-            $cartItems = $this->db->getCartItems($userId);
-
-            if (empty($cartItems)) {
-                throw new RuntimeException('Your cart is empty.');
-            }
-
             $totalAmount = 0.0;
             foreach ($cartItems as $item) {
-                $totalAmount += (float)$item['price'] * (int)$item['quantity'];
+                $totalAmount += (float) $item['price'] * (int) $item['quantity'];
             }
 
             $this->db->beginTransaction();
-
             $orderId = $this->db->createNewOrder($userId, $totalAmount, $cartItems);
-
             $this->db->clearCart($userId);
-
             $this->db->commit();
-            
+
             return ["order_id" => $orderId];
         } catch (Exception $e) {
             $this->db->rollback();
-            
+
             throw new RuntimeException("Order couldn't be completed.");
         }
     }
-
-
 
     public function getAllOrders(): array
     {
@@ -86,8 +79,10 @@ class OrderService
 
     public function getOrdersByUserId(int $userId): array
     {
-        if(!$userId){
+        if (!$userId) {
             throw new Exception("Must be a registered user");
-        } return $this->db->getOrdersByUserId($userId);
+        }
+        
+        return $this->db->getOrdersByUserId($userId);
     }
 }

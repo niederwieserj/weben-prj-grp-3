@@ -3,7 +3,7 @@
  * Address Model
  * Represents the address data structure only.
  */
-class Address {
+class Address implements JsonSerializable {
     private int $addressId;
     private int $fkUserId;
     private string $postalCode;
@@ -15,7 +15,7 @@ class Address {
     public function __construct(array $data) {
         $this->addressId = (int)($data['address_id'] ?? 0);
         $this->fkUserId = (int)($data['fk_user_id'] ?? 0);
-        $this->postalCode = $data['zip'] ?? '';
+        $this->postalCode = $data['postal_code'] ?? '';
         $this->address = $data['address'] ?? '';
         $this->city = $data['city'] ?? '';
         $this->country = $data['country'] ?? '';
@@ -42,6 +42,18 @@ class Address {
 
     // Array representation
     public function toArray(): array {
+        return [
+            'address_id'  => $this->addressId,
+            'fk_user_id'  => $this->fkUserId,
+            'postal_code' => $this->postalCode,
+            'address'     => $this->address,
+            'city'        => $this->city,
+            'country'     => $this->country,
+            'created_at'  => $this->createdAt
+        ];
+    }
+
+    public function jsonSerialize(): array {
         return [
             'address_id'  => $this->addressId,
             'fk_user_id'  => $this->fkUserId,

@@ -21,6 +21,22 @@ class UserController
                     $result = $userService->getAllUsers();
                     break;
 
+                case 'getAddressByUserId':
+                    if (!isset($_SESSION['user_id'])) {
+                        throw new RuntimeException('User not logged in.');
+                    }
+
+                    if (!isset($getParams['user_id'])) {
+                        throw new InvalidArgumentException('Missing parameter user_id.');
+                    }
+
+                    if (($_SESSION['user_id'] != $getParams['user_id']) && empty($_SESSION['is_admin'])) {
+                        throw new RuntimeException('Not authorized.');
+                    }
+                    
+                    $result = $userService->getAddressByUserId($getParams['user_id']);
+                    break;
+
                 default:
                     throw new InvalidArgumentException('Invalid action.');
             }

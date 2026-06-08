@@ -144,6 +144,17 @@ class UserService
         return ["user" => $user->toArray()];
     }
 
+    public function getAddressByUserId(int $userId): array
+    {
+        $address = $this->db->getAddressByUserId($userId);
+
+        if (!$address) {
+            throw new InvalidArgumentException("Address not found.");
+        }
+
+        return ["address" => $address->toArray()];
+    }
+
     public function getAllUsers(): array
     {
         return $this->db->getAllUsers();

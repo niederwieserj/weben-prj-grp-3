@@ -50,7 +50,7 @@ async function loadProfile() {
 
 async function loadUserOrders(){
     try {
-        const res = await apiGet('/backend/request-handler.php', {}, {
+        const res = await apiGet({
             controller: 'order',
             action: 'getOrdersByUserId'
         });

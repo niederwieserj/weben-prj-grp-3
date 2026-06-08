@@ -26,7 +26,7 @@ async function checkAdminAccess() {
 }
 
 async function loadCategories() {
-    categories = await apiGet('/backend/request-handler.php', {}, {
+    categories = await apiGet({
         controller: 'product',
         action: 'getCategories'
     });
@@ -67,7 +67,7 @@ function initCreateProductForm() {
 }
 
 async function loadAllUsers() {
-    const users = await apiGet('/backend/request-handler.php', {}, {
+    const users = await apiGet({
         controller: 'user',
         action: 'getAllUsers'
     });
@@ -129,7 +129,7 @@ async function loadAllUsers() {
 }
 
 async function loadProductsForAdmin() {
-    const products = await apiGet('/backend/request-handler.php', {}, {
+    const products = await apiGet({
         controller: 'product',
         action: 'getProductsWithImages'
     });
@@ -290,7 +290,7 @@ function registerProductEditSubmitEvents() {
 }
 
 async function loadOrdersForAdmin() {
-    const orders = await apiGet('/backend/request-handler.php', {}, {
+    const orders = await apiGet({
         controller: 'order',
         action: 'getAllOrders'
     });

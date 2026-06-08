@@ -1,4 +1,4 @@
-// ********** UI logic for cart **********
+
 import {
     getCart,
     addCartItem,
@@ -72,11 +72,13 @@ function updateCartUI(cartItems) {
                 </div>
 
                 <div class="d-flex align-items-center gap-2">
-                    <button type="button" class="btn btn-sm btn-outline-light" data-cart-decrease="${item.id}">−</button>
+                    <button type="button" class="btn btn-sm btn-outline-light border-0" data-cart-decrease="${item.id}">−</button>
                     <span>${item.quantity}</span>
-                    <button type="button" class="btn btn-sm btn-outline-light" data-cart-increase="${item.id}">+</button>
-                    <button type="button" class="btn btn-sm btn-outline-danger" data-cart-remove="${item.id}">
-                        Remove
+                    <button type="button" class="btn btn-sm btn-outline-light border-0" data-cart-increase="${item.id}">+</button>
+                    <button type="button" class="btn btn-sm btn-outline-danger border-0" data-cart-remove="${item.id}">
+                        <svg class="bi pt-1" width="20" height="20" fill="currentColor">
+                            <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#trash" />
+                        </svg>
                     </button>
                 </div>
             </li>

@@ -38,9 +38,9 @@ export async function apiPost(controller, action, payload = {}, options = {}) {
 /**
  * Send a GET request with optional query parameters.
  */
-export async function apiGet(endpoint, options = {}, params = {}) {
+export async function apiGet(params = {}) {
   // 1. Build the URL with parameters if they exist
-  let url = endpoint;
+  let url = API_ENDPOINT;
   if (Object.keys(params).length > 0) {
     const queryString = new URLSearchParams(params).toString();
     url += `?${queryString}`;
@@ -49,8 +49,7 @@ export async function apiGet(endpoint, options = {}, params = {}) {
   // 2. Make the request
   const response = await fetch(url, {
     method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
-    ...options
+    headers: { 'Content-Type': 'application/json' }
   });
 
   /*if (!response.ok) {

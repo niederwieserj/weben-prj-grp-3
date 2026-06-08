@@ -383,6 +383,14 @@ class DbService
         return (int) $this->pdo->lastInsertId();
     }
 
+    public function getAddressByUserId(int $userId): ?Address
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM addresses WHERE fk_user_id = ?");
+        $stmt->execute([$userId]);
+        $result = $stmt->fetch();
+        return $result ? new Address($result) : null;
+    }
+
     public function updateUser(User $user): bool
     {
         $stmt = $this->pdo->prepare("
