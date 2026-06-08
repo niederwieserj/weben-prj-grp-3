@@ -62,7 +62,6 @@ async function loadUserOrders(){
             container.innerHTML = '<p class="text-muted text-center py-3">No orders found.</p>';
             return;
         }
-
         
         userOrders = res;
 
@@ -269,14 +268,6 @@ async function saveProfile(event) {
     }
 }
 
-/* ── Delete Account (placeholder) ────────────────────────── */
-
-function handleDeleteAccount() {
-    if (confirm('Are you sure you want to delete your account? This cannot be undone.')) {
-        // TODO: call apiPost('deleteAccount') when implemented
-        showError('Account deletion is not yet implemented.');
-    }
-}
 
 /* ── Init ────────────────────────────────────────────────── */
 

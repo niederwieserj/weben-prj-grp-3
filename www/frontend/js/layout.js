@@ -64,20 +64,19 @@ function loadScript(src) {
  */
 async function loadUserState() {
     try {
-        /*const response = await fetch("/backend/request-handler.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ controller: "user", action: "getUserState" })
-        });*/
-
         const dropLoggedOut = document.getElementById('nav-drop-logged-out');
         const dropLoggedIn = document.getElementById('nav-drop-logged-in');
+        const dropAdminItem = document.getElementById('admin-list-item');
 
         const result = await apiPost("user", "getUserState");
         
         if (result.response.ok && result.logged_in) {
             if (dropLoggedOut) dropLoggedOut.style.display = 'none';
             if (dropLoggedIn) dropLoggedIn.style.display = 'block';
+
+            if(result.is_admin) {
+                if (dropAdminItem) dropAdminItem.classList.remove('d-none');
+            }
         } else {
             if (dropLoggedOut) dropLoggedOut.style.display = 'block';
             if (dropLoggedIn) dropLoggedIn.style.display = 'none';

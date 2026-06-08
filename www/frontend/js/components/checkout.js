@@ -1,10 +1,10 @@
 import { initBootstrapValidation, resetFormValidation } from '../modules/validators.js';
 import { clearCart } from '../modules/cart.js';
-import { showError, showSuccess } from '../modules/toast.js';
+import { showError, showSuccess, showWarning } from '../modules/toast.js';
 import { getElement } from '../modules/utils.js';
 import { apiGet, apiPost } from '../modules/api.js';
 
-function initCheckout() {
+async function initCheckout() {
 
     initBootstrapValidation();
 
@@ -16,7 +16,14 @@ function initCheckout() {
         });
     });
 
-    loadUserData();
+    const result = await apiPost("user", "getUserState");
+        
+    if (result.response.ok && result.logged_in) {
+        loadUserData();
+    } else {
+        console.log('hihihi');
+        showWarning('Log in to finish checkout.');
+    }
 
     const confirmOrderBtn = getElement('confirmOrderBtn');
 
@@ -25,7 +32,6 @@ function initCheckout() {
         const checkoutForm = confirmOrderBtn.closest('form');
 
         if (checkoutForm) {
-
             checkoutForm.removeEventListener('submit', handleCheckoutSubmit);
             checkoutForm.addEventListener('submit', handleCheckoutSubmit);
         }

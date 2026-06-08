@@ -28,6 +28,10 @@ class OrderController
 
             switch ($action) {
                 case 'createNewOrder':
+                    if (empty($userId)) {
+                        throw new InvalidArgumentException('Not logged in.');
+                    }
+
                     return $orderService->createNewOrder($userId);
                 
                 case 'updateOrderStatus':

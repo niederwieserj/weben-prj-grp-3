@@ -33,7 +33,6 @@
                                 <div class="col-md-6">
                                     <label for="title" class="form-label">Title</label>
                                     <select id="title" class="form-select">
-                                        <option value="">—</option>
                                         <option value="1">Mr</option>
                                         <option value="2">Mrs</option>
                                         <option value="3">Dr</option>
@@ -74,32 +73,8 @@
                     </div>
                 </div>
 
-                <div class="card border-secondary mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">Account Actions</h5>
-                    </div>
-                    <div class="card-body d-flex flex-column gap-2">
-                        <a href="/frontend/pages/change-password.html" class="btn btn-outline-warning">Change
-                            Password</a>
-                        <button type="button" id="btn-delete-account" class="btn btn-outline-danger">Delete
-                            Account</button>
-                    </div>
-                </div>
-
             </div>
-            <div class="col-12 col-md-8 col-lg-6">
-
-                <div class="card border-secondary mb-4">
-                    <div class="card-header text-center">
-                        <h3 class="mb-0">My Orders</h3>
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="list-group list-group-light" id="order-history-container">
-                            <!-- *********** invoice history populated via profile.js *********** -->
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
     </main>
     <div class="modal fade" id="invoiceModal" tabindex="-1" aria-labelledby="invoiceModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">

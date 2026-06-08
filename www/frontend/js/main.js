@@ -20,9 +20,13 @@ function bootstrapApp() {
     console.log('App: Initializing components...');
 
     initAuth();
-    initCart();
     initResetPassword();
     initSignUp();
+    
+    if (typeof $ === 'undefined') {
+    } else {
+        initCart();
+    }
     
     console.log('App: Ready.');
 }

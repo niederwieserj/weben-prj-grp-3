@@ -94,9 +94,16 @@ class UserController
                     break;
 
                 case 'updateUserDataById':
-                    // Require authentication for updates
-                    // TODO admin check
                     $userId = $input['user_id'] ?? null;
+                    
+                    if (!isset($_SESSION['user_id'])) {
+                        throw new RuntimeException('Not logged in.');
+                    }
+
+                    if (($userId != $_SESSION['user_id']) && $_SESSION['is_admin'] === false) {
+                        throw new RuntimeException('Not priviledged.');
+                    }
+
                     $userService->updateUserData($userId, $input);
                     $result = [];
                     break;
