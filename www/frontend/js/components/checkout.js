@@ -1,15 +1,10 @@
-/**
- * checkout.js — Checkout form behaviour.
- * Depends on: modules/validators.js
- */
-
 import { initBootstrapValidation, resetFormValidation } from '../modules/validators.js';
 import { clearCart } from '../modules/cart.js';
-import { showError, showSuccess } from '../modules/toast.js';
+import { showError, showSuccess, showWarning } from '../modules/toast.js';
 import { getElement } from '../modules/utils.js';
+import { apiGet, apiPost } from '../modules/api.js';
 
-
-export function initCheckout() {
+async function initCheckout() {
 
     initBootstrapValidation();
 
@@ -21,34 +16,74 @@ export function initCheckout() {
         });
     });
 
+    const result = await apiPost("user", "getUserState");
+        
+    if (result.response.ok && result.logged_in) {
+        loadUserData();
+    } else {
+        showWarning('Log in to finish checkout.');
+    }
+
     const confirmOrderBtn = getElement('confirmOrderBtn');
 
     if (confirmOrderBtn) {
-        
+
         const checkoutForm = confirmOrderBtn.closest('form');
-        
+
         if (checkoutForm) {
-            
             checkoutForm.removeEventListener('submit', handleCheckoutSubmit);
             checkoutForm.addEventListener('submit', handleCheckoutSubmit);
         }
     }
-
 }
 
+async function loadUserData() {
+    var user = null;
+
+    try {
+        const result = await apiPost('user', 'getUserData');
+
+        if (result.response.ok && result.user) {
+            user = result.user;
+            getElement('firstName').value  = user.first_name   ?? '';
+            getElement('lastName').value   = user.last_name    ?? '';
+            getElement('email').value   = user.email    ?? '';
+        } else {
+            showError(result.message || 'Could not load profile.');
+        }
+    } catch (err) {
+        showError('Network error — please try again.');
+    }
+
+    try {
+        const result = await apiGet({ controller: 'user', action: 'getAddressByUserId', user_id: user.user_id });
+        
+        if (result.response.ok && result.address) {
+            const address = result.address;
+            getElement('address').value = address.address ?? '';
+            getElement('country').value = address.country ?? '';
+            getElement('city').value = address.city ?? '';
+            getElement('zip').value = address.postal_code ?? '';
+        } else {
+            showError(result.message || 'Could not load address.');
+        }
+    } catch (err) {
+        showError('Network error — please try again.');
+    }
+}
 
 async function handleCheckoutSubmit(e) {
     e.preventDefault();
-    
+
     const form = e.target;
     const confirmOrderBtn = getElement('confirmOrderBtn');
 
-     if (confirmOrderBtn.disabled) return; 
+    if (confirmOrderBtn.disabled) return;
 
-     if (!form.checkValidity()) {
+    if (!form.checkValidity()) {
         e.stopPropagation();
         form.classList.add('was-validated');
-        return; 
+        return;
     }
 
     // disable order button to prevent double clicking during confirmation process
@@ -66,15 +101,14 @@ async function handleCheckoutSubmit(e) {
 
         const data = await response.json();
 
-        if (data.success) {
-            
+        if (response.ok) {
             await clearCart(); // clear cart if order is successfully completed
-            
-            alert('Order confirmed! Order ID: ' + data.order_id);
-            window.location.href = `/frontend/sites/profile.html?open_order_id=${data.order_id}`; 
+
+            showSuccess('Order confirmed! Order ID: ' + data.order_id);
+            setTimeout(() => {window.location.href = `/frontend/sites/orders.html`}, 2000);
         } else {
-            alert('Error: ' + data.message);
-            
+            showError(data.message)
+
             confirmOrderBtn.disabled = false;
             confirmOrderBtn.innerHTML = originalText;
         }
@@ -86,3 +120,6 @@ async function handleCheckoutSubmit(e) {
     }
 }
 
+window.addEventListener('layout-ready', () => {
+    initCheckout();
+});

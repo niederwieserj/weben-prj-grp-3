@@ -109,7 +109,7 @@ function updateCategoryBadge() {
 }
 
 async function loadCategories() {
-    const categories = await apiGet('/backend/request-handler.php', {}, { controller: 'product', action: 'getCategories' });
+    const categories = await apiGet({ controller: 'product', action: 'getCategories' });
 
     const container = document.getElementById('category-filters');
     if (!container || !Array.isArray(categories)) return;
@@ -185,7 +185,7 @@ async function loadProducts() {
         queryParams.search = searchTerm;
     }
 
-    const products = await apiGet('/backend/request-handler.php', {}, queryParams);
+    const products = await apiGet(queryParams);
     allProducts = products;
 
     const productGrid = document.getElementById('product-grid');

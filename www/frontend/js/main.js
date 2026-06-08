@@ -8,31 +8,25 @@
  */
 
 import { initAuth } from './components/auth.js';
-import { initCheckout } from './components/checkout.js';
 import { initResetPassword } from './components/reset-password.js';
 import { initSignUp } from './components/sign-up.js';
 import { initCart } from './components/cart.js';
-// import { initProducts } from './components/products.js'; // Future
+
 
 /**
  * Initialize all application components.
  */
 function bootstrapApp() {
     console.log('App: Initializing components...');
-    
-    // Initialize Validation (Safe to run multiple times due to guards in validators.js)
-    // We import the function but don't call it here yet, 
-    // because we need to ensure the DOM elements exist first.
-    // Actually, initBootstrapValidation() in validators.js is safe to call anytime.
-    // But let's keep it inside the components for clarity.
 
     initAuth();
-    initCart();
-    initCheckout();
     initResetPassword();
     initSignUp();
     
-    // initProducts();
+    if (typeof $ === 'undefined') {
+    } else {
+        initCart();
+    }
     
     console.log('App: Ready.');
 }

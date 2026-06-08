@@ -38,14 +38,14 @@
             </div>
             <div class="col-sm-5">
               <label for="firstName" class="form-label">First name</label>
-              <input type="text" class="form-control" id="firstName" name="firstName" placeholder="" value="John" required />
+              <input type="text" class="form-control" id="first_name" name="first_name" placeholder="" value="John" required />
               <div class="invalid-feedback">
                 Valid first name is required.
               </div>
             </div>
             <div class="col-sm-5">
               <label for="lastName" class="form-label">Last name</label>
-              <input type="text" class="form-control" id="lastName" name="lastName" placeholder="" value="Doe" required />
+              <input type="text" class="form-control" id="last_name" name="last_name" placeholder="" value="Doe" required />
               <div class="invalid-feedback">
                 Valid last name is required.
               </div>
@@ -109,7 +109,7 @@
             </div>
             <div class="col-md-3">
               <label for="zip" class="form-label">Zip</label>
-              <input type="text" class="form-control" id="zip" name="zip" placeholder="1010" value="1010" required />
+              <input type="text" class="form-control" id="postal_code" name="postal_code" placeholder="1010" value="1010" required />
               <div class="invalid-feedback">Zip code required.</div>
             </div>
           </div>
@@ -125,7 +125,10 @@
 
   <div id="footer-placeholder"></div>
 
-<div id="toast-placeholder"></div>
+  <div id="toast-placeholder"></div>
+
+  <script src="https://code.jquery.com/jquery-4.0.0.min.js" integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/ui/1.14.2/jquery-ui.min.js" integrity="sha256-mblSWfbYzaq/f+4akyMhE6XELCou4jbkgPv+JQPER2M=" crossorigin="anonymous"></script>
 
   <!-- New way: Load layout first, then main.js as a module -->
   <!-- 1. Load Layout (Orchestrator) -->
@@ -135,7 +138,9 @@
   <!-- Note: type="module" is required for import/export syntax -->
   <script type="module" src="/frontend/js/main.js"></script>
   <script type="module" src="/frontend/js/components/sign-up.js"></script>
- 
+
+
+
 </body>
 
 </html>

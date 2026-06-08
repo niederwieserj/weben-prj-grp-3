@@ -8,7 +8,7 @@ async function loadProduct() {
     const url = new URL(url_string);
     const id = url.searchParams.get("id");
 
-    const response = await apiGet('/backend/request-handler.php', {}, { controller: 'product', action: 'getProductWithImages', product_id: id });
+    const response = await apiGet({ controller: 'product', action: 'getProductWithImages', product_id: id });
 
     if (!response.response.ok) {
         document.getElementById('content').style.display = 'none';
@@ -21,8 +21,6 @@ async function loadProduct() {
     document.querySelector('head title').innerHTML = product['name'] + ' &#x2022; CoreGear';
 
     const images = response['images'];
-
-    console.log(images);
 
     if (images === undefined || images.length == 0) {
         console.log('empty');
