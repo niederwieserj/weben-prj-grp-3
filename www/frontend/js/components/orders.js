@@ -2,7 +2,41 @@ import { apiGet, apiPost } from '../modules/api.js';
 import { showToast, showSuccess, showError } from '../modules/toast.js';
 import { getElement } from '../modules/utils.js';
 
+let userOrders = [];
+
 // ******************** load history of user orders **********************
+
+function printModal() {
+    const modal = document.getElementById('invoiceModal');
+    if (!modal) return;
+
+    // Hide everything except the modal during printing
+    const style = document.createElement('style');
+    style.textContent = `
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #invoiceModal, #invoiceModal * {
+                visibility: visible;
+            }
+            #invoiceModal {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+
+    window.print();
+
+    // Clean up after printing
+    document.head.removeChild(style);
+}
+
+window.printModal = printModal;
 
 async function loadUserOrders(){
     try {
@@ -71,14 +105,15 @@ async function loadUserOrders(){
 
 // ************************* view invoice details ***************************
 
-function viewOrderDetails(orderId) {
+async function viewOrderDetails(orderId) {
     const order = userOrders.find(o => o.order_id === orderId);
     if (!order) return;
 
-    
-    const firstName = getElement('first_name').value;
-    const lastName  = getElement('last_name').value;
-    const email     = getElement('email').value;
+    const result = await apiPost('user', 'getUserData');
+
+    const firstName = result.user.first_name;
+    const lastName  = result.user.last_name;
+    const email     = result.user.email;
 
     
     let badgeColor = 'bg-warning text-black';
@@ -117,7 +152,7 @@ function viewOrderDetails(orderId) {
                             <p style="color: #7e8d9f; font-size: 20px;">Invoice >> <strong>ID: #CG-${order.order_id}</strong></p>
                         </div>
                         <div class="col-xl-3 text-end">
-                            <button class="btn btn-light btn-sm text-capitalize border-0" onclick="window.print()">
+                            <button class="btn btn-light btn-sm text-capitalize border-0" onclick="printModal()">
                                 <i class="fas fa-print text-primary"></i> Print
                             </button>
                         </div>
@@ -183,5 +218,10 @@ function viewOrderDetails(orderId) {
     `;
 }
 
+
+
 window.viewOrderDetails = viewOrderDetails;
 
+window.addEventListener('layout-ready', () => {
+    loadUserOrders();
+});

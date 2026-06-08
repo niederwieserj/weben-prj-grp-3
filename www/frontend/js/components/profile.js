@@ -14,7 +14,6 @@ const BTN_SAVE_ID  = 'btn-save';
 const BTN_DEL_ID   = 'btn-delete-account';
 
 const FIELD_IDS = ['title', 'username', 'first_name', 'last_name', 'email'];
-let userOrders = [];
 
 /* ── Helpers ─────────────────────────────────────────────── */
 
@@ -30,9 +29,6 @@ async function loadProfile() {
 
     try {
         const result = await apiPost('user', 'getUserData');
-
-        console.info(result);
-        console.info(getElement('title'));
 
         if (result.response.ok && result.user) {
             user = result.user;

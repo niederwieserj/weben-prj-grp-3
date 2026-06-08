@@ -105,7 +105,7 @@ async function handleCheckoutSubmit(e) {
             await clearCart(); // clear cart if order is successfully completed
 
             showSuccess('Order confirmed! Order ID: ' + data.order_id);
-            setTimeout(() => {window.location.href = `/frontend/sites/profile.html?open_order_id=${data.order_id}`}, 4000);
+            setTimeout(() => {window.location.href = `/frontend/sites/orders.html`}, 2000);
         } else {
             showError(data.message)
 
