@@ -122,11 +122,7 @@ class ProductService
             $this->db->createProductImage($productId, $imageUrl, $name);
         }
 
-        return [
-            'success' => true,
-            'message' => 'Product created.',
-            'product_id' => $productId
-        ];
+        return ['product_id' => $productId];
     }
 
     public function updateProduct(array $input): array
@@ -177,9 +173,6 @@ class ProductService
             $this->db->upsertPrimaryProductImage($productId, $imageUrl, $name);
         }
 
-        return [
-            'success' => true,
-            'message' => 'Product updated.'
-        ];
+        return [];
     }
 }

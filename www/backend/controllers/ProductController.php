@@ -19,7 +19,7 @@ class ProductController
 
                 case 'getProduct':
                     $product_id = (int) ($getParams['product_id'] ?? 0);
-                    $result = $productService->getProduct($product_id);
+                    $result = [$productService->getProduct($product_id)];
                     break;
 
                 case 'getAllProducts':
@@ -38,7 +38,7 @@ class ProductController
 
                 case 'getRatingById':
                     $product_id = (int) ($getParams['product_id'] ?? 0);
-                    $result = $productService->getRatingById($product_id);
+                    $result = [$productService->getRatingById($product_id)];
                     break;
 
                 default:

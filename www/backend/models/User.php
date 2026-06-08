@@ -3,7 +3,7 @@
  * User Model
  * Represents the user data structure only.
  */
-class User {
+class User implements JsonSerializable {
     private int $userId;
     private string $username;
     private string $email;
@@ -53,6 +53,20 @@ class User {
     public function setCreatedAt(string $createdAt): void { $this->createdAt = $createdAt; }
 
     public function toArray(): array {
+        return [
+            "user_id" => $this->userId,
+            "username" => $this->username,
+            "email" => $this->email,
+            "first_name" => $this->firstName,
+            "last_name" => $this->lastName,
+            "title_id" => $this->title_id,
+            "is_admin" => $this->isAdmin,
+            "is_active" => $this->isActive,
+            "created_at" => $this->createdAt
+        ];
+    }
+
+    public function jsonSerialize(): array {
         return [
             "user_id" => $this->userId,
             "username" => $this->username,

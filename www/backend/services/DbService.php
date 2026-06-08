@@ -325,6 +325,23 @@ class DbService
         return $result ? new User($result) : null;
     }
 
+    public function getAllUsers(): array
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT *, fk_title_id AS title_id FROM users ORDER BY created_at DESC"
+        );
+
+        $stmt->execute();
+        $results = $stmt->fetchAll();
+
+        $users = [];
+        foreach ($results as $row) {
+            $users[] = new User($row);
+        }
+
+        return $users;
+    }
+
     public function createUser(User $user): int
     {
         $stmt = $this->pdo->prepare("
@@ -399,7 +416,6 @@ class DbService
         return $stmt->fetch() !== false;
     }
 
-    // --- Password Reset Queries ---
     public function setResetToken(int $userId, string $token, string $expires): bool
     {
         $stmt = $this->pdo->prepare("
@@ -446,12 +462,6 @@ class DbService
         $this->pdo->rollBack();
     }
 
-
-
-    
-    // ***********************************
-    // ********** search query ***********
-    // ***********************************
     public function searchProducts(string $search): array
     {
         $stmt = $this->pdo->prepare("SELECT name, product_id 
@@ -463,14 +473,6 @@ class DbService
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
-
-
-
-    // **********************************
-    // ********** Cart Queries **********
-    // **********************************
-
     public function getCartItems(int $userId): array
     {
         $stmt = $this->pdo->prepare("
@@ -480,7 +482,7 @@ class DbService
                 p.price,
                 i.image_url AS imageUrl,
                 c.quantity
-            FROM cartItems c
+            FROM cart_items c
             JOIN products p ON c.fk_product_id = p.product_id
             LEFT JOIN product_images i ON p.product_id = i.fk_product_id AND i.is_primary = 1
             WHERE c.fk_user_id = ?
@@ -489,36 +491,30 @@ class DbService
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
-
     public function addCartItem(int $userId, int $productId): void
     {
         // first check if item already exists in users cart
-        $stmt = $this->pdo->prepare("SELECT quantity FROM cartItems WHERE fk_user_id = ? AND fk_product_id = ?");
+        $stmt = $this->pdo->prepare("SELECT quantity FROM cart_items WHERE fk_user_id = ? AND fk_product_id = ?");
         $stmt->execute([$userId, $productId]);
         $row = $stmt->fetch();
 
         if ($row) {
             $this->increaseCartItemQuantity($userId, $productId);
         } else {
-            $stmt = $this->pdo->prepare("INSERT INTO cartItems (fk_user_id, fk_product_id, quantity) VALUES (?, ?, 1)");
+            $stmt = $this->pdo->prepare("INSERT INTO cart_items (fk_user_id, fk_product_id, quantity) VALUES (?, ?, 1)");
             $stmt->execute([$userId, $productId]);
         }
     }
 
-
-
     public function increaseCartItemQuantity(int $userId, int $productId): void
     {
-        $stmt = $this->pdo->prepare("UPDATE cartItems SET quantity = quantity + 1 WHERE fk_user_id = ? AND fk_product_id = ?");
+        $stmt = $this->pdo->prepare("UPDATE cart_items SET quantity = quantity + 1 WHERE fk_user_id = ? AND fk_product_id = ?");
         $stmt->execute([$userId, $productId]);
     }
 
-
-
     public function decreaseCartItemQuantity(int $userId, int $productId): void
     {
-        $stmt = $this->pdo->prepare("SELECT quantity FROM cartItems WHERE fk_user_id = ? AND fk_product_id = ?");
+        $stmt = $this->pdo->prepare("SELECT quantity FROM cart_items WHERE fk_user_id = ? AND fk_product_id = ?");
         $stmt->execute([$userId, $productId]);
         $row = $stmt->fetch();
 
@@ -526,35 +522,23 @@ class DbService
             if ($row['quantity'] <= 1) {
                 $this->removeCartItem($userId, $productId);
             } else {
-                $stmt = $this->pdo->prepare("UPDATE cartItems SET quantity = quantity - 1 WHERE fk_user_id = ? AND fk_product_id = ?");
+                $stmt = $this->pdo->prepare("UPDATE cart_items SET quantity = quantity - 1 WHERE fk_user_id = ? AND fk_product_id = ?");
                 $stmt->execute([$userId, $productId]);
             }
         }
     }
 
-
-
     public function removeCartItem(int $userId, int $productId): void
     {
-        $stmt = $this->pdo->prepare("DELETE FROM cartItems WHERE fk_user_id = ? AND fk_product_id = ?");
+        $stmt = $this->pdo->prepare("DELETE FROM cart_items WHERE fk_user_id = ? AND fk_product_id = ?");
         $stmt->execute([$userId, $productId]);
     }
 
-
-
     public function clearCart(int $userId): void
     {
-        $stmt = $this->pdo->prepare("DELETE FROM cartItems WHERE fk_user_id = ?");
+        $stmt = $this->pdo->prepare("DELETE FROM cart_items WHERE fk_user_id = ?");
         $stmt->execute([$userId]);
     }
-
-
-
-
-    // ***********************************
-    // ********** order queries **********
-    // ***********************************
-
 
     public function createNewOrder(int $userId, float $totalAmount, array $cartItems): int
     {
@@ -567,7 +551,7 @@ class DbService
         $orderId = (int) $this->pdo->lastInsertId();
        
         $stmtItems = $this->pdo->prepare("
-            INSERT INTO orderItems (fk_order_id, fk_product_id, quantity, price)
+            INSERT INTO order_items (fk_order_id, fk_product_id, quantity, price)
             VALUES (?, ?, ?, ?)
         ");
 
@@ -582,7 +566,6 @@ class DbService
 
         return $orderId;
     }
-
 
     public function getAllOrdersForAdmin(): array
     {
@@ -602,7 +585,7 @@ class DbService
             p.name AS product_name
         FROM orders o
         INNER JOIN users u ON o.fk_user_id = u.user_id
-        LEFT JOIN orderItems oi ON o.order_id = oi.fk_order_id
+        LEFT JOIN order_items oi ON o.order_id = oi.fk_order_id
         LEFT JOIN products p ON oi.fk_product_id = p.product_id
         ORDER BY o.created_at DESC, o.order_id DESC
     ");
@@ -642,9 +625,6 @@ class DbService
         return array_values($orders);
     }
 
-
-
-
     public function updateOrderStatus(int $orderId, string $status): bool
     {
         $stmt = $this->pdo->prepare("
@@ -658,21 +638,19 @@ class DbService
         return $stmt->rowCount() > 0;
     }
 
-
-
     public function getOrdersByUserId(int $userId): array
     {
         $stmt = $this->pdo->prepare("
             SELECT o.*, oi.order_item_id, oi.fk_product_id, p.name as product_name, oi.quantity, oi.price
             FROM orders o
-            LEFT JOIN orderItems oi ON o.order_id = oi.fk_order_id
+            LEFT JOIN order_items oi ON o.order_id = oi.fk_order_id
             LEFT JOIN products p ON oi.fk_product_id = p.product_id
             WHERE o.fk_user_id = ?
             ORDER BY o.created_at DESC
         ");
+
         $stmt->execute([$userId]);
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
         
         $orders = [];
         foreach ($rows as $row) {
@@ -696,5 +674,4 @@ class DbService
         }
         return array_values($orders);
     }
-
 }

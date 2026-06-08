@@ -53,10 +53,10 @@ INSERT INTO `addresses` (`address_id`, `fk_user_id`, `postal_code`, `address`, `
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cartItems`
+-- Table structure for table `cart_items`
 --
 
-CREATE TABLE `cartItems` (
+CREATE TABLE `cart_items` (
   `cart_item_id` int(11) NOT NULL,
   `fk_user_id` int(11) NOT NULL,
   `fk_product_id` int(11) NOT NULL,
@@ -91,10 +91,10 @@ INSERT INTO `categories` (`category_id`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `orderItems`
+-- Table structure for table `order_items`
 --
 
-CREATE TABLE `orderItems` (
+CREATE TABLE `order_items` (
   `order_item_id` int(11) NOT NULL,
   `fk_order_id` int(11) NOT NULL,
   `fk_product_id` int(11) NOT NULL,
@@ -103,10 +103,10 @@ CREATE TABLE `orderItems` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `orderItems`
+-- Dumping data for table `order_items`
 --
 
-INSERT INTO `orderItems` (`order_item_id`, `fk_order_id`, `fk_product_id`, `quantity`, `price`) VALUES
+INSERT INTO `order_items` (`order_item_id`, `fk_order_id`, `fk_product_id`, `quantity`, `price`) VALUES
 (1, 5, 1, 1, 499.00),
 (2, 5, 7, 2, 499.00),
 (3, 6, 1, 1, 499.00),
@@ -312,9 +312,9 @@ ALTER TABLE `addresses`
   ADD UNIQUE KEY `fk_user_id` (`fk_user_id`);
 
 --
--- Indexes for table `cartItems`
+-- Indexes for table `cart_items`
 --
-ALTER TABLE `cartItems`
+ALTER TABLE `cart_items`
   ADD PRIMARY KEY (`cart_item_id`),
   ADD KEY `idx_cart_user` (`fk_user_id`),
   ADD KEY `idx_cart_product` (`fk_product_id`);
@@ -326,12 +326,12 @@ ALTER TABLE `categories`
   ADD PRIMARY KEY (`category_id`);
 
 --
--- Indexes for table `orderItems`
+-- Indexes for table `order_items`
 --
-ALTER TABLE `orderItems`
+ALTER TABLE `order_items`
   ADD PRIMARY KEY (`order_item_id`),
-  ADD KEY `idx_orderItems_order` (`fk_order_id`),
-  ADD KEY `idx_orderItems_product` (`fk_product_id`);
+  ADD KEY `idx_order_items_order` (`fk_order_id`),
+  ADD KEY `idx_order_items_product` (`fk_product_id`);
 
 --
 -- Indexes for table `orders`
@@ -393,61 +393,61 @@ ALTER TABLE `wishlist`
 -- AUTO_INCREMENT for table `addresses`
 --
 ALTER TABLE `addresses`
-  MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `cartItems`
+-- AUTO_INCREMENT for table `cart_items`
 --
-ALTER TABLE `cartItems`
-  MODIFY `cart_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+ALTER TABLE `cart_items`
+  MODIFY `cart_item_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `orderItems`
+-- AUTO_INCREMENT for table `order_items`
 --
-ALTER TABLE `orderItems`
-  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+ALTER TABLE `order_items`
+  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `product_images`
 --
 ALTER TABLE `product_images`
-  MODIFY `image_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `image_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `product_ratings`
 --
 ALTER TABLE `product_ratings`
-  MODIFY `rating_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `rating_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `user_titles`
 --
 ALTER TABLE `user_titles`
-  MODIFY `title_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `title_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
@@ -460,18 +460,18 @@ ALTER TABLE `addresses`
   ADD CONSTRAINT `FK_addresses_user` FOREIGN KEY (`fk_user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `cartItems`
+-- Constraints for table `cart_items`
 --
-ALTER TABLE `cartItems`
-  ADD CONSTRAINT `FK_cartItems_product` FOREIGN KEY (`fk_product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `FK_cartItems_user` FOREIGN KEY (`fk_user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+ALTER TABLE `cart_items`
+  ADD CONSTRAINT `FK_cart_items_product` FOREIGN KEY (`fk_product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `FK_cart_items_user` FOREIGN KEY (`fk_user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `orderItems`
+-- Constraints for table `order_items`
 --
-ALTER TABLE `orderItems`
-  ADD CONSTRAINT `FK_orderItems_order` FOREIGN KEY (`fk_order_id`) REFERENCES `orders` (`order_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `FK_orderItems_product` FOREIGN KEY (`fk_product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE;
+ALTER TABLE `order_items`
+  ADD CONSTRAINT `FK_order_items_order` FOREIGN KEY (`fk_order_id`) REFERENCES `orders` (`order_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `FK_order_items_product` FOREIGN KEY (`fk_product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `orders`
@@ -497,6 +497,12 @@ ALTER TABLE `product_images`
 ALTER TABLE `product_ratings`
   ADD CONSTRAINT `fk_product_ratings_product_id` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_product_ratings_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `users`
+--
+ALTER TABLE `users`
+  ADD CONSTRAINT `fk_users_title_id` FOREIGN KEY (`fk_title_id`) REFERENCES `user_titles` (`title_id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `wishlist`
