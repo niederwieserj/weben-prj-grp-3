@@ -53,6 +53,9 @@
   object-fit: contain;
 }
 
+.product-card {
+    display: none; 
+}
 
 .col {
   flex: 0 0 100%;
