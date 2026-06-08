@@ -3,7 +3,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/services/DbService.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/User.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/Address.php';
 
-class AuthService
+class UserService
 {
     private DbService $db;
 
@@ -129,19 +129,24 @@ class AuthService
         }
 
         $hash = password_hash($newPassword, PASSWORD_DEFAULT); // Switched to password_hash for consistency
-        
+
         $this->db->updatePassword($user->getUserId(), $hash);
     }
 
     public function getUserData(int $userId): array
     {
         $user = $this->db->getUserById($userId);
-        
+
         if (!$user) {
             throw new InvalidArgumentException("User not found.");
         }
 
         return ["user" => $user->toArray()];
+    }
+
+    public function getAllUsers(): array
+    {
+        return $this->db->getAllUsers();
     }
 
     public function updateUserData(int $userId, array $input): void
@@ -153,17 +158,30 @@ class AuthService
         }
 
         // Apply only the fields that were submitted
-        if (isset($input['first_name']))
+        if (isset($input['first_name'])) {
             $user->setFirstName($input['first_name']);
-        if (isset($input['last_name']))
+        }
+
+        if (isset($input['last_name'])) {
             $user->setLastName($input['last_name']);
-        if (isset($input['title']))
+        }
+
+        if (isset($input['title'])) {
             $titleId = ($input['title'] !== '') ? (int) $input['title'] : null;
             $user->setTitleId($titleId);
-        if (isset($input['email']))
+        }
+
+        if (isset($input['email'])) {
             $user->setEmail($input['email']);
-        if (isset($input['username']))
+        }
+
+        if (isset($input['username'])) {
             $user->setUsername($input['username']);
+        }
+
+        if (isset($input['is_active'])) {
+            $user->setIsActive($input['is_active']);
+        }
 
         $this->db->updateUser($user);
     }

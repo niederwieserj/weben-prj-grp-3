@@ -20,6 +20,7 @@ async function checkAdminAccess() {
     await loadCategories();
     await loadProductsForAdmin();
     await loadOrdersForAdmin();
+    await loadAllUsers();
 
     initCreateProductForm();
 }
@@ -65,6 +66,68 @@ function initCreateProductForm() {
     });
 }
 
+async function loadAllUsers() {
+    const users = await apiGet('/backend/request-handler.php', {}, {
+        controller: 'user',
+        action: 'getAllUsers'
+    });
+
+    const usersTable = document.getElementById('users-table');
+
+    users.forEach(user => {
+        var row = usersTable.insertRow();
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        var cell4 = row.insertCell(3);
+        var cell5 = row.insertCell(4);
+        var cell6 = row.insertCell(5);
+
+        cell1.innerHTML = user['user_id'];
+        cell1.classList.add('font-monospace');
+        cell2.innerHTML = user['username'];
+        cell3.innerHTML = user['email'];
+        cell4.innerHTML = user['first_name'];
+        cell5.innerHTML = user['last_name'];
+
+        const btnClass = user['is_active'] === true ? 'btn-outline-success' : 'btn-outline-danger';
+
+        cell6.innerHTML = `
+        <button type="button" class="btn ${btnClass} border-0 toggle-active-btn" data-user-id="${user['user_id']}">
+            <svg class="bi mb-1" width="8" height="8" fill="currentColor">
+                <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#circle-fill" />
+            </svg>
+        </button>`;
+
+        const btnElement = cell6.querySelector('button.toggle-active-btn');
+            
+        if (btnElement) {
+            btnElement.addEventListener('click', async () => {
+                const userId = btnElement.dataset.userId;
+
+
+                try {
+                    const isActive = btnElement.classList.contains('btn-outline-success');
+
+                    const result = await apiPost('user', 'updateUserDataById', { 'user_id': userId, 'is_active': !isActive});
+
+                    if (result.response.ok) {
+                        if (isActive) {
+                            btnElement.className = 'btn btn-outline-danger border-0 toggle-active-btn';
+                        } else {
+                            btnElement.className = 'btn btn-outline-success border-0 toggle-active-btn';
+                        }
+                    } else {
+                        showError('Failed to update status');
+                    }
+                } catch (error) {
+                    showError('Failed to update user status.');
+                }
+            });
+        }
+    });
+}
+
 async function loadProductsForAdmin() {
     const products = await apiGet('/backend/request-handler.php', {}, {
         controller: 'product',
@@ -94,7 +157,7 @@ async function loadProductsForAdmin() {
                     <th>Category</th>
                     <th>Price</th>
                     <th>Stock</th>
-                    <th class="admin-table-action">Action</th>
+                    <th class="admin-table-action"></th>
                 </tr>
             </thead>
             <tbody>
@@ -115,7 +178,7 @@ function renderProductTableRows(row) {
 
     return `
         <tr>
-            <td>${escapeHtml(product.product_id)}</td>
+            <td class="font-monospace">${escapeHtml(product.product_id)}</td>
             <td>
                 ${imageUrl
                     ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(product.name)}" class="admin-product-image">`
@@ -124,12 +187,14 @@ function renderProductTableRows(row) {
             </td>
             <td>${escapeHtml(product.name)}</td>
             <td>${escapeHtml(product.category_name || '')}</td>
-            <td>${escapeHtml(product.price)} €</td>
-            <td>${escapeHtml(product.stock_quantity)}</td>
+            <td class="font-monospace">${escapeHtml(product.price)} €</td>
+            <td class="font-monospace">${escapeHtml(product.stock_quantity)}</td>
             <td class="admin-table-action">
                 <button class="btn btn-sm btn-outline-primary admin-toggle-product-edit"
                         data-product-id="${escapeHtml(product.product_id)}">
-                    Edit
+                    <svg class="bi" width="16" height="16" fill="currentColor">
+                        <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#pencil" />
+                    </svg>
                 </button>
             </td>
         </tr>
@@ -197,7 +262,9 @@ function registerProductEditToggleEvents() {
             if (!editRow) return;
 
             editRow.classList.toggle('d-none');
-            button.textContent = editRow.classList.contains('d-none') ? 'Edit' : 'Close';
+            button.innerHTML = editRow.classList.contains('d-none') ? `<svg class="bi" width="16" height="16" fill="currentColor">
+                        <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#pencil" />
+                    </svg>` : 'Close';
         });
     });
 }
@@ -251,7 +318,7 @@ async function loadOrdersForAdmin() {
                     <th>Total</th>
                     <th>Status</th>
                     <th>Created</th>
-                    <th class="admin-table-action">Action</th>
+                    <th class="admin-table-action"></th>
                 </tr>
             </thead>
             <tbody>
@@ -269,20 +336,22 @@ async function loadOrdersForAdmin() {
 function renderOrderTableRows(order) {
     return `
         <tr>
-            <td>${escapeHtml(order.order_id)}</td>
+            <td class="font-monospace">${escapeHtml(order.order_id)}</td>
             <td>${escapeHtml(order.username)}</td>
             <td>${escapeHtml(order.email)}</td>
-            <td>${escapeHtml(order.total_amount)} €</td>
+            <td class="font-monospace">${escapeHtml(order.total_amount)} €</td>
             <td>
                 <span class="badge text-bg-secondary">
                     ${escapeHtml(order.status)}
                 </span>
             </td>
-            <td>${escapeHtml(order.created_at)}</td>
+            <td class="font-monospace">${escapeHtml(order.created_at)}</td>
             <td class="admin-table-action">
                 <button class="btn btn-sm btn-outline-primary admin-toggle-order-edit"
                         data-order-id="${escapeHtml(order.order_id)}">
-                    Edit
+                    <svg class="bi" width="16" height="16" fill="currentColor">
+                        <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#pencil" />
+                    </svg>
                 </button>
             </td>
         </tr>
@@ -369,7 +438,9 @@ function registerOrderEditToggleEvents() {
             if (!editRow) return;
 
             editRow.classList.toggle('d-none');
-            button.textContent = editRow.classList.contains('d-none') ? 'Edit' : 'Close';
+            button.innerHTML = editRow.classList.contains('d-none') ? `<svg class="bi" width="16" height="16" fill="currentColor">
+                        <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#pencil" />
+                    </svg>` : 'Close';
         });
     });
 }

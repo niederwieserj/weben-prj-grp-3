@@ -52,11 +52,7 @@ class OrderService
 
             $this->db->commit();
             
-            return [
-                "success" => true,
-                "message" => "Order confirmed successfully!",
-                "order_id" => $orderId
-            ];
+            return ["order_id" => $orderId];
         } catch (Exception $e) {
             $this->db->rollback();
             
@@ -93,10 +89,7 @@ class OrderService
             throw new OutOfBoundsException('Order not found.');
         }
 
-        return [
-            'success' => true,
-            'message' => 'Order status updated.'
-        ];
+        return [];
     }
 
 

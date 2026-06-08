@@ -3,7 +3,8 @@
  * ProductRating Model
  * Represents the product_ratings data structure only.
  */
-class ProductRating {
+class ProductRating implements JsonSerializable
+{
     private int $ratingId;
     private int $productId;
     private int $userId;
@@ -29,6 +30,17 @@ class ProductRating {
     public function getCreatedAt(): string { return $this->createdAt; }
 
     public function toArray(): array {
+        return [
+            'rating_id' => $this->ratingId,
+            'product_id' => $this->productId,
+            'user_id' => $this->userId,
+            'score' => $this->score,
+            'comment' => $this->comment,
+            'created_at' => $this->createdAt
+        ];
+    }
+
+    public function jsonSerialize(): array {
         return [
             'rating_id' => $this->ratingId,
             'product_id' => $this->productId,
