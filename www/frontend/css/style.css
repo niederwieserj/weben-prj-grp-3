@@ -26,13 +26,18 @@ header, main, body:not(.heading, h1,h2,h3,h4,h5,p, div, a, img, svg){
     color:#ce93ff;
 }
 
+#cart-badge {
+    position: absolute;
+    bottom: -15px;
+    right: -15px;
+}
+
 .navbar-cart{
     width:24px;
     height:24px;
     color:#ce93ff;
     margin-left: 1rem;
     margin-top: 0.2rem;
-    
 }
 
 header { /*navbar set as position relative -> so search result dropdown can overlap*/

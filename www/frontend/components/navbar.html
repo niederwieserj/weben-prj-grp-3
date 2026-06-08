@@ -12,23 +12,9 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../sites/products.html" class="nav-link px-2 pt-2 mt-1 text-white">Products</a>
+                    <a href="../sites/products.html" class="nav-link px-2 pt-2 mt-1 ms-2 text-white fst-italic">Products</a>
                 </li>
             </ul>
-            <!-- searchbar -->
-            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" autocomplete="off" name="product-search" role="search"
-                method="get" action="/frontend/sites/products.html">
-
-                <div class="form-group ajax-search" id="ajax-search">
-                    <div class="dropdown">
-                        <input type="search" class="form-control dropdown-toggle" id="search" placeholder="Search..."
-                            name="product-search" aria-label="Search" data-bs-toggle="dropdown"
-                            data-bs-auto-close="true" aria-expanded="false" />
-
-                        <ul class="dropdown-menu" id="result"></ul>
-                    </div>
-                </div>
-            </form>
             <div class="dropdown text-end" id="nav-drop-logged-in" style="display: none;">
                 <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
                     data-bs-toggle="dropdown" aria-expanded="false">
@@ -37,9 +23,8 @@
                     </svg>
                 </a>
                 <ul class="dropdown-menu text-small">
-
-                    <li><a class="dropdown-item" href="#">Settings</a></li>
                     <li><a class="dropdown-item" href="/frontend/sites/profile.html">Profile</a></li>
+                    <li><a class="dropdown-item" href="/frontend/sites/orders.html">Orders</a></li>
                     <li><a class="dropdown-item" href="/frontend/sites/admin.html">Admin</a></li>
                     <li>
                         <hr class="dropdown-divider" />
@@ -63,7 +48,7 @@
                     <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#cart" />
                 </svg>
                 <span id="cart-badge"
-                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary d-none">
+                    class="badge rounded-pill bg-primary d-none">
                     0
                     <span class="visually-hidden">items in cart</span>
                 </span>
