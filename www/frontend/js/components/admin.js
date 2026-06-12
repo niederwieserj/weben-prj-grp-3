@@ -7,6 +7,32 @@ window.addEventListener('layout-ready', async () => {
     await checkAdminAccess();
 });
 
+/* admin priviledges:
+                user-related functions:
+                    - check if user is admin
+                    - view all registered user accounts
+                    - deactivate user accounts
+
+                user-oder-related functions:     
+                    - view all orders of all users
+                    - remove items from user orders
+
+                product-related functions  
+                    - create new products
+                    - edit existing products (name, price, stock, category, description)
+*/
+
+
+
+/************************************************************************/
+/*                         user-related functions                       */
+/************************************************************************/
+
+
+
+
+/************************ check if user is admin ************************/
+
 async function checkAdminAccess() {
     const result = await apiPost('user', 'getUserState');
 
@@ -25,46 +51,10 @@ async function checkAdminAccess() {
     initCreateProductForm();
 }
 
-async function loadCategories() {
-    categories = await apiGet({
-        controller: 'product',
-        action: 'getCategories'
-    });
 
-    const createSelect = document.getElementById('create-category-select');
-    if (!createSelect) return;
 
-    createSelect.innerHTML = '';
 
-    categories.forEach(category => {
-        const option = document.createElement('option');
-        option.value = category.category_id;
-        option.textContent = category.name;
-        createSelect.appendChild(option);
-    });
-}
-
-function initCreateProductForm() {
-    const form = document.getElementById('create-product-form');
-    if (!form) return;
-
-    form.addEventListener('submit', async (event) => {
-        event.preventDefault();
-
-        const formData = new FormData(form);
-        const data = Object.fromEntries(formData.entries());
-
-        const result = await apiPost('product', 'createProduct', data);
-
-        if (result.response.ok) {
-            showSuccess('Product created.');
-            form.reset();
-            await loadProductsForAdmin();
-        } else {
-            showError(result.message || 'Could not create product.');
-        }
-    });
-}
+/******************* load registered users *******************/
 
 async function loadAllUsers() {
     const users = await apiGet({
@@ -128,6 +118,66 @@ async function loadAllUsers() {
     });
 }
 
+
+
+/**************************************************************/
+/*                    product-related functions               */
+/**************************************************************/
+
+
+
+/************************ load product categories ************************/
+
+async function loadCategories() {
+    categories = await apiGet({
+        controller: 'product',
+        action: 'getCategories'
+    });
+
+    const createSelect = document.getElementById('create-category-select');
+    if (!createSelect) return;
+
+    createSelect.innerHTML = '';
+
+    categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category.category_id;
+        option.textContent = category.name;
+        createSelect.appendChild(option);
+    });
+}
+
+
+
+/************************ initialize create-product form ************************/
+
+function initCreateProductForm() {
+    const form = document.getElementById('create-product-form');
+    if (!form) return;
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        const result = await apiPost('product', 'createProduct', data);
+
+        if (result.response.ok) {
+            showSuccess('Product created.');
+            form.reset();
+            await loadProductsForAdmin();
+        } else {
+            showError(result.message || 'Could not create product.');
+        }
+    });
+}
+
+
+
+
+/************************ load list of all products ************************/
+
 async function loadProductsForAdmin() {
     const products = await apiGet({
         controller: 'product',
@@ -172,6 +222,11 @@ async function loadProductsForAdmin() {
     registerProductEditSubmitEvents();
 }
 
+
+
+
+/************************ fill list with all products ************************/
+
 function renderProductTableRows(row) {
     const product = row.product;
     const imageUrl = row.images && row.images.length > 0 ? row.images[0].image_url : '';
@@ -206,6 +261,9 @@ function renderProductTableRows(row) {
         </tr>
     `;
 }
+
+
+/************************ render editing form for products ************************/
 
 function renderProductEditForm(product, imageUrl) {
     return `
@@ -253,6 +311,9 @@ function renderProductEditForm(product, imageUrl) {
     `;
 }
 
+
+
+
 function registerProductEditToggleEvents() {
     document.querySelectorAll('.admin-toggle-product-edit').forEach(button => {
         button.addEventListener('click', () => {
@@ -268,6 +329,9 @@ function registerProductEditToggleEvents() {
         });
     });
 }
+
+
+
 
 function registerProductEditSubmitEvents() {
     document.querySelectorAll('.admin-edit-product-form').forEach(form => {
@@ -288,6 +352,11 @@ function registerProductEditSubmitEvents() {
         });
     });
 }
+
+
+/**************************************************************/
+/*                 user-order-related functions               */
+/*************************************************************/
 
 async function loadOrdersForAdmin() {
     const orders = await apiGet({
@@ -333,6 +402,9 @@ async function loadOrdersForAdmin() {
     registerOrderEditSubmitEvents();
 }
 
+
+
+
 function renderOrderTableRows(order) {
     return `
         <tr>
@@ -363,6 +435,9 @@ function renderOrderTableRows(order) {
         </tr>
     `;
 }
+
+
+
 
 function renderOrderEditForm(order) {
     const items = Array.isArray(order.items) ? order.items : [];
@@ -429,6 +504,8 @@ function renderOrderEditForm(order) {
     `;
 }
 
+
+
 function registerOrderEditToggleEvents() {
     document.querySelectorAll('.admin-toggle-order-edit').forEach(button => {
         button.addEventListener('click', () => {
@@ -444,6 +521,8 @@ function registerOrderEditToggleEvents() {
         });
     });
 }
+
+
 
 function registerOrderEditSubmitEvents() {
     document.querySelectorAll('.admin-edit-order-form').forEach(form => {
@@ -465,6 +544,9 @@ function registerOrderEditSubmitEvents() {
     });
 }
 
+
+
+
 function renderCategoryOptions(selectedCategoryId) {
     return categories.map(category => {
         const selected = String(category.category_id) === String(selectedCategoryId) ? 'selected' : '';
@@ -476,6 +558,9 @@ function renderCategoryOptions(selectedCategoryId) {
         `;
     }).join('');
 }
+
+
+
 
 function renderStatusOptions(currentStatus) {
     const statuses = ['pending', 'paid', 'shipped', 'completed', 'cancelled'];
@@ -490,6 +575,9 @@ function renderStatusOptions(currentStatus) {
         `;
     }).join('');
 }
+
+
+
 
 function escapeHtml(value) {
     return String(value ?? '')

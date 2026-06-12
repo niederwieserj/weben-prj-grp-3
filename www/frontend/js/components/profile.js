@@ -15,14 +15,16 @@ const BTN_DEL_ID   = 'btn-delete-account';
 
 const FIELD_IDS = ['title', 'username', 'first_name', 'last_name', 'email'];
 
-/* ── Helpers ─────────────────────────────────────────────── */
+
+/********************** form enable/disable *********************/
 
 function setFormDisabled(disabled) {
     const inputs = getElement(FORM_ID).querySelectorAll('input, select, button');
     inputs.forEach(el => { el.disabled = disabled; });
 }
 
-/* ── Load ────────────────────────────────────────────────── */
+
+/********************** load profile data *********************/
 
 async function loadProfile() {
     var user = null;
@@ -62,7 +64,8 @@ async function loadProfile() {
     }
 }
 
-/* ── Save ────────────────────────────────────────────────── */
+
+/********************** save profile data *********************/
 
 async function saveProfile(event) {
     event.preventDefault();
@@ -101,7 +104,7 @@ async function saveProfile(event) {
 }
 
 
-/* ── Init ────────────────────────────────────────────────── */
+/********************** initialization *********************/
 
 window.addEventListener('layout-ready', () => {
     loadProfile();
