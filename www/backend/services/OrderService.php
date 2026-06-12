@@ -18,6 +18,9 @@ class OrderService
         }
     }
 
+
+
+
     public function createNewOrder(int $userId): array
     {
         if (!$userId) {
@@ -49,11 +52,16 @@ class OrderService
         }
     }
 
+
+
+
+
     public function getAllOrders(): array
     {
         $this->requireAdmin();
         return $this->db->getAllOrdersForAdmin();
     }
+
 
 
 
@@ -75,6 +83,8 @@ class OrderService
 
         return [];
     }
+
+
 
 
     public function getOrdersByUserId(int $userId): array

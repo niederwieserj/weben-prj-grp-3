@@ -37,7 +37,7 @@ window.addEventListener('layout-ready', () => {
 });
 
 // Fallback: If layout.js fails or is missing, try to init after a short delay
-// (Defensive coding for development environments)
+
 setTimeout(() => {
     if (!window.layoutReadyFired) {
         console.warn('App: layout-ready event not received. Attempting fallback init.');

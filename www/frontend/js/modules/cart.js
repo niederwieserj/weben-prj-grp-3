@@ -30,7 +30,12 @@ function handleCartRequest(ajaxPromise, guestFallbackLogic) {
     return deferred.promise();
 }
 
-// *************** exported cart actions ****************
+
+
+/***************************************************************************/
+// exported cart actions: 
+// get cart, add items, remove items, increase/decrease quantitiy, clear cart
+/***************************************************************************/
 
 export function getCart() {
     return handleCartRequest(
@@ -38,6 +43,8 @@ export function getCart() {
         () => getGuestCart()
     );
 }
+
+
 
 export function addCartItem(product) {
     return handleCartRequest(
@@ -68,6 +75,9 @@ export function addCartItem(product) {
     );
 }
 
+
+
+
 export function removeCartItem(productId) {
     return handleCartRequest(
         $.ajax({
@@ -83,6 +93,8 @@ export function removeCartItem(productId) {
         }
     );
 }
+
+
 
 export function increaseCartItemQuantity(productId) {
     return handleCartRequest(
@@ -101,6 +113,9 @@ export function increaseCartItemQuantity(productId) {
         }
     );
 }
+
+
+
 
 export function decreaseCartItemQuantity(productId) {
     return handleCartRequest(
@@ -124,6 +139,8 @@ export function decreaseCartItemQuantity(productId) {
         }
     );
 }
+
+
 
 export function clearCart() {
     return handleCartRequest(

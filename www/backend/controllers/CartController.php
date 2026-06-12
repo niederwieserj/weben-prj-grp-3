@@ -9,9 +9,9 @@ class CartController
         $userId = $_SESSION['user_id'] ?? null;
         $action = $getParams['action'] ?? null;
 
-        // ********************************************************
-        // ************** user not logged in (guest) **************
-        // ********************************************************
+        /********************************************************/
+        /*                user not logged in (guest)            */
+        /********************************************************/
         if (!$userId) {
             // initialize guest array if not already existing
             if (!isset($_SESSION['guest_cart'])) {
@@ -74,9 +74,9 @@ class CartController
             throw new InvalidArgumentException('Invalid request method.');
         }
 
-        // ********************************************************
-        // ******************* logged in user *********************
-        // ********************************************************
+        /*********************************************************/
+        /*                     logged in user                    */
+        /*********************************************************/
         
         if ($requestMethod === 'GET' && $action === 'get') {
             return $db->getCartItems($userId);
