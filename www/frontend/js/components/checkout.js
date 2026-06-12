@@ -37,6 +37,10 @@ async function initCheckout() {
     }
 }
 
+/******************************************************************/
+/*                         load user data                         */
+/******************************************************************/
+
 async function loadUserData() {
     var user = null;
 
@@ -71,6 +75,11 @@ async function loadUserData() {
         showError('Network error — please try again.');
     }
 }
+
+
+/******************************************************************/
+/*                    handle checkout process                     */
+/******************************************************************/
 
 async function handleCheckoutSubmit(e) {
     e.preventDefault();

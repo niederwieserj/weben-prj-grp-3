@@ -69,6 +69,7 @@ async function loadProduct() {
 
     document.querySelector('#product-description').innerHTML = product['description'];
 
+    
     // ***************************** cart *****************************
     const cartWrapper = document.getElementById('product-cart-actions');
 

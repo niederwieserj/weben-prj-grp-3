@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: database:3306
--- Generation Time: Jun 01, 2026 at 10:17 AM
+-- Generation Time: Jun 12, 2026 at 08:27 PM
 -- Server version: 10.6.25-MariaDB-ubu2204
 -- PHP Version: 8.3.30
 
@@ -48,7 +48,8 @@ INSERT INTO `addresses` (`address_id`, `fk_user_id`, `postal_code`, `address`, `
 (4, 13, '', 'john doe st. 1', 'Vienna', 'Austria', '2026-04-25 10:08:38'),
 (5, 14, '1010', 'john doe st. 1', 'Vienna', 'Austria', '2026-04-25 10:09:21'),
 (6, 16, '1111', 'Jakob Str. 1', 'Vienna', 'Austria', '2026-04-25 10:33:01'),
-(7, 17, '1100', 'eine adresse 15', 'Vienna', 'Austria', '2026-05-29 18:17:29');
+(7, 17, '1100', 'eine adresse 15', 'Vienna', 'Austria', '2026-05-29 18:17:29'),
+(8, 19, '2363', 'Hans strasse 19', 'Köln', 'Germany', '2026-06-12 13:05:12');
 
 -- --------------------------------------------------------
 
@@ -91,35 +92,6 @@ INSERT INTO `categories` (`category_id`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `order_items`
---
-
-CREATE TABLE `order_items` (
-  `order_item_id` int(11) NOT NULL,
-  `fk_order_id` int(11) NOT NULL,
-  `fk_product_id` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL,
-  `price` decimal(10,2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `order_items`
---
-
-INSERT INTO `order_items` (`order_item_id`, `fk_order_id`, `fk_product_id`, `quantity`, `price`) VALUES
-(1, 5, 1, 1, 499.00),
-(2, 5, 7, 2, 499.00),
-(3, 6, 1, 1, 499.00),
-(4, 6, 7, 2, 499.00),
-(5, 7, 1, 2, 499.00),
-(6, 7, 8, 2, 499.00),
-(7, 7, 9, 1, 499.00),
-(8, 8, 1, 1, 499.00),
-(9, 9, 10, 2, 499.00);
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `orders`
 --
 
@@ -136,11 +108,31 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`order_id`, `fk_user_id`, `total_amount`, `status`, `created_at`) VALUES
-(5, 17, 1497.00, 'pending', '2026-05-31 15:27:15'),
-(6, 17, 1497.00, 'pending', '2026-05-31 15:35:10'),
-(7, 17, 2495.00, 'cancelled', '2026-05-31 15:36:20'),
-(8, 17, 499.00, 'pending', '2026-06-01 09:23:40'),
-(9, 17, 998.00, 'pending', '2026-06-01 09:36:29');
+(9, 17, 998.00, 'pending', '2026-06-01 09:36:29'),
+(10, 19, 1497.00, 'pending', '2026-06-12 13:06:48');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `order_items`
+--
+
+CREATE TABLE `order_items` (
+  `order_item_id` int(11) NOT NULL,
+  `fk_order_id` int(11) NOT NULL,
+  `fk_product_id` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `price` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `order_items`
+--
+
+INSERT INTO `order_items` (`order_item_id`, `fk_order_id`, `fk_product_id`, `quantity`, `price`) VALUES
+(9, 9, 10, 2, 499.00),
+(10, 10, 1, 2, 499.00),
+(11, 10, 8, 1, 499.00);
 
 -- --------------------------------------------------------
 
@@ -219,15 +211,6 @@ CREATE TABLE `product_ratings` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `product_ratings`
---
-
-INSERT INTO `product_ratings` (`rating_id`, `product_id`, `user_id`, `score`, `comment`, `created_at`) VALUES
-(1, 1, 1, 4, 'Damn so nice', '2026-04-26 09:57:00'),
-(2, 2, 1, 5, 'Damn so nice', '2026-04-26 09:57:43'),
-(3, 3, 1, 3, 'Smelled a bit fishy. Sus', '2026-04-26 09:58:20');
-
 -- --------------------------------------------------------
 
 --
@@ -241,6 +224,7 @@ CREATE TABLE `users` (
   `email` varchar(100) NOT NULL,
   `first_name` varchar(50) DEFAULT NULL,
   `last_name` varchar(50) DEFAULT NULL,
+  `rememberme_hash` varchar(100) DEFAULT NULL,
   `is_admin` tinyint(1) NOT NULL DEFAULT 0,
   `is_active` tinyint(1) NOT NULL DEFAULT 1,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -253,20 +237,20 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `username`, `password_hash`, `email`, `first_name`, `last_name`, `is_admin`, `is_active`, `created_at`, `fk_title_id`, `reset_token`, `reset_token_expires`) VALUES
-(1, 'testuser', 'ae5deb822e0d71992900471a7199d0d95b8e7c9d05c40a8245a281fd2c1d6684', 'test@test.com', 'Max', 'Mustermännchen', 0, 1, '2026-04-11 10:26:29', NULL, '36ceae5ebf8509bb481d1486689ddbc736b8abb38e425fe5072f9130d5d32071', '2026-04-21 14:30:44'),
-(3, 'johndoe', '$2y$12$iyDZecLBc.TZ1sug74F7BOHIzifZffgLreg3iPcAFic5ncx4kYzZW', 'john@doe.com', 'John', 'Doe', 0, 1, '2026-04-13 19:12:26', NULL, NULL, NULL),
-(4, 'john2doe', 'c2713b62c903791bdefc5a6a99df04d4330de491bbc7a0ca6a5007337e4a6028', 'john2@doe.com', 'John', 'Doe', 0, 1, '2026-04-13 19:14:42', NULL, NULL, NULL),
-(5, 'johndoe4', '$2y$12$Ji6V1eLWNtcUIwsILvlZeeMmUuzVHR3CGT7n36khZKA.lodfFXg8S', 'john4@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 09:10:08', NULL, NULL, NULL),
-(6, 'johndoe5', '$2y$12$TRILSWa44VJc94iGXoTqIO3/v0pfRr088Qh6M8x8L0ZAy4P6cxjY2', 'john5@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 09:14:33', NULL, NULL, NULL),
-(7, 'johndoe6', '$2y$12$z5q5ES3Xy8MB/QQW4mXD1.6DHdEm9J1hwrU4gsDJrznjOXyM8FY4u', 'john6@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 09:15:30', NULL, NULL, NULL),
-(8, 'johndoe7', '$2y$12$th457wWp1mwZXZz50DMHk.d5kcYTbSYJKnWNewClxdwKcs4qx.n5i', 'john7@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 09:16:02', NULL, NULL, NULL),
-(9, 'johndoe8', '$2y$12$yMwqUwo5aMfEQ6frqfYMmuFb3piZdmvUkC69SmH/CUSxdz4WAthVO', 'john8@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 09:30:01', NULL, NULL, NULL),
-(12, 'johndoe11', '$2y$12$2aL5.HIzd2hFLWTyAuciH.wE68bJaTioejb4.BYFP5vea8qTDdDkC', 'john11@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 09:58:44', NULL, NULL, NULL),
-(13, 'johndoe12', '$2y$12$wJvYGgdF0kZKpGNIQLBTDeuy2bTuJ38kxvNkrZDkW4MiMUvOX5hrC', 'john12@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 10:08:38', NULL, NULL, NULL),
-(14, 'johndoe13', '$2y$12$gc6p4uqQap2vFPi56QkzzuX.bEa3Z.u4IrjdJ24S6wveTqxYKBUuO', 'john13@doe.com', 'John', 'Doe', 0, 1, '2026-04-25 10:09:21', NULL, NULL, NULL),
-(16, 'jakob', '$2y$12$KnhPc/E7DP2cus7wgFr8meSfgSH4TLh9Ddvlh0YL1dEFvRZwTcoa6', 'email@test.com', 'Jakob', 'Test', 0, 1, '2026-04-25 10:33:01', NULL, NULL, NULL),
-(17, 'lintaf', '$2y$12$WhA517iYrnHNIRkRkZjdwepW7h2yEfpSWNMJb6KfDxR8IDHRq6QTa', 'lin.taf@gmail.com', 'lindores', 'tafernur', 1, 1, '2026-05-29 18:17:29', 2, NULL, NULL);
+INSERT INTO `users` (`user_id`, `username`, `password_hash`, `email`, `first_name`, `last_name`, `rememberme_hash`, `is_admin`, `is_active`, `created_at`, `fk_title_id`, `reset_token`, `reset_token_expires`) VALUES
+(3, 'johndoe', '$2y$12$iyDZecLBc.TZ1sug74F7BOHIzifZffgLreg3iPcAFic5ncx4kYzZW', 'john@doe.com', 'John', 'Doe', NULL, 0, 1, '2026-04-13 19:12:26', NULL, NULL, NULL),
+(4, 'john2doe', 'c2713b62c903791bdefc5a6a99df04d4330de491bbc7a0ca6a5007337e4a6028', 'john2@doe.com', 'John', 'Doe', NULL, 0, 1, '2026-04-13 19:14:42', NULL, NULL, NULL),
+(5, 'johndoe4', '$2y$12$Ji6V1eLWNtcUIwsILvlZeeMmUuzVHR3CGT7n36khZKA.lodfFXg8S', 'john4@doe.com', 'John', 'Doe', NULL, 0, 1, '2026-04-25 09:10:08', NULL, NULL, NULL),
+(6, 'johndoe5', '$2y$12$TRILSWa44VJc94iGXoTqIO3/v0pfRr088Qh6M8x8L0ZAy4P6cxjY2', 'john5@doe.com', 'John', 'Doe', NULL, 0, 1, '2026-04-25 09:14:33', NULL, NULL, NULL),
+(7, 'johndoe6', '$2y$12$z5q5ES3Xy8MB/QQW4mXD1.6DHdEm9J1hwrU4gsDJrznjOXyM8FY4u', 'john6@doe.com', 'John', 'Doe', NULL, 0, 1, '2026-04-25 09:15:30', NULL, NULL, NULL),
+(8, 'johndoe7', '$2y$12$th457wWp1mwZXZz50DMHk.d5kcYTbSYJKnWNewClxdwKcs4qx.n5i', 'john7@doe.com', 'John', 'Doe', NULL, 0, 1, '2026-04-25 09:16:02', NULL, NULL, NULL),
+(9, 'johndoe8', '$2y$12$yMwqUwo5aMfEQ6frqfYMmuFb3piZdmvUkC69SmH/CUSxdz4WAthVO', 'john8@doe.com', 'John', 'Doe', NULL, 0, 1, '2026-04-25 09:30:01', NULL, NULL, NULL),
+(12, 'johndoe11', '$2y$12$2aL5.HIzd2hFLWTyAuciH.wE68bJaTioejb4.BYFP5vea8qTDdDkC', 'john11@doe.com', 'John', 'Doe', NULL, 0, 1, '2026-04-25 09:58:44', NULL, NULL, NULL),
+(13, 'johndoe12', '$2y$12$wJvYGgdF0kZKpGNIQLBTDeuy2bTuJ38kxvNkrZDkW4MiMUvOX5hrC', 'john12@doe.com', 'John', 'Doe', NULL, 0, 1, '2026-04-25 10:08:38', NULL, NULL, NULL),
+(14, 'johndoe13', '$2y$12$gc6p4uqQap2vFPi56QkzzuX.bEa3Z.u4IrjdJ24S6wveTqxYKBUuO', 'john13@doe.com', 'John', 'Doe', NULL, 0, 1, '2026-04-25 10:09:21', NULL, NULL, NULL),
+(16, 'jakob', '$2y$12$KnhPc/E7DP2cus7wgFr8meSfgSH4TLh9Ddvlh0YL1dEFvRZwTcoa6', 'email@test.com', 'Jakob', 'Test', NULL, 0, 1, '2026-04-25 10:33:01', NULL, NULL, NULL),
+(17, 'lintaf', '$2y$12$WhA517iYrnHNIRkRkZjdwepW7h2yEfpSWNMJb6KfDxR8IDHRq6QTa', 'lin.taf@gmail.com', 'lindores', 'tafernur', NULL, 1, 1, '2026-05-29 18:17:29', 2, NULL, NULL),
+(19, 'he335', '$2y$12$1OEFfdaKThEOxpXYJ0iY7ef8TAqDli/DXsTmzjEZm/0lLqeapMGRC', 'peter@gmail.com', 'hans', 'gew', NULL, 0, 1, '2026-06-12 13:05:12', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -326,19 +310,19 @@ ALTER TABLE `categories`
   ADD PRIMARY KEY (`category_id`);
 
 --
+-- Indexes for table `orders`
+--
+ALTER TABLE `orders`
+  ADD PRIMARY KEY (`order_id`),
+  ADD KEY `idx_orders_user` (`fk_user_id`);
+
+--
 -- Indexes for table `order_items`
 --
 ALTER TABLE `order_items`
   ADD PRIMARY KEY (`order_item_id`),
   ADD KEY `idx_order_items_order` (`fk_order_id`),
   ADD KEY `idx_order_items_product` (`fk_product_id`);
-
---
--- Indexes for table `orders`
---
-ALTER TABLE `orders`
-  ADD PRIMARY KEY (`order_id`),
-  ADD KEY `idx_orders_user` (`fk_user_id`);
 
 --
 -- Indexes for table `products`
@@ -393,61 +377,61 @@ ALTER TABLE `wishlist`
 -- AUTO_INCREMENT for table `addresses`
 --
 ALTER TABLE `addresses`
-  MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `cart_items`
 --
 ALTER TABLE `cart_items`
-  MODIFY `cart_item_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `cart_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `order_items`
---
-ALTER TABLE `order_items`
-  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+
+--
+-- AUTO_INCREMENT for table `order_items`
+--
+ALTER TABLE `order_items`
+  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `product_images`
 --
 ALTER TABLE `product_images`
-  MODIFY `image_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `image_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `product_ratings`
 --
 ALTER TABLE `product_ratings`
-  MODIFY `rating_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `rating_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `user_titles`
 --
 ALTER TABLE `user_titles`
-  MODIFY `title_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `title_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables
@@ -467,17 +451,17 @@ ALTER TABLE `cart_items`
   ADD CONSTRAINT `FK_cart_items_user` FOREIGN KEY (`fk_user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
 --
+-- Constraints for table `orders`
+--
+ALTER TABLE `orders`
+  ADD CONSTRAINT `FK_orders_user` FOREIGN KEY (`fk_user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+
+--
 -- Constraints for table `order_items`
 --
 ALTER TABLE `order_items`
   ADD CONSTRAINT `FK_order_items_order` FOREIGN KEY (`fk_order_id`) REFERENCES `orders` (`order_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `FK_order_items_product` FOREIGN KEY (`fk_product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE;
-
---
--- Constraints for table `orders`
---
-ALTER TABLE `orders`
-  ADD CONSTRAINT `FK_orders_user` FOREIGN KEY (`fk_user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `products`

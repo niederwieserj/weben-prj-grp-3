@@ -12,6 +12,8 @@ class UserService
         $this->db = new DbService();
     }
 
+
+
     public function register(array $data): array
     {
         // 1. Validation
@@ -65,6 +67,9 @@ class UserService
         }
     }
 
+
+
+
     public function login(string $identifier, string $password, bool $rememberMe): array
     {
         // Get User object
@@ -87,13 +92,66 @@ class UserService
         throw new InvalidArgumentException("Invalid credentials.");
     }
 
-    public function logout(): void
+ // Helper to set session and cookie
+    private function loginUser(User $user, bool $rememberMe = false): void
     {
-        session_destroy();
-        if (isset($_COOKIE['remember_me'])) {
-            setcookie('remember_me', '', time() - 3600, '/');
+        session_regenerate_id(true);
+        $_SESSION['user_id'] = $user->getUserId();
+        $_SESSION['username'] = $user->getUsername();
+        $_SESSION['is_admin'] = $user->isAdmin();
+        $userId = $user->getUserId();
+
+        if ($rememberMe) {
+            $token = bin2hex(random_bytes(32));
+            $tokenHash = hash('sha256', $token);
+            $this->db->setRememberMeCookie($userId, $tokenHash);
+            
+            setcookie("remember_me", $token, [
+                "expires"  => time() + 60*60*24*30,
+                "path"     => "/",
+                "secure"   => isset($_SERVER['HTTPS']),
+                "httponly" => true,
+                "samesite" => "Strict"
+            ]);
         }
     }
+
+    public function loginWithCookie(string $rawToken): bool
+    {
+        
+        $tokenHash = hash('sha256', $rawToken);
+        
+        $user = $this->db->getUserByRememberMeHash($tokenHash);
+
+        if ($user && $user->isActive()) {
+            $this->loginUser($user, false); 
+            return true;
+        }
+
+        return false;
+    }
+
+
+    public function logout(int $userId): void
+    {   
+        session_destroy();
+
+        if (isset($_COOKIE['remember_me'])) {
+            setcookie("remember_me", '', [
+            "expires" => time() -3600, // 30 days
+            "path" =>  "/",
+            "secure" => isset($_SERVER['HTTPS']),
+            "httponly" => true,
+            "samesite" => "Strict" ]);
+            
+        }
+        unset($_COOKIE['remember_me']);
+
+        $this->db->unsetRememberMeCookie($userId);
+
+    }
+
+
 
     public function requestPasswordReset(string $email): array
     {
@@ -117,6 +175,9 @@ class UserService
         throw new RuntimeException("Failed to generate reset token.");
     }
 
+
+
+
     public function resetPassword(string $token, string $newPassword): void
     {
         if (strlen($newPassword) < 6) {
@@ -133,6 +194,9 @@ class UserService
         $this->db->updatePassword($user->getUserId(), $hash);
     }
 
+
+
+
     public function getUserData(int $userId): array
     {
         $user = $this->db->getUserById($userId);
@@ -143,6 +207,9 @@ class UserService
 
         return ["user" => $user->toArray()];
     }
+
+
+
 
     public function getAddressByUserId(int $userId): array
     {
@@ -155,10 +222,15 @@ class UserService
         return ["address" => $address->toArray()];
     }
 
+
+
     public function getAllUsers(): array
     {
         return $this->db->getAllUsers();
     }
+
+
+
 
     public function updateUserData(int $userId, array $input): void
     {
@@ -196,18 +268,9 @@ class UserService
 
         $this->db->updateUser($user);
     }
-    // Helper to set session and cookie
-    private function loginUser(User $user, bool $rememberMe = false): void
-    {
-        session_regenerate_id(true);
-        $_SESSION['user_id'] = $user->getUserId();
-        $_SESSION['username'] = $user->getUsername();
-        $_SESSION['is_admin'] = $user->isAdmin();
 
-        if ($rememberMe) {
-            $token = bin2hex(random_bytes(32));
-            // In a real app, store this token in a 'remember_tokens' table linked to user_id
-            setcookie('remember_me', 'true', time() + (86400 * 30), "/");
-        }
-    }
+
+
+
+   
 }

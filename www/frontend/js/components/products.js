@@ -8,7 +8,7 @@ let categoriesMap = {};
 let urlParams = new URLSearchParams(window.location.search);
 
 function applyUrlParamsToUI() {
-    // 1. Price Range (exists in HTML already)
+    // Price Range (exists in HTML already)
     if (urlParams.has('price_max')) {
         const rangeInput = document.getElementById('range4');
         const rangeOutput = document.getElementById('rangeValue');
@@ -20,7 +20,7 @@ function applyUrlParamsToUI() {
         }
     }
 
-    // 2. Min Rating (exists in HTML already)
+    // Min Rating (exists in HTML already)
     if (urlParams.has('min_rating')) {
         const ratingSelect = document.getElementById('min-rating-select');
         if (ratingSelect) {
@@ -28,10 +28,8 @@ function applyUrlParamsToUI() {
         }
     }
 
-    // 3. Categories — DO NOT apply here, checkboxes don't exist yet.
-    //    Will be applied in loadCategories() after DOM elements are created.
 
-    // 4. Sort By (exists in HTML already)
+    // Sort By (exists in HTML already)
     if (urlParams.has('sort_by')) {
         const sortSelect = document.getElementById('sort-select');
         if (sortSelect) {
@@ -39,7 +37,7 @@ function applyUrlParamsToUI() {
         }
     }
 
-    // 5. Sort Order (exists in HTML already)
+    // Sort Order (exists in HTML already)
     if (urlParams.has('sort_order')) {
         const sortOrderBtn = document.getElementById('sort-order-btn');
         if (sortOrderBtn) {
@@ -77,29 +75,30 @@ function applyUrlCategoryParams() {
 window.addEventListener('layout-ready', async () => {
     console.debug("HERE");
 
-    // 1. Apply URL params for static HTML elements (price, rating, sort)
+    // apply URL params for static HTML elements (price, rating, sort)
     applyUrlParamsToUI();
 
-    // 2. Load categories FIRST (await so checkboxes exist)
     await loadCategories();
 
-    // 3. NOW apply category URL params — checkboxes exist
+    //apply category URL params, checkboxes exist
     applyUrlCategoryParams();
     updateCategoryBadge();
 
-    // 4. Load products
+    // Load products
     await loadProducts();
 
-    // 5. Apply initial filter/sort based on all URL params
+    // Apply initial filter/sort based on all URL params
     applyFilters();
 
-    // 6. Initialize event listeners
+    // Initialize event listeners
     initFilters();
 });
 
-// =========================================================================
-// EXISTING FUNCTIONS (keep as-is, but ensure they call updateUrlParams)
-// =========================================================================
+
+
+/******************************************************************/
+/*                   category-specific functions                  */
+/******************************************************************/
 
 function updateCategoryBadge() {
     const badge = document.getElementById('category-badge');
@@ -107,6 +106,7 @@ function updateCategoryBadge() {
     const checkedCount = document.querySelectorAll('.category-filter:checked').length;
     badge.textContent = checkedCount;
 }
+
 
 async function loadCategories() {
     const categories = await apiGet({ controller: 'product', action: 'getCategories' });
@@ -168,6 +168,13 @@ async function loadCategories() {
         });
     }
 }
+
+
+
+/******************************************************************/
+/*                   product-specific functions                   */
+/******************************************************************/
+
 
 async function loadProducts() {
     const response = await fetch('/frontend/components/product-card.html');
@@ -259,6 +266,12 @@ async function loadProducts() {
     updateResultCount();
 }
 
+
+/******************************************************************/
+/*                       sorting & filtering                      */
+/******************************************************************/
+
+
 function initFilters() {
     const rangeInput = document.getElementById('range4');
     const rangeOutput = document.getElementById('rangeValue');
@@ -290,14 +303,14 @@ function initFilters() {
     const sortOrderBtn = document.getElementById('sort-order-btn');
     if (sortOrderBtn) {
         sortOrderBtn.addEventListener('click', function () {
-            // 1. Determine the NEW order immediately
+            // 1. Determine the new order
             const currentOrder = this.dataset.order === 'asc' ? 'asc' : 'desc';
             const newOrder = currentOrder === 'asc' ? 'desc' : 'asc';
 
-            // 2. Update the dataset FIRST
+            // 2. Update the dataset
             this.dataset.order = newOrder;
 
-            // 3. Update UI (Icon and Label) immediately
+            // 3. Update UI (Icon and Label)
             const iconUse = this.querySelector('svg use');
             if (iconUse) {
                 iconUse.setAttribute('xlink:href',
@@ -311,15 +324,13 @@ function initFilters() {
                 label.textContent = newOrder === 'asc' ? 'Ascending' : 'Descending';
             }
 
-            // 4. Update URL immediately so subsequent reads get the new value
+            // 4. Update URL so subsequent reads get the new value
             updateUrlParams();
 
-            // 5. Now sort
+            // 5. sort
             const currentCriteria = document.getElementById('sort-select')?.value || 'price';
             sortProducts(currentCriteria);
-
-            // 6. Ensure filters are applied (optional, but keeps state consistent)
-            // applyFilters(); // Only if you need to re-run the full filter logic
+            
         });
     }
 
@@ -330,6 +341,9 @@ function initFilters() {
         });
     }
 }
+
+
+
 
 function updateUrlParams() {
     const params = new URLSearchParams(window.location.search);
@@ -356,6 +370,9 @@ function updateUrlParams() {
     const newUrl = `${window.location.pathname}?${params.toString()}`;
     history.replaceState(null, '', newUrl);
 }
+
+
+/*************************** filtering **************************/
 
 function applyFilters() {
     const maxPrice = parseInt(document.getElementById('range4').value);
@@ -397,6 +414,9 @@ function applyFilters() {
     updateResultCount();
 }
 
+
+/*************************** sorting **************************/
+
 function sortProducts(criteria) {
     const sortOrderBtn = document.getElementById('sort-order-btn');
     const order = sortOrderBtn?.dataset.order || 'asc';
@@ -425,6 +445,9 @@ function sortProducts(criteria) {
     const grid = document.getElementById('product-grid');
     cards.forEach(card => grid.appendChild(card));
 }
+
+
+
 
 function updateResultCount() {
     const visibleCount = $('.product-card:visible').length;

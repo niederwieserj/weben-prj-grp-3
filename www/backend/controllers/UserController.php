@@ -56,10 +56,20 @@ class UserController
                     break;
 
                 case 'signout':
-                    $userService->logout();
+                    $userId = $_SESSION['user_id'] ?? null;
+
+                    if ($userId) {
+                        $userService->logout($userId);
+                    }
+                    $result = ["success" => true, "message" => "Logged out successfully"];
                     break;
 
                 case 'getUserState':
+                    // login with cookie, if session not active
+                    if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_me'])) {
+                        $userService->loginWithCookie($_COOKIE['remember_me']);
+                    }
+
                     if (isset($_SESSION['user_id'])) {
                         $result = [
                             "logged_in" => true,
@@ -68,7 +78,10 @@ class UserController
                             "username" => $_SESSION['username'] ?? null
                         ];
                     } else {
-                        throw new RuntimeException('User not logged in.');
+                        //throw new RuntimeException('User not logged in.');
+                        $result = [
+                            "logged_in" => false
+                        ];
                     }
                     break;
 

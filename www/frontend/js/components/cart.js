@@ -1,4 +1,3 @@
-
 import {
     getCart,
     addCartItem,
@@ -25,7 +24,7 @@ function updateCartUI(cartItems) {
         $badge.addClass('d-none');
     }
     
-    $badge.text(itemCount).toggle(itemCount > 0);
+    $badge.text(itemCount).toggle(itemCount >= 0);
 
     // get checkout elements
     const $cartList = $('#checkout-cart-list');
@@ -53,7 +52,7 @@ function updateCartUI(cartItems) {
         return;
     }
 
-    // display cart items
+    // display cart items w/price and quantity
     let totalPrice = 0;
 
     items.forEach(item => {
@@ -91,6 +90,10 @@ function updateCartUI(cartItems) {
     }
 }
 
+/******************************************************************/
+/*                       add items to cart                        */
+/******************************************************************/
+
 function handleAddToCart($button) {
     const $productElement = $button.closest('[data-cart-product]');
     if (!$productElement.length) return;
@@ -117,6 +120,10 @@ function handleAddToCart($button) {
         console.error("Cart error:", xhr);
     });
 }
+
+/******************************************************************/
+/*                        initialize cart                         */
+/******************************************************************/
 
 export function initCart() {
     // fetch to create UI on load

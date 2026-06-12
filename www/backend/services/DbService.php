@@ -12,6 +12,55 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/ProductRating.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/ProductImage.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/Category.php';
 
+/* available functions:
+
+    PRODUCT QUERIES:
+	CATEGORY & RATING:
+		- getCategories(): array
+		- getRatingById(int $id): ?ProductRating
+	- getProductById(int $id): ?Product
+	- getAllProductsWithImages(?string $searchTerm = null): array
+	- createProduct(array $data): int
+	- updateProduct(int $productId, array $data): bool
+	- createProductImage(int $productId, string $imageUrl, string $altText): int
+	- upsertPrimaryProductImage(int $productId, string $imageUrl, string $altText): void
+	- getProductByIdWithImages(int $productId): ?array
+	- getAllProducts(): array
+
+
+USER QUERIES:
+	- getUserById(int $id): ?User
+	- getUserByEmailOrUsername(string $identifier): ?User
+	- getAllUsers(): array
+	- createUser(User $user): int
+	- createAddress(Address $address): int
+	- getAddressByUserId(int $userId): ?Address
+	- updateUser(User $user): bool
+	- checkUniqueUser(int $excludeId, string $username, string $email): bool
+	- setResetToken(int $userId, string $token, string $expires): bool
+	- getUserByToken(string $token): ?User
+	- updatePassword(int $userId, string $hash): bool
+	- beginTransaction(): void
+	- commit(): void
+	- rollback(): void
+
+
+CART QUERIES:
+	- getCartItems(int $userId): array
+	- addCartItem(int $userId, int $productId): void
+	- increaseCartItemQuantity(int $userId, int $productId): void
+	- decreaseCartItemQuantity(int $userId, int $productId): void
+	- removeCartItem(int $userId, int $productId): void
+	- clearCart(int $userId): void
+	
+ORDER QUERIES:	
+	- createNewOrder(int $userId, float $totalAmount, array $cartItems): int
+	- getAllOrdersForAdmin(): array
+	- updateOrderStatus(int $orderId, string $status): bool
+	- getOrdersByUserId(int $userId): array
+
+*/
+
 class DbService
 {
     private PDO $pdo;
@@ -31,7 +80,12 @@ class DbService
         }
     }
 
-    // --- Category Queries
+
+
+    /***********************************************************************/
+    /*                       product category query                        */
+    /***********************************************************************/
+
     public function getCategories(): array
     {
         $stmt = $this->pdo->query("SELECT category_id, name FROM categories ORDER BY name ASC");
@@ -45,10 +99,13 @@ class DbService
         return $categories;
     }
 
-    // --- Rating Queries
-    /**
-     * Returns a single Product object or null.
-     */
+
+
+    /***********************************************************************/
+    /*                            product rating                           */
+    /***********************************************************************/
+    //Returns a single Product object or null.
+     
     public function getRatingById(int $id): ?ProductRating
     {
         $stmt = $this->pdo->prepare(
@@ -59,11 +116,14 @@ class DbService
         return $result ? new ProductRating($result) : null;
     }
 
-    // --- Product Queries
 
-    /**
-     * Returns a single Product object or null.
-     */
+
+    /***********************************************************************/
+    /*                            product queries                          */
+    /***********************************************************************/
+
+    //Returns a single Product object or null.
+    
     public function getProductById(int $id): ?Product
     {
         $stmt = $this->pdo->prepare(
@@ -136,6 +196,11 @@ class DbService
         return array_values($groupedProducts);
     }
 
+
+
+    /*************************/
+    //      (admin only)
+    /*************************/    
     public function createProduct(array $data): int
     {
         $stmt = $this->pdo->prepare("
@@ -156,6 +221,10 @@ class DbService
         return (int) $this->pdo->lastInsertId();
     }
 
+
+    /*************************/
+    //      (admin only)
+    /*************************/
     public function updateProduct(int $productId, array $data): bool
     {
         $stmt = $this->pdo->prepare("
@@ -180,6 +249,10 @@ class DbService
         return $stmt->rowCount() > 0;
     }
 
+
+    /*************************/
+    //      (admin only)
+    /*************************/
     public function createProductImage(int $productId, string $imageUrl, string $altText): int
     {
         $stmt = $this->pdo->prepare("
@@ -197,6 +270,8 @@ class DbService
 
         return (int) $this->pdo->lastInsertId();
     }
+
+
 
     public function upsertPrimaryProductImage(int $productId, string $imageUrl, string $altText): void
     {
@@ -280,6 +355,9 @@ class DbService
         return array_values($groupedProducts)[0] ?? null;
     }
 
+
+
+
     /**
      * Return an array of Product objects
      *
@@ -301,7 +379,16 @@ class DbService
         return $products;
     }
 
-    // --- User Queries ---
+
+
+
+
+
+    /***********************************************************************/
+    /*                                                                     */
+    /*                             user queries                            */
+    /*                                                                     */
+    /***********************************************************************/
 
     /**
      * Returns a User object or null
@@ -314,6 +401,9 @@ class DbService
         return $result ? new User($result) : null;
     }
 
+
+
+
     /**
      * Returns a User object or null
      */
@@ -324,6 +414,9 @@ class DbService
         $result = $stmt->fetch();
         return $result ? new User($result) : null;
     }
+
+
+
 
     public function getAllUsers(): array
     {
@@ -341,6 +434,9 @@ class DbService
 
         return $users;
     }
+
+
+
 
     public function createUser(User $user): int
     {
@@ -383,6 +479,10 @@ class DbService
         return (int) $this->pdo->lastInsertId();
     }
 
+
+
+
+
     public function getAddressByUserId(int $userId): ?Address
     {
         $stmt = $this->pdo->prepare("SELECT * FROM addresses WHERE fk_user_id = ?");
@@ -390,6 +490,10 @@ class DbService
         $result = $stmt->fetch();
         return $result ? new Address($result) : null;
     }
+
+
+
+
 
     public function updateUser(User $user): bool
     {
@@ -414,6 +518,9 @@ class DbService
         ]);
     }
 
+
+
+
     public function checkUniqueUser(int $excludeId, string $username, string $email): bool
     {
         $stmt = $this->pdo->prepare("
@@ -424,6 +531,9 @@ class DbService
         return $stmt->fetch() !== false;
     }
 
+
+
+
     public function setResetToken(int $userId, string $token, string $expires): bool
     {
         $stmt = $this->pdo->prepare("
@@ -431,6 +541,9 @@ class DbService
         ");
         return $stmt->execute([$token, $expires, $userId]);
     }
+
+
+
 
     public function getUserByToken(string $token): ?User
     {
@@ -448,6 +561,8 @@ class DbService
         return $this->getUserById((int) $result['user_id']);
     }
 
+
+
     public function updatePassword(int $userId, string $hash): bool
     {
         $stmt = $this->pdo->prepare("
@@ -455,6 +570,43 @@ class DbService
         ");
         return $stmt->execute([$hash, $userId]);
     }
+
+
+    /********************************************/
+    /*            set/unset cookie              */
+    /********************************************/
+    public function setRememberMeCookie(int $userId, string $rememberMeCookie): bool
+    {
+        $stmt = $this->pdo->prepare("
+            UPDATE users 
+            SET rememberme_hash = ?
+            WHERE user_id = ?
+        ");
+        return $stmt->execute([$rememberMeCookie, $userId]);
+    }
+
+
+    public function unsetRememberMeCookie(int $userId): bool
+    {
+        $stmt = $this->pdo->prepare("
+            UPDATE users 
+            SET rememberme_hash = NULL
+            WHERE user_id = ?
+        ");
+        return $stmt->execute([$userId]);
+    }
+
+    public function getUserByRememberMeHash(string $tokenHash): ?User
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT * FROM users WHERE rememberme_hash = ? LIMIT 1
+        ");
+        $stmt->execute([$tokenHash]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+         return $result ? new User($result) : null; 
+    }
+
 
     // --- Transaction Helpers ---
     public function beginTransaction(): void
@@ -470,6 +622,10 @@ class DbService
         $this->pdo->rollBack();
     }
 
+
+
+    /*
+
     public function searchProducts(string $search): array
     {
         $stmt = $this->pdo->prepare("SELECT name, product_id 
@@ -479,7 +635,14 @@ class DbService
         $stmt->execute(["%$search%"]);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+    }*/
+
+
+
+    /***********************************************************************/
+    /*                             cart queries                            */
+    /***********************************************************************/
+        
 
     public function getCartItems(int $userId): array
     {
@@ -499,6 +662,8 @@ class DbService
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+
+
     public function addCartItem(int $userId, int $productId): void
     {
         // first check if item already exists in users cart
@@ -514,11 +679,15 @@ class DbService
         }
     }
 
+
+
     public function increaseCartItemQuantity(int $userId, int $productId): void
     {
         $stmt = $this->pdo->prepare("UPDATE cart_items SET quantity = quantity + 1 WHERE fk_user_id = ? AND fk_product_id = ?");
         $stmt->execute([$userId, $productId]);
     }
+
+
 
     public function decreaseCartItemQuantity(int $userId, int $productId): void
     {
@@ -536,17 +705,27 @@ class DbService
         }
     }
 
+
+
     public function removeCartItem(int $userId, int $productId): void
     {
         $stmt = $this->pdo->prepare("DELETE FROM cart_items WHERE fk_user_id = ? AND fk_product_id = ?");
         $stmt->execute([$userId, $productId]);
     }
 
+
+
     public function clearCart(int $userId): void
     {
         $stmt = $this->pdo->prepare("DELETE FROM cart_items WHERE fk_user_id = ?");
         $stmt->execute([$userId]);
     }
+
+
+
+    /***********************************************************************/
+    /*                            order queries                            */
+    /***********************************************************************/
 
     public function createNewOrder(int $userId, float $totalAmount, array $cartItems): int
     {
@@ -575,6 +754,10 @@ class DbService
         return $orderId;
     }
 
+
+    /*************************/
+    //      (admin only)
+    /*************************/
     public function getAllOrdersForAdmin(): array
     {
         $stmt = $this->pdo->prepare("
@@ -633,6 +816,11 @@ class DbService
         return array_values($orders);
     }
 
+
+
+    /*************************/
+    //      (admin only)
+    /*************************/
     public function updateOrderStatus(int $orderId, string $status): bool
     {
         $stmt = $this->pdo->prepare("
@@ -645,6 +833,9 @@ class DbService
 
         return $stmt->rowCount() > 0;
     }
+
+
+
 
     public function getOrdersByUserId(int $userId): array
     {

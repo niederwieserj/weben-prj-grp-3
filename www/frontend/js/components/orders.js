@@ -32,11 +32,15 @@ function printModal() {
 
     window.print();
 
-    // Clean up after printing
+    // cleanup style after printing
     document.head.removeChild(style);
 }
 
 window.printModal = printModal;
+
+
+
+/*************************** load user orders **************************/
 
 async function loadUserOrders(){
     try {
@@ -73,7 +77,7 @@ async function loadUserOrders(){
             </a>
         `).join('');
 
-        // ****** directly link to opened invoice modal ******
+        /******* directly link to opened invoice modal *******/
         const urlParams = new URLSearchParams(window.location.search);
         const openOrderId = urlParams.get('open_order_id');
 

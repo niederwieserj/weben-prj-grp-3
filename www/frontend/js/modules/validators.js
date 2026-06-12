@@ -1,14 +1,13 @@
 /**
  * validators.js — Bootstrap 5 client-side form validation.
  *
- * Call initBootstrapValidation() once after DOMContentLoaded.
- * It attaches submit listeners to every <form class="needs-validation">
- * and prevents submission when native constraint validation fails.
+ * call initBootstrapValidation() once after DOMContentLoaded.
+ * attach submit listeners to every <form class="needs-validation">
+ * prevents submission when native constraint validation fails.
  */
 
 /**
- * Initialise Bootstrap-styled validation on all matching forms.
- * Safe to call multiple times — listeners are only attached once
+ * Initialise Bootstrap-styled validation on all matching forms
  * via a data attribute guard.
  */
 export function initBootstrapValidation() {
@@ -30,7 +29,7 @@ export function initBootstrapValidation() {
 }
 
 /**
- * Manually reset validation state on a form (useful after AJAX submit).
+ * reset validation state on form
  *
  * @param {HTMLFormElement} form
  */

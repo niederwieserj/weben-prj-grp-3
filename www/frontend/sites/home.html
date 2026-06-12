@@ -17,7 +17,8 @@
 </head>
 
 <body class="d-flex">
-    <main class="container-fluid">
+    
+    <main class="container-fluid pt-3">
 
         <div id="navbar-placeholder"></div>
 
@@ -138,9 +139,6 @@
 
 
         <!-- ======================================================================= -->
-
-        <!-- Theme placeholder -->
-        <!-- <div id="theme-placeholder"></div> -->
     </main>
 
     <div id="footer-placeholder"></div>
@@ -148,12 +146,12 @@
     <script src="https://code.jquery.com/jquery-4.0.0.min.js" integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.14.2/jquery-ui.min.js" integrity="sha256-mblSWfbYzaq/f+4akyMhE6XELCou4jbkgPv+JQPER2M=" crossorigin="anonymous"></script>
 
-    <!-- New way: Load layout first, then main.js as a module -->
-    <!-- 1. Load Layout (Orchestrator) -->
+    
+    <!-- Load Layout-->
     <script type="module" src="/frontend/js/layout.js"></script>
 
-    <!-- 2. Load Main App (Modular Entry Point) -->
-    <!-- Note: type="module" is required for import/export syntax -->
+    <!-- load Main App-->
+    
     <script type="module" src="/frontend/js/main.js"></script>
     <script src="/frontend/js/components/search.js"></script>
 </body>
