@@ -24,7 +24,7 @@ function updateCartUI(cartItems) {
         $badge.addClass('d-none');
     }
     
-    $badge.text(itemCount).toggle(itemCount > 0);
+    $badge.text(itemCount).toggle(itemCount >= 0);
 
     // get checkout elements
     const $cartList = $('#checkout-cart-list');

@@ -61,10 +61,6 @@ ORDER QUERIES:
 
 */
 
-
-
-
-
 class DbService
 {
     private PDO $pdo;
@@ -598,6 +594,17 @@ class DbService
             WHERE user_id = ?
         ");
         return $stmt->execute([$userId]);
+    }
+
+    public function getUserByRememberMeHash(string $tokenHash): ?User
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT * FROM users WHERE rememberme_hash = ? LIMIT 1
+        ");
+        $stmt->execute([$tokenHash]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+         return $result ? new User($result) : null; 
     }
 
 

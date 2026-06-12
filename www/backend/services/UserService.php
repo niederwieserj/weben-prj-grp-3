@@ -106,7 +106,7 @@ class UserService
             $tokenHash = hash('sha256', $token);
             $this->db->setRememberMeCookie($userId, $tokenHash);
             
-            setcookie("remember_me", $tokenHash, [
+            setcookie("remember_me", $token, [
                 "expires"  => time() + 60*60*24*30,
                 "path"     => "/",
                 "secure"   => isset($_SERVER['HTTPS']),
@@ -116,12 +116,25 @@ class UserService
         }
     }
 
+    public function loginWithCookie(string $rawToken): bool
+    {
+        
+        $tokenHash = hash('sha256', $rawToken);
+        
+        $user = $this->db->getUserByRememberMeHash($tokenHash);
+
+        if ($user && $user->isActive()) {
+            $this->loginUser($user, false); 
+            return true;
+        }
+
+        return false;
+    }
+
 
     public function logout(int $userId): void
     {   
         session_destroy();
-        //$user = $this->db->getUserById($userId);
-        //$userId = $user->getUserId();
 
         if (isset($_COOKIE['remember_me'])) {
             setcookie("remember_me", '', [
@@ -137,7 +150,6 @@ class UserService
         $this->db->unsetRememberMeCookie($userId);
 
     }
-
 
 
 
