@@ -12,6 +12,8 @@ class UserService
         $this->db = new DbService();
     }
 
+
+
     public function register(array $data): array
     {
         // 1. Validation
@@ -65,6 +67,9 @@ class UserService
         }
     }
 
+
+
+
     public function login(string $identifier, string $password, bool $rememberMe): array
     {
         // Get User object
@@ -87,6 +92,9 @@ class UserService
         throw new InvalidArgumentException("Invalid credentials.");
     }
 
+
+
+
     public function logout(): void
     {
         session_destroy();
@@ -94,6 +102,9 @@ class UserService
             setcookie('remember_me', '', time() - 3600, '/');
         }
     }
+
+
+
 
     public function requestPasswordReset(string $email): array
     {
@@ -117,6 +128,9 @@ class UserService
         throw new RuntimeException("Failed to generate reset token.");
     }
 
+
+
+
     public function resetPassword(string $token, string $newPassword): void
     {
         if (strlen($newPassword) < 6) {
@@ -133,6 +147,9 @@ class UserService
         $this->db->updatePassword($user->getUserId(), $hash);
     }
 
+
+
+
     public function getUserData(int $userId): array
     {
         $user = $this->db->getUserById($userId);
@@ -143,6 +160,9 @@ class UserService
 
         return ["user" => $user->toArray()];
     }
+
+
+
 
     public function getAddressByUserId(int $userId): array
     {
@@ -155,10 +175,15 @@ class UserService
         return ["address" => $address->toArray()];
     }
 
+
+
     public function getAllUsers(): array
     {
         return $this->db->getAllUsers();
     }
+
+
+
 
     public function updateUserData(int $userId, array $input): void
     {
@@ -196,6 +221,10 @@ class UserService
 
         $this->db->updateUser($user);
     }
+
+
+
+
     // Helper to set session and cookie
     private function loginUser(User $user, bool $rememberMe = false): void
     {
@@ -208,6 +237,7 @@ class UserService
             $token = bin2hex(random_bytes(32));
             // In a real app, store this token in a 'remember_tokens' table linked to user_id
             setcookie('remember_me', 'true', time() + (86400 * 30), "/");
+            $this->db->setRememberMeCookie($user);
         }
     }
 }
