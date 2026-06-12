@@ -48,6 +48,24 @@ export function initSignUp() {
     const form = getElement('signUpForm');
     
     if (form) {
+        // client side repeat assword validation
+        const password = form.querySelector('#password');
+        const confirmPassword = form.querySelector('#confirm_password');
+
+        function checkPasswordMatch() {
+            if (password.value !== confirmPassword.value) {
+                
+                confirmPassword.setCustomValidity("Passwords don't match.");
+            } else {
+
+                confirmPassword.setCustomValidity('');
+            }
+        }
+
+        password.addEventListener('input', checkPasswordMatch);
+        confirmPassword.addEventListener('input', checkPasswordMatch);
+
+
         form.addEventListener('submit', handleSignUp);
     }
     
