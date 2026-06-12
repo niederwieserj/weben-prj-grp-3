@@ -92,15 +92,50 @@ class UserService
         throw new InvalidArgumentException("Invalid credentials.");
     }
 
-
-
-
-    public function logout(): void
+ // Helper to set session and cookie
+    private function loginUser(User $user, bool $rememberMe = false): void
     {
-        session_destroy();
-        if (isset($_COOKIE['remember_me'])) {
-            setcookie('remember_me', '', time() - 3600, '/');
+        session_regenerate_id(true);
+        $_SESSION['user_id'] = $user->getUserId();
+        $_SESSION['username'] = $user->getUsername();
+        $_SESSION['is_admin'] = $user->isAdmin();
+        $userId = $user->getUserId();
+
+        if ($rememberMe) {
+            $token = bin2hex(random_bytes(32));
+            $tokenHash = hash('sha256', $token);
+            $this->db->setRememberMeCookie($userId, $tokenHash);
+            
+            setcookie("remember_me", $tokenHash, [
+                "expires"  => time() + 60*60*24*30,
+                "path"     => "/",
+                "secure"   => isset($_SERVER['HTTPS']),
+                "httponly" => true,
+                "samesite" => "Strict"
+            ]);
         }
+    }
+
+
+    public function logout(int $userId): void
+    {   
+        session_destroy();
+        //$user = $this->db->getUserById($userId);
+        //$userId = $user->getUserId();
+
+        if (isset($_COOKIE['remember_me'])) {
+            setcookie("remember_me", '', [
+            "expires" => time() -3600, // 30 days
+            "path" =>  "/",
+            "secure" => isset($_SERVER['HTTPS']),
+            "httponly" => true,
+            "samesite" => "Strict" ]);
+            
+        }
+        unset($_COOKIE['remember_me']);
+
+        $this->db->unsetRememberMeCookie($userId);
+
     }
 
 
@@ -225,19 +260,5 @@ class UserService
 
 
 
-    // Helper to set session and cookie
-    private function loginUser(User $user, bool $rememberMe = false): void
-    {
-        session_regenerate_id(true);
-        $_SESSION['user_id'] = $user->getUserId();
-        $_SESSION['username'] = $user->getUsername();
-        $_SESSION['is_admin'] = $user->isAdmin();
-
-        if ($rememberMe) {
-            $token = bin2hex(random_bytes(32));
-            // In a real app, store this token in a 'remember_tokens' table linked to user_id
-            setcookie('remember_me', 'true', time() + (86400 * 30), "/");
-            $this->db->setRememberMeCookie($user);
-        }
-    }
+   
 }

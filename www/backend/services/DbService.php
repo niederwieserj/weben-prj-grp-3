@@ -576,6 +576,31 @@ class DbService
     }
 
 
+    /********************************************/
+    /*            set/unset cookie              */
+    /********************************************/
+    public function setRememberMeCookie(int $userId, string $rememberMeCookie): bool
+    {
+        $stmt = $this->pdo->prepare("
+            UPDATE users 
+            SET rememberme_hash = ?
+            WHERE user_id = ?
+        ");
+        return $stmt->execute([$rememberMeCookie, $userId]);
+    }
+
+
+    public function unsetRememberMeCookie(int $userId): bool
+    {
+        $stmt = $this->pdo->prepare("
+            UPDATE users 
+            SET rememberme_hash = NULL
+            WHERE user_id = ?
+        ");
+        return $stmt->execute([$userId]);
+    }
+
+
     // --- Transaction Helpers ---
     public function beginTransaction(): void
     {

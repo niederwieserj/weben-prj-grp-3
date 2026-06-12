@@ -56,7 +56,12 @@ class UserController
                     break;
 
                 case 'signout':
-                    $userService->logout();
+                    $userId = $_SESSION['user_id'] ?? null;
+
+                    if ($userId) {
+                        $userService->logout($userId);
+                    }
+                    $result = ["success" => true, "message" => "Logged out successfully"];
                     break;
 
                 case 'getUserState':
