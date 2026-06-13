@@ -19,11 +19,17 @@ header, main, body:not(.heading, h1,h2,h3,h4,h5,p, div, a, img, svg){
     /*#241e1e;*/
 }
 
+
 #logo{
     font-weight:bold;
     font-size:larger;
     font-style: oblique;
     color:#ce93ff;
+    
+}
+
+#products-link{
+    font-size:larger;
 }
 
 #cart-badge {
@@ -40,7 +46,7 @@ header, main, body:not(.heading, h1,h2,h3,h4,h5,p, div, a, img, svg){
     margin-top: 0.2rem;
 }
 
-header { /*navbar set as position relative -> so search result dropdown can overlap*/
+header { 
     position:relative;
 }
 
