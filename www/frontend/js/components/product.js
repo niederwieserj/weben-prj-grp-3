@@ -2,6 +2,9 @@
 import { apiGet } from '../modules/api.js';
 import { createStarsFromRating } from '../modules/utils.js';
 import { showError } from '../modules/toast.js';
+import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
+  
+
 
 async function loadProduct() {
     const url_string = window.location.href;
@@ -42,6 +45,8 @@ async function loadProduct() {
 
             const img = document.createElement('img');
             img.id = `product-image-${index + 1}`;
+            img.classList.add('d-block');
+            img.classList.add('mx-auto');
             img.classList.add('p-5');
             img.src = image.image_url;
             img.alt = image.alt_text || '';
@@ -67,7 +72,14 @@ async function loadProduct() {
     ratingNumber.innerHTML = product['avg_rating'];
     document.querySelector('#product-rating').appendChild(ratingNumber);
 
-    document.querySelector('#product-description').innerHTML = product['description'];
+    // markdown library for formatting product description
+    const rawDescr = marked.parse(product['description']);
+    const sanitizedDescr = DOMPurify.sanitize(rawDescr);
+    document.querySelector('#product-description').innerHTML = sanitizedDescr;
+
+    //document.querySelector('#product-description').innerHTML = product['description'];
+    
+
 
     
     // ***************************** cart *****************************
@@ -91,3 +103,4 @@ async function loadProduct() {
 window.addEventListener('layout-ready', () => {
     loadProduct();
 });
+

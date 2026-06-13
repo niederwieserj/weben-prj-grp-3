@@ -157,20 +157,37 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`product_id`, `name`, `description`, `avg_rating`, `total_ratings_count`, `price`, `stock_quantity`, `fk_category_id`, `created_at`) VALUES
-(1, 'RTX-5080', 'Wooow such a nice graphics card!', 4.8, 10, 499.00, 20, 1, '2026-04-25 11:20:10'),
-(2, 'RTX-5080', 'Wooow such a nice graphics card!', 2.2, 10, 135.00, 20, 1, '2026-04-25 11:52:44'),
-(3, 'RTX-5080', 'Wooow such a nice graphics card!', 2.3, 10, 280.00, 20, 1, '2026-04-25 11:53:00'),
-(4, 'RTX-5080', 'Wooow such a nice graphics card!', 2.7, 10, 499.00, 20, 1, '2026-04-25 11:53:00'),
-(5, 'RTX-5080', 'Wooow such a nice graphics card!', 2.8, 10, 499.00, 20, 1, '2026-04-25 11:53:00'),
-(6, 'RTX-5080', 'Wooow such a nice graphics card!', 4.2, 10, 499.00, 20, 1, '2026-04-25 11:53:00'),
-(7, 'RTX-5080', 'Wooow such a nice graphics card!', 4.8, 10, 499.00, 20, 1, '2026-04-25 11:53:00'),
-(8, 'RTX-5080', 'Wooow such a nice graphics card!', 4.8, 10, 499.00, 20, 1, '2026-04-25 11:53:00'),
-(9, 'RTX-5080', 'Wooow such a nice graphics card!', 4.8, 10, 499.00, 20, 1, '2026-04-25 11:53:00'),
-(10, 'RTX-5080', 'Wooow such a nice graphics card!', 4.8, 10, 499.00, 20, 1, '2026-04-25 11:53:00'),
-(11, 'RTX-5080', 'Wooow such a nice graphics card!', 4.8, 10, 499.00, 20, 1, '2026-04-25 11:53:00'),
-(12, 'RTX-5080', 'Wooow such a nice graphics card!', 3.6, 10, 499.00, 20, 1, '2026-04-25 11:53:00'),
-(13, 'RTX-5080', 'Wooow such a nice graphics card!', 3.4, 10, 499.00, 20, 1, '2026-04-25 11:53:00'),
-(14, 'RTX-5080', 'Wooow such a nice graphics card!', 0.0, 10, 499.00, 20, 1, '2026-04-26 11:30:59');
+(1, 'RTX-5080', 'GeForce RTX™ 5080 16G VANGUARD SOC
+
+    Powered by the NVIDIA Blackwell architecture and DLSS 4.5
+    Core Clocks:
+    Extreme Performance: 2745 MHz (MSI Center)
+    Boost: 2730 MHz (GAMING & SILENT Mode)
+    HYPER FROZR THERMAL DESIGN: An apex evolution of advanced thermal design that delivers unparalleled cooling and quiet operation.
+    STORMFORCE Fan: Seven fan blades, claw texturing, and a circular arc are designed for optimal airflow with minimal noise.
+    Advanced Vapor Chamber: Built-in Vapor Chamber swiftly transfers heat from the GPU and VRAM to the core pipe for optimal dissipation.
+    Core Pipes: Square-shaped Core Pipes maximize heat dissipation with the Vapor Chamber for superior cooling.
+    Filled Fins: Shaped fins cover the core pipes to reduce turbulence and enhance cooling performance.
+    Wave Curved 4.0: Precision-engineered wave edges with a high-low fin design enhance airflow and reduce turbulence.
+    Air Antegrade Fin 2.0: The fins feature a V-shaped cutout and a high-low design at the airflow passthrough to optimize flow efficiency.
+    Metal Backplate: A reinforcing metal backplate with airflow vents and thermal pads enhances cooling.
+    Dual BIOS: Dual BIOS gives you the choice to prioritize for full performance in GAMING mode or low noise in SILENT mode.
+    MSI Center: The exclusive MSI Center software lets you monitor, tweak and optimize MSI products in real-time.
+    Afterburner: Take full control with the most recognized and widely used graphics card overclocking software in the world.
+', 4.8, 10, 499.00, 20, 1, ''),
+(2, '', '', 2.2, 10, 135.00, 20, 1, ''),
+(3, '', '', 2.3, 10, 280.00, 20, 1, ''),
+(4, '', '', 2.7, 10, 499.00, 20, 1, ''),
+(5, '', '', 2.8, 10, 499.00, 20, 1, ''),
+(6, '', '', 4.2, 10, 499.00, 20, 1, ''),
+(7, '', '', 4.8, 10, 499.00, 20, 1, ''),
+(8, '', '', 4.8, 10, 499.00, 20, 1, ''),
+(9, '', '', 4.8, 10, 499.00, 20, 1, ''),
+(10, '', '', 4.8, 10, 499.00, 20, 1, ''),
+(11, '', '', 4.8, 10, 499.00, 20, 1, ''),
+(12, '', '', 3.6, 10, 499.00, 20, 1, ''),
+(13, '', '', 3.4, 10, 499.00, 20, 1, ''),
+(14, '', '', 0.0, 10, 499.00, 20, 1, '');
 
 -- --------------------------------------------------------
 
