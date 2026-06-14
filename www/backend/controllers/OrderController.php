@@ -14,9 +14,9 @@ class OrderController
             switch ($action) {
                 case 'getAllOrders':
                     return $orderService->getAllOrders();
-                
+
                 case 'getOrdersByUserId':
-                    return $orderService->getOrdersByUserId($userId);    
+                    return $orderService->getOrdersByUserId($userId);
 
                 default:
                     throw new InvalidArgumentException('Invalid action.');
@@ -24,7 +24,7 @@ class OrderController
         }
 
         if ($requestMethod === 'POST') {
-            $productId = (int)($input['product_id'] ?? 0);
+            $productId = (int) ($input['product_id'] ?? 0);
 
             switch ($action) {
                 case 'createNewOrder':
@@ -33,12 +33,19 @@ class OrderController
                     }
 
                     return $orderService->createNewOrder($userId);
-                
+
                 case 'updateOrderStatus':
-                    $orderId = (int)($input['order_id'] ?? 0);
+                    $orderId = (int) ($input['order_id'] ?? 0);
                     $status = $input['status'] ?? '';
 
                     return $orderService->updateOrderStatus($orderId, $status);
+
+
+                case 'updateOrderItem':
+                    $orderItemId = (int) ($input['order_item_id'] ?? 0);
+                    $change = $input['change'] ?? '';
+
+                    return $orderService->updateOrderItemQuantity($orderItemId, $change);
 
                 default:
                     throw new InvalidArgumentException('Invalid action.');
