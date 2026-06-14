@@ -15,49 +15,49 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/Category.php';
 /* available functions:
 
     PRODUCT QUERIES:
-	CATEGORY & RATING:
-		- getCategories(): array
-		- getRatingById(int $id): ?ProductRating
-	- getProductById(int $id): ?Product
-	- getAllProductsWithImages(?string $searchTerm = null): array
-	- createProduct(array $data): int
-	- updateProduct(int $productId, array $data): bool
-	- createProductImage(int $productId, string $imageUrl, string $altText): int
-	- upsertPrimaryProductImage(int $productId, string $imageUrl, string $altText): void
-	- getProductByIdWithImages(int $productId): ?array
-	- getAllProducts(): array
+    CATEGORY & RATING:
+        - getCategories(): array
+        - getRatingById(int $id): ?ProductRating
+    - getProductById(int $id): ?Product
+    - getAllProductsWithImages(?string $searchTerm = null): array
+    - createProduct(array $data): int
+    - updateProduct(int $productId, array $data): bool
+    - createProductImage(int $productId, string $imageUrl, string $altText): int
+    - upsertPrimaryProductImage(int $productId, string $imageUrl, string $altText): void
+    - getProductByIdWithImages(int $productId): ?array
+    - getAllProducts(): array
 
 
 USER QUERIES:
-	- getUserById(int $id): ?User
-	- getUserByEmailOrUsername(string $identifier): ?User
-	- getAllUsers(): array
-	- createUser(User $user): int
-	- createAddress(Address $address): int
-	- getAddressByUserId(int $userId): ?Address
-	- updateUser(User $user): bool
-	- checkUniqueUser(int $excludeId, string $username, string $email): bool
-	- setResetToken(int $userId, string $token, string $expires): bool
-	- getUserByToken(string $token): ?User
-	- updatePassword(int $userId, string $hash): bool
-	- beginTransaction(): void
-	- commit(): void
-	- rollback(): void
+    - getUserById(int $id): ?User
+    - getUserByEmailOrUsername(string $identifier): ?User
+    - getAllUsers(): array
+    - createUser(User $user): int
+    - createAddress(Address $address): int
+    - getAddressByUserId(int $userId): ?Address
+    - updateUser(User $user): bool
+    - checkUniqueUser(int $excludeId, string $username, string $email): bool
+    - setResetToken(int $userId, string $token, string $expires): bool
+    - getUserByToken(string $token): ?User
+    - updatePassword(int $userId, string $hash): bool
+    - beginTransaction(): void
+    - commit(): void
+    - rollback(): void
 
 
 CART QUERIES:
-	- getCartItems(int $userId): array
-	- addCartItem(int $userId, int $productId): void
-	- increaseCartItemQuantity(int $userId, int $productId): void
-	- decreaseCartItemQuantity(int $userId, int $productId): void
-	- removeCartItem(int $userId, int $productId): void
-	- clearCart(int $userId): void
-	
+    - getCartItems(int $userId): array
+    - addCartItem(int $userId, int $productId): void
+    - increaseCartItemQuantity(int $userId, int $productId): void
+    - decreaseCartItemQuantity(int $userId, int $productId): void
+    - removeCartItem(int $userId, int $productId): void
+    - clearCart(int $userId): void
+
 ORDER QUERIES:	
-	- createNewOrder(int $userId, float $totalAmount, array $cartItems): int
-	- getAllOrdersForAdmin(): array
-	- updateOrderStatus(int $orderId, string $status): bool
-	- getOrdersByUserId(int $userId): array
+    - createNewOrder(int $userId, float $totalAmount, array $cartItems): int
+    - getAllOrdersForAdmin(): array
+    - updateOrderStatus(int $orderId, string $status): bool
+    - getOrdersByUserId(int $userId): array
 
 */
 
@@ -105,7 +105,7 @@ class DbService
     /*                            product rating                           */
     /***********************************************************************/
     //Returns a single Product object or null.
-     
+
     public function getRatingById(int $id): ?ProductRating
     {
         $stmt = $this->pdo->prepare(
@@ -123,7 +123,7 @@ class DbService
     /***********************************************************************/
 
     //Returns a single Product object or null.
-    
+
     public function getProductById(int $id): ?Product
     {
         $stmt = $this->pdo->prepare(
@@ -200,7 +200,7 @@ class DbService
 
     /*************************/
     //      (admin only)
-    /*************************/    
+    /*************************/
     public function createProduct(array $data): int
     {
         $stmt = $this->pdo->prepare("
@@ -604,7 +604,7 @@ class DbService
         $stmt->execute([$tokenHash]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-         return $result ? new User($result) : null; 
+        return $result ? new User($result) : null;
     }
 
 
@@ -642,7 +642,7 @@ class DbService
     /***********************************************************************/
     /*                             cart queries                            */
     /***********************************************************************/
-        
+
 
     public function getCartItems(int $userId): array
     {
@@ -734,9 +734,9 @@ class DbService
             VALUES (?, ?, 'pending', NOW())
         ");
         $stmtOrder->execute([$userId, $totalAmount]);
-       
+
         $orderId = (int) $this->pdo->lastInsertId();
-       
+
         $stmtItems = $this->pdo->prepare("
             INSERT INTO order_items (fk_order_id, fk_product_id, quantity, price)
             VALUES (?, ?, ?, ?)
@@ -745,7 +745,7 @@ class DbService
         foreach ($cartItems as $item) {
             $stmtItems->execute([
                 $orderId,
-                $item['id'], 
+                $item['id'],
                 $item['quantity'],
                 $item['price']
             ]);
@@ -850,7 +850,7 @@ class DbService
 
         $stmt->execute([$userId]);
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+
         $orders = [];
         foreach ($rows as $row) {
             $orderId = $row['order_id'];
@@ -872,5 +872,79 @@ class DbService
             }
         }
         return array_values($orders);
+    }
+
+    /*************************/
+    /*   admin order items   */
+    /*************************/
+
+    public function increaseOrderItemQuantity(int $orderItemId): bool
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE order_items
+        SET quantity = quantity + 1
+        WHERE order_item_id = ?
+    ");
+
+        $stmt->execute([$orderItemId]);
+
+        return $stmt->rowCount() > 0;
+    }
+
+    public function decreaseOrderItemQuantity(int $orderItemId): bool
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE order_items
+        SET quantity = quantity - 1
+        WHERE order_item_id = ? AND quantity > 1
+    ");
+
+        $stmt->execute([$orderItemId]);
+
+        return $stmt->rowCount() > 0;
+    }
+
+    public function deleteOrderItem(int $orderItemId): bool
+    {
+        $stmt = $this->pdo->prepare("
+        DELETE FROM order_items
+        WHERE order_item_id = ?
+    ");
+
+        $stmt->execute([$orderItemId]);
+
+        return $stmt->rowCount() > 0;
+    }
+
+    public function getOrderIdByOrderItemId(int $orderItemId): ?int
+    {
+        $stmt = $this->pdo->prepare("
+        SELECT fk_order_id
+        FROM order_items
+        WHERE order_item_id = ?
+    ");
+
+        $stmt->execute([$orderItemId]);
+
+        $orderId = $stmt->fetchColumn();
+
+        return $orderId !== false ? (int) $orderId : null;
+    }
+
+    public function recalculateOrderTotal(int $orderId): bool
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE orders
+        SET total_amount = (
+            SELECT COALESCE(SUM(quantity * price), 0)
+            FROM order_items
+            WHERE fk_order_id = ?
+        )
+        WHERE order_id = ?
+    ");
+
+        $stmt->execute([$orderId, $orderId]);
+
+        return $stmt->rowCount() > 0;
     }
 }

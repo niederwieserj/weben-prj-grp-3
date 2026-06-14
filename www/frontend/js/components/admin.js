@@ -90,7 +90,7 @@ async function loadAllUsers() {
         </button>`;
 
         const btnElement = cell6.querySelector('button.toggle-active-btn');
-            
+
         if (btnElement) {
             btnElement.addEventListener('click', async () => {
                 const userId = btnElement.dataset.userId;
@@ -99,7 +99,7 @@ async function loadAllUsers() {
                 try {
                     const isActive = btnElement.classList.contains('btn-outline-success');
 
-                    const result = await apiPost('user', 'updateUserDataById', { 'user_id': userId, 'is_active': !isActive});
+                    const result = await apiPost('user', 'updateUserDataById', { 'user_id': userId, 'is_active': !isActive });
 
                     if (result.response.ok) {
                         if (isActive) {
@@ -236,9 +236,9 @@ function renderProductTableRows(row) {
             <td class="font-monospace">${escapeHtml(product.product_id)}</td>
             <td>
                 ${imageUrl
-                    ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(product.name)}" class="admin-product-image">`
-                    : '<span class="text-muted">No image</span>'
-                }
+            ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(product.name)}" class="admin-product-image">`
+            : '<span class="text-muted">No image</span>'
+        }
             </td>
             <td>${escapeHtml(product.name)}</td>
             <td>${escapeHtml(product.category_name || '')}</td>
@@ -400,6 +400,7 @@ async function loadOrdersForAdmin() {
 
     registerOrderEditToggleEvents();
     registerOrderEditSubmitEvents();
+    registerOrderItemActionEvents();
 }
 
 
@@ -443,12 +444,34 @@ function renderOrderEditForm(order) {
     const items = Array.isArray(order.items) ? order.items : [];
 
     const itemsHtml = items.map(item => `
-        <tr>
-            <td>${escapeHtml(item.product_name || 'Unknown product')}</td>
-            <td>${escapeHtml(item.quantity)}</td>
-            <td>${escapeHtml(item.price)} €</td>
-        </tr>
-    `).join('');
+    <tr>
+        <td>${escapeHtml(item.product_name || 'Unknown product')}</td>
+        <td class="font-monospace">${escapeHtml(item.quantity)}</td>
+        <td class="font-monospace">${escapeHtml(item.price)} €</td>
+        <td class="text-end">
+            <button type="button"
+                    class="btn btn-sm btn-outline-success admin-order-item-action"
+                    data-order-item-id="${escapeHtml(item.order_item_id)}"
+                    data-change="increase">
+                +
+            </button>
+
+            <button type="button"
+                    class="btn btn-sm btn-outline-warning admin-order-item-action"
+                    data-order-item-id="${escapeHtml(item.order_item_id)}"
+                    data-change="decrease">
+                -
+            </button>
+
+            <button type="button"
+                    class="btn btn-sm btn-outline-danger admin-order-item-action"
+                    data-order-item-id="${escapeHtml(item.order_item_id)}"
+                    data-change="delete">
+                Delete
+            </button>
+        </td>
+    </tr>
+`).join('');
 
     return `
         <form class="admin-edit-order-form admin-edit-form">
@@ -485,12 +508,13 @@ function renderOrderEditForm(order) {
                             <th>Product</th>
                             <th>Quantity</th>
                             <th>Price</th>
+                            <th class="text-end">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         ${itemsHtml || `
                             <tr>
-                                <td colspan="3" class="text-muted">No items found.</td>
+                                <td colspan="4" class="text-muted">No items found.</td>
                             </tr>
                         `}
                     </tbody>
@@ -539,6 +563,33 @@ function registerOrderEditSubmitEvents() {
                 await loadOrdersForAdmin();
             } else {
                 showError(result.message || 'Could not update order.');
+            }
+        });
+    });
+}
+
+
+
+function registerOrderItemActionEvents() {
+    document.querySelectorAll('.admin-order-item-action').forEach(button => {
+        button.addEventListener('click', async () => {
+            const orderItemId = button.dataset.orderItemId;
+            const change = button.dataset.change;
+
+            if (change === 'delete' && !confirm('Delete this order item?')) {
+                return;
+            }
+
+            const result = await apiPost('order', 'updateOrderItem', {
+                order_item_id: orderItemId,
+                change: change
+            });
+
+            if (result.response.ok) {
+                showSuccess('Order item updated.');
+                await loadOrdersForAdmin();
+            } else {
+                showError(result.message || 'Could not update order item.');
             }
         });
     });

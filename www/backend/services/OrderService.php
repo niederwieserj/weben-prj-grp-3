@@ -92,7 +92,51 @@ class OrderService
         if (!$userId) {
             throw new Exception("Must be a registered user");
         }
-        
+
         return $this->db->getOrdersByUserId($userId);
+    }
+
+    /*************************/
+    /*   admin order items   */
+    /*************************/
+
+    public function updateOrderItemQuantity(int $orderItemId, string $change): array
+    {
+        $this->requireAdmin();
+
+        if ($orderItemId <= 0) {
+            throw new InvalidArgumentException('Invalid order item id.');
+        }
+
+        $orderId = $this->db->getOrderIdByOrderItemId($orderItemId);
+
+        if (!$orderId) {
+            throw new OutOfBoundsException('Order item not found.');
+        }
+
+        switch ($change) {
+            case 'increase':
+                $updated = $this->db->increaseOrderItemQuantity($orderItemId);
+                break;
+
+            case 'decrease':
+                $updated = $this->db->decreaseOrderItemQuantity($orderItemId);
+                break;
+
+            case 'delete':
+                $updated = $this->db->deleteOrderItem($orderItemId);
+                break;
+
+            default:
+                throw new InvalidArgumentException('Invalid order item action.');
+        }
+
+        if (!$updated) {
+            throw new RuntimeException('Order item could not be updated.');
+        }
+
+        $this->db->recalculateOrderTotal($orderId);
+
+        return [];
     }
 }
