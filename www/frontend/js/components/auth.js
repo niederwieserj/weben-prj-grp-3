@@ -72,11 +72,6 @@ async function signOut(e) {
         if (result.response.ok) {
             toggleVisibility('nav-drop-logged-out', 'nav-drop-logged-in');
             showSuccess('You have been logged out.');
-
-            // Redirect to home page
-            setTimeout(() => {
-                window.location.replace('home.html');
-            }, 500);
         }
     } catch (error) {
         console.error('Logout error:', error);
