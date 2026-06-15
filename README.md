@@ -153,7 +153,6 @@ weben-prj-grp-3
    │  │  │  ├─ products.js
    │  │  │  ├─ profile.js
    │  │  │  ├─ reset-password.js
-   │  │  │  ├─ search.js
    │  │  │  └─ sign-up.js
    │  │  ├─ layout.js
    │  │  ├─ main.js

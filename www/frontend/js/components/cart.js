@@ -18,7 +18,7 @@ function updateCartUI(cartItems) {
     const itemCount = items.reduce((sum, item) => sum + Number(item.quantity), 0);
     const $badge = $('#cart-badge');
 
-    if (itemCount > 0) {
+    if (itemCount >= 0) {
         $badge.removeClass('d-none');
     } else {
         $badge.addClass('d-none');
