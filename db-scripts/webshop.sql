@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: database:3306
--- Generation Time: Jun 13, 2026 at 12:34 PM
+-- Generation Time: Jun 15, 2026 at 12:42 PM
 -- Server version: 10.6.25-MariaDB-ubu2204
 -- PHP Version: 8.3.30
 
@@ -42,14 +42,11 @@ CREATE TABLE `addresses` (
 --
 
 INSERT INTO `addresses` (`address_id`, `fk_user_id`, `postal_code`, `address`, `city`, `country`, `created_at`) VALUES
-(1, 3, '1010', 'john doe st. 1', 'Vienna', 'Austria', '2026-04-13 19:12:26'),
-(2, 4, '1010', 'john doe st. 1', 'Vienna', 'Austria', '2026-04-13 19:14:42'),
-(3, 12, '', 'john doe st. 1', 'Vienna', 'Austria', '2026-04-25 09:58:44'),
-(4, 13, '', 'john doe st. 1', 'Vienna', 'Austria', '2026-04-25 10:08:38'),
-(5, 14, '1010', 'john doe st. 1', 'Vienna', 'Austria', '2026-04-25 10:09:21'),
 (6, 16, '1111', 'Jakob Str. 1', 'Vienna', 'Austria', '2026-04-25 10:33:01'),
 (7, 17, '1100', 'eine adresse 15', 'Vienna', 'Austria', '2026-05-29 18:17:29'),
-(8, 19, '2363', 'Hans strasse 19', 'Köln', 'Germany', '2026-06-12 13:05:12');
+(9, 20, '2010', 'Strasse der Beate 20', 'Bratislava', 'Slovakia', '2026-06-15 08:32:09'),
+(16, 32, '3020', 'Musterstraße 42', 'Regensburg', 'Germany', '2026-06-15 09:17:10'),
+(17, 33, '1941', 'Tabeas Strasse 12', 'Nove Zamky', 'Slovakia', '2026-06-15 09:21:06');
 
 -- --------------------------------------------------------
 
@@ -109,8 +106,11 @@ CREATE TABLE `orders` (
 
 INSERT INTO `orders` (`order_id`, `fk_user_id`, `total_amount`, `status`, `created_at`) VALUES
 (9, 17, 998.00, 'pending', '2026-06-01 09:36:29'),
-(10, 19, 1497.00, 'pending', '2026-06-12 13:06:48'),
-(18, 17, 1225.29, 'pending', '2026-06-13 12:31:41');
+(18, 17, 1225.29, 'pending', '2026-06-13 12:31:41'),
+(19, 17, 204.50, 'shipped', '2026-06-14 15:38:13'),
+(20, 33, 896.23, 'pending', '2026-06-15 09:22:00'),
+(21, 33, 709.31, 'pending', '2026-06-15 09:22:34'),
+(22, 32, 852.64, 'pending', '2026-06-15 09:23:13');
 
 -- --------------------------------------------------------
 
@@ -131,12 +131,21 @@ CREATE TABLE `order_items` (
 --
 
 INSERT INTO `order_items` (`order_item_id`, `fk_order_id`, `fk_product_id`, `quantity`, `price`) VALUES
-(10, 10, 1, 2, 499.00),
 (20, 18, 16, 2, 199.99),
 (21, 18, 20, 1, 336.99),
 (22, 18, 24, 1, 35.33),
 (23, 18, 26, 1, 353.00),
-(24, 18, 21, 1, 99.99);
+(24, 18, 21, 1, 99.99),
+(26, 19, 17, 1, 204.50),
+(27, 20, 18, 2, 322.68),
+(28, 20, 25, 1, 115.87),
+(29, 20, 2, 1, 135.00),
+(30, 21, 24, 1, 35.33),
+(31, 21, 20, 2, 336.99),
+(32, 22, 21, 2, 99.99),
+(33, 22, 15, 1, 129.99),
+(34, 22, 18, 1, 322.68),
+(35, 22, 16, 1, 199.99);
 
 -- --------------------------------------------------------
 
@@ -254,19 +263,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `username`, `password_hash`, `email`, `first_name`, `last_name`, `rememberme_hash`, `is_admin`, `is_active`, `created_at`, `fk_title_id`, `reset_token`, `reset_token_expires`) VALUES
-(3, 'johndoe', '$2y$12$iyDZecLBc.TZ1sug74F7BOHIzifZffgLreg3iPcAFic5ncx4kYzZW', 'john@doe.com', 'John', 'Doe', NULL, 0, 1, '2026-04-13 19:12:26', NULL, NULL, NULL),
-(4, 'john2doe', 'c2713b62c903791bdefc5a6a99df04d4330de491bbc7a0ca6a5007337e4a6028', 'john2@doe.com', 'John', 'Doe', NULL, 0, 1, '2026-04-13 19:14:42', NULL, NULL, NULL),
-(5, 'johndoe4', '$2y$12$Ji6V1eLWNtcUIwsILvlZeeMmUuzVHR3CGT7n36khZKA.lodfFXg8S', 'john4@doe.com', 'John', 'Doe', NULL, 0, 1, '2026-04-25 09:10:08', NULL, NULL, NULL),
-(6, 'johndoe5', '$2y$12$TRILSWa44VJc94iGXoTqIO3/v0pfRr088Qh6M8x8L0ZAy4P6cxjY2', 'john5@doe.com', 'John', 'Doe', NULL, 0, 1, '2026-04-25 09:14:33', NULL, NULL, NULL),
-(7, 'johndoe6', '$2y$12$z5q5ES3Xy8MB/QQW4mXD1.6DHdEm9J1hwrU4gsDJrznjOXyM8FY4u', 'john6@doe.com', 'John', 'Doe', NULL, 0, 1, '2026-04-25 09:15:30', NULL, NULL, NULL),
-(8, 'johndoe7', '$2y$12$th457wWp1mwZXZz50DMHk.d5kcYTbSYJKnWNewClxdwKcs4qx.n5i', 'john7@doe.com', 'John', 'Doe', NULL, 0, 1, '2026-04-25 09:16:02', NULL, NULL, NULL),
-(9, 'johndoe8', '$2y$12$yMwqUwo5aMfEQ6frqfYMmuFb3piZdmvUkC69SmH/CUSxdz4WAthVO', 'john8@doe.com', 'John', 'Doe', NULL, 0, 1, '2026-04-25 09:30:01', NULL, NULL, NULL),
-(12, 'johndoe11', '$2y$12$2aL5.HIzd2hFLWTyAuciH.wE68bJaTioejb4.BYFP5vea8qTDdDkC', 'john11@doe.com', 'John', 'Doe', NULL, 0, 1, '2026-04-25 09:58:44', NULL, NULL, NULL),
-(13, 'johndoe12', '$2y$12$wJvYGgdF0kZKpGNIQLBTDeuy2bTuJ38kxvNkrZDkW4MiMUvOX5hrC', 'john12@doe.com', 'John', 'Doe', NULL, 0, 1, '2026-04-25 10:08:38', NULL, NULL, NULL),
-(14, 'johndoe13', '$2y$12$gc6p4uqQap2vFPi56QkzzuX.bEa3Z.u4IrjdJ24S6wveTqxYKBUuO', 'john13@doe.com', 'John', 'Doe', NULL, 0, 1, '2026-04-25 10:09:21', NULL, NULL, NULL),
 (16, 'jakob', '$2y$12$KnhPc/E7DP2cus7wgFr8meSfgSH4TLh9Ddvlh0YL1dEFvRZwTcoa6', 'email@test.com', 'Jakob', 'Test', NULL, 0, 1, '2026-04-25 10:33:01', NULL, NULL, NULL),
-(17, 'lintaf', '$2y$12$WhA517iYrnHNIRkRkZjdwepW7h2yEfpSWNMJb6KfDxR8IDHRq6QTa', 'lin.taf@gmail.com', 'lindores', 'tafernur', NULL, 1, 1, '2026-05-29 18:17:29', 2, NULL, NULL),
-(19, 'he335', '$2y$12$1OEFfdaKThEOxpXYJ0iY7ef8TAqDli/DXsTmzjEZm/0lLqeapMGRC', 'peter@gmail.com', 'hans', 'gew', NULL, 0, 1, '2026-06-12 13:05:12', 1, NULL, NULL);
+(17, 'lintaf', '$2y$12$WhA517iYrnHNIRkRkZjdwepW7h2yEfpSWNMJb6KfDxR8IDHRq6QTa', 'lin.taf@gmail.com', 'Linda', 'Taferner', NULL, 1, 1, '2026-05-29 18:17:29', 1, NULL, NULL),
+(20, 'adminBeate', '$2y$12$HNHZ3e9GrXiPagol0jECOu3X7bWEpZC4paDi.0CMIzQmIBI36d8aC', 'beate.admin@gmail.com', 'Beate', 'Admin', 'c29cf38dbf381616d758665a6bb771dcf09e4d6dd338c008eada23d93a3bbadd', 1, 1, '2026-06-15 08:32:09', 1, NULL, NULL),
+(32, 'musterMax', '$2y$12$pi822oOJu2Rbs93AT6rU/ufVWH7gMvQsK9jBrhN7cS3C.YN1MonHC', 'max.muster@gmail.com', 'Max', 'Mustermann', NULL, 0, 1, '2026-06-15 09:17:10', 3, NULL, NULL),
+(33, 'musterTabea17', '$2y$12$dZwBJaXY92ykJzYTICunL.1Se4L6f/odpU1XO0hUgF0bG6RzpA/CW', 'tabea.muster12@gmail.com', 'Tabea', 'Musterfrau', NULL, 0, 1, '2026-06-15 09:21:06', 2, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -393,13 +394,13 @@ ALTER TABLE `wishlist`
 -- AUTO_INCREMENT for table `addresses`
 --
 ALTER TABLE `addresses`
-  MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `cart_items`
 --
 ALTER TABLE `cart_items`
-  MODIFY `cart_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `cart_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -411,25 +412,25 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `product_images`
 --
 ALTER TABLE `product_images`
-  MODIFY `image_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `image_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `product_ratings`
@@ -441,7 +442,7 @@ ALTER TABLE `product_ratings`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `user_titles`
