@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="de" data-bs-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/frontend/bootstrap/css/bootstrap.min.css">
+
+    <link rel="icon" type="image/x-icon" href="/frontend/img/coreGear-logo-copy.png">
+    <title>Profile &#x2022; CoreGear</title>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+    <div id="head-placeholder"></div>
+    <div id="navbar-placeholder"></div>
+
+    <main class="container-fluid flex-grow-1 py-5 mt-3">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
+
+                <div class="card border-secondary mb-4">
+                    <div class="card-header text-center">
+                        <h3 class="mb-0">My Orders</h3>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="list-group list-group-light" id="order-history-container">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </main>
+    <div class="modal fade" id="invoiceModal" tabindex="-1" aria-labelledby="invoiceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content bg-dark text-light border-secondary">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title" id="invoiceModalLabel">Order Invoice Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0" id="invoice-modal-body">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div id="toast-placeholder"></div>
+    <div id="footer-placeholder"></div>
+
+    <script src="https://code.jquery.com/jquery-4.0.0.min.js"
+        integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
+
+    <script type="module" src="/frontend/js/layout.js"></script>
+    <script type="module" src="/frontend/js/main.js"></script>
+    <script type="module" src="/frontend/js/components/orders.js"></script>
+
+</body>
+
+</html>

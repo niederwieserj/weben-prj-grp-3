@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="de" data-bs-theme="dark">
+
+<head id="head-placeholder">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Bootstrap CSS -->
+  <link href="/frontend/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!--<link href="/frontend/css/product.css" rel="stylesheet">-->
+  <link href="/frontend/css/products.css" rel="stylesheet">
+  <link href="/frontend/css/style.css" rel="stylesheet">
+
+  <link rel="icon" type="image/x-icon" href="/frontend/img/coreGear-logo-copy.png">
+  <title>Products &#x2022; CoreGear</title>
+</head>
+
+<body class="d-flex flex-column min-vh-100 ">
+
+  <main class="container-fluid mt-4 flex-grow-1">
+    <!-- Layout placeholders -->
+    <div id="navbar-placeholder"></div>
+    <div class="container-fluid mt-3 flex-grow-1" id="product-catalogue-container">
+
+
+      <!-- ======================================================================= -->
+      
+
+      <main>
+        <section class="py-5 text-center container">
+          <div class="row py-lg-5">
+            <div class="col-lg-6 col-md-8 mx-auto">
+              <h1 class="fw-light">Product Catalogue</h1>
+              <p class="lead">
+                All your favourite gaming hardware in one place.
+              </p>
+            </div>
+          </div>
+        </section>
+        <div class="row">
+          <div class="col-1"></div>
+          <div class="col-8"> 
+            <div class="album pb-5">
+              <div class="container-fluid">
+                <div id="info-card-zero-products" class="row justify-content-center d-none">
+                    <div class="card text-center border-primary bg-transparent">
+                      <div class="card-body">
+                        <h5 class="card-title text-primary-emphasis">No Products Found</h5>
+                        <p class="card-text">There are no products matching your filter criteria.</p>
+                      </div>
+                    </div>
+                </div>
+                <div id="product-grid" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-3" id="filter-col">
+            <div class="filter-menu position-sticky" style="top: 7rem">
+              <div class="p-4 mb-3 border rounded navbar-expand-sm">
+                <h4 class="fst-italic">Filter</h4>
+
+                <input id="search-input" type="text" class="form-control form-control-sm my-3" placeholder="Search...">
+
+                <!-- Category (Collapsible) -->
+
+                <ul class="list-unstyled ps-0">
+                  <li class="mb-1">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#category-collapse" aria-expanded="true">
+                      Categories
+                    </button>
+                    <!-- Updated Badge with ID -->
+                    <span id="category-badge" class="badge rounded-pill bg-primary">
+                      0
+                    </span>
+
+                    <div class="collapse show" id="category-collapse">
+                      <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 ms-4 ps-1" id="category-filters">
+                        <!-- Populated dynamically by JS -->
+                        <p class="text-muted">Loading categories...</p>
+                      </ul>
+                      <!-- New Action Buttons -->
+                      <div class="d-flex justify-content-start mb-2 ms-4">
+                        <button type="button" class="btn btn-sm btn-outline-light border-0 me-2" id="btn-cat-select-all">
+                          <svg class="bi" width="20" height="20" fill="currentColor">
+                            <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#plus-circle" />
+                          </svg>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-light border-0" id="btn-cat-deselect-all"><svg class="bi" width="20" height="20" fill="currentColor">
+                            <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#dash-circle" />
+                          </svg></button>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+
+                <!-- Min Rating (Collapsible) -->
+                <ul class="list-unstyled ps-0">
+                  <li class="mb-1">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#rating-collapse" aria-expanded="false">
+                      Rating
+                    </button>
+                    <div class="collapse" id="rating-collapse">
+                      <ul class="btn-toggle-nav list-unstyled fw-normal pb-1">
+                        <li class="p-2">
+                          <div class="row">
+                            <div class="col-3">
+                              <p>Level</p>
+                            </div>
+                            <div class="col-9">
+                              <select class="form-select" id="min-rating-select">
+                                <option value="0">Any</option>
+                                <option value="3">3+ Stars</option>
+                                <option value="4">4+ Stars</option>
+                                <option value="4.5">4.5+ Stars</option>
+                              </select>
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                </ul>
+
+                <!-- Price Range (Collapsible) -->
+                <ul class="list-unstyled ps-0">
+                  <li class="mb-1">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#price-collapse" aria-expanded="false">
+                      Price
+                    </button>
+                    <div class="collapse" id="price-collapse">
+                      <ul class="btn-toggle-nav list-unstyled fw-normal pb-1">
+                        <li class="p-2">
+                          <div class="row">
+                            <div class="col-3">
+                              <label for="range4" class="form-label">Range</label>
+                            </div>
+                            <div class="col-9">
+                              <input type="range" class="form-range" min="0" max="500" value="500" id="range4">
+                              <output for="range4" id="rangeValue" aria-hidden="true" class="font-monospace">0 - 500
+                                €</output>
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                </ul>
+
+                <!-- Sort (Existing Structure) -->
+                <ul class="list-unstyled ps-0">
+                  <li class="mb-1">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false">
+                      Sort
+                    </button>
+                    <div class="collapse" id="home-collapse">
+                      <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 ">
+                        <li class="p-2">
+                          <!-- Sort By -->
+                          <div class="row">
+                            <div class="col-3">
+                              <p>Sort by</p>
+                            </div>
+                            <div class="col-9">
+                              <select class="form-select" id="sort-select">
+                                <option value="rating" selected>Rating</option>
+                                <option value="price">Price</option>
+                                <option value="name">Name</option>
+                                <option value="stock">Stock</option>
+                              </select>
+                            </div>
+                          </div>
+                        </li>
+                        <li class="p-2">
+                          <div class="row">
+                            <div class="col-3">
+                              <p>Order</p>
+                            </div>
+                            <div class="col-9">
+                              <button type="button" class="btn btn-sm btn-outline" id="sort-order-btn" data-order="desc">
+                                <svg class="bi" width="24" height="24" fill="currentColor">
+                                  <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#sort-down" />
+                                </svg>
+                              </button>
+                              <span id="sort-order-label">Descending</span>
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <p id="result-counter" class="text-body-secondary mt-3"></p>
+            </div>
+          </div>
+        </div>
+    </div>
+    </div>
+  </main>
+
+  <!-- ======================================================================= -->
+
+  <!-- Theme placeholder -->
+  <!-- <div id="theme-placeholder"></div> -->
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+
+  <script src="https://code.jquery.com/jquery-4.0.0.min.js" integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/ui/1.14.2/jquery-ui.min.js" integrity="sha256-mblSWfbYzaq/f+4akyMhE6XELCou4jbkgPv+JQPER2M=" crossorigin="anonymous"></script>
+
+
+  <!-- 1. Load Layout (Orchestrator) -->
+  <script type="module" src="/frontend/js/layout.js"></script>
+
+  <!-- 2. Load Main App (Modular Entry Point) -->
+
+  <script type="module" src="/frontend/js/main.js"></script>
+
+  <script type="module" src="/frontend/js/components/products.js"></script>
+  <script src="/frontend/js/components/cart.js"></script>
+</body>
+
+</html>

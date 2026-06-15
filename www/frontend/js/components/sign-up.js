@@ -1,0 +1,73 @@
+// frontend/js/signup.js
+import { apiPost } from '../modules/api.js';
+import { showError, showSuccess } from '../modules/toast.js';
+import { getElement } from '../modules/utils.js';
+import { initBootstrapValidation } from '../modules/validators.js';
+
+/**
+ * Handle signup form submission.
+ *
+ * @param {Event} e - Submit event
+ */
+async function handleSignUp(e) {
+    e.preventDefault();
+
+    const form = e.target;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+    
+    // Add action for backend routing
+    data.action = 'sign-up';
+
+    // Disable button to prevent double-submit
+        const submitBtn = form.querySelector('button[type="submit"]');
+    
+    try {
+        submitBtn.disabled = true;
+        
+        const result = await apiPost('user', 'sign-up', data);
+        
+        if (result.response.ok) {
+            showSuccess(result.message || 'Registration successful! Redirecting...');
+            
+            setTimeout(() => {
+                window.location.replace('home.html');
+            }, 1500);
+        } else {
+            showError(result.message || 'Registration failed.');
+            submitBtn.disabled = false;
+        }
+    } catch (error) {
+        console.error('Sign-up error:', error);
+        showError('Failed to connect to server. Please try again.');
+        submitBtn.disabled = false;
+    }
+}
+
+export function initSignUp() {
+    const form = getElement('signUpForm');
+    
+    if (form) {
+        // client side repeat assword validation
+        const password = form.querySelector('#password');
+        const confirmPassword = form.querySelector('#confirm_password');
+
+        function checkPasswordMatch() {
+            if (password.value !== confirmPassword.value) {
+                
+                confirmPassword.setCustomValidity("Passwords don't match.");
+            } else {
+
+                confirmPassword.setCustomValidity('');
+            }
+        }
+
+        password.addEventListener('input', checkPasswordMatch);
+        confirmPassword.addEventListener('input', checkPasswordMatch);
+
+
+        form.addEventListener('submit', handleSignUp);
+    }
+    
+    initBootstrapValidation();
+}

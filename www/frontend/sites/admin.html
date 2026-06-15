@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="de" data-bs-theme="dark">
+
+<head id="head-placeholder">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/frontend/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/frontend/css/admin.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="/frontend/img/coreGear-logo-copy.png">
+    <title>Admin &#x2022; CoreGear</title>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+    <main class="container-fluid mt-4 flex-grow-1">
+
+        <div id="navbar-placeholder"></div>
+
+        <div class="container mt-4">
+            <h1 class="mb-4">Admin Panel</h1>
+
+            <div id="admin-access-message" class="alert alert-danger d-none">
+                You need admin rights to access this page.
+            </div>
+
+            <div id="admin-content" class="d-none">
+                <ul class="nav nav-tabs mb-4" id="adminTabs">
+                    <li class="nav-item">
+                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#create-product-tab">
+                            Create Product
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#edit-products-tab">
+                            Edit Products
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#orders-tab">
+                            Edit Orders
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#users-tab">
+                            Users
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="create-product-tab">
+                        <div class="card">
+                            <div class="card-body">
+                                <form id="create-product-form">
+                                    <div class="mb-3">
+                                        <label class="form-label">Name</label>
+                                        <input class="form-control" name="name" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Description</label>
+                                        <textarea class="form-control" name="description" rows="3"></textarea>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Price</label>
+                                        <input class="form-control" name="price" type="number" step="0.01" min="0.01" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Stock Quantity</label>
+                                        <input class="form-control" name="stock_quantity" type="number" min="0" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Category</label>
+                                        <select class="form-select" name="fk_category_id" id="create-category-select" required></select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Image URL</label>
+                                        <input class="form-control" name="image_url" placeholder="/backend/product-pictures/image.png">
+                                    </div>
+
+                                    <button class="btn btn-primary" type="submit">Create Product</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="edit-products-tab">
+                        <div class="card">
+                            <div class="card-body">
+                                <div id="products-admin-list"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="orders-tab">
+                        <div class="card">
+                            <div class="card-body">
+                                <div id="orders-admin-list"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="users-tab">
+                        <div class="card">
+                            <div class="card-body">
+                                <table class="table table-hover " id="users-table">
+                                    <thead>
+                                        <th>ID</th>
+                                        <th>User</th>
+                                        <th>Email</th>
+                                        <th>First name</th>
+                                        <th>Last name</th>
+                                        <th>Active</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="d-none">
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="footer-placeholder"></div>
+    <div id="toast-placeholder"></div>
+
+    <script src="https://code.jquery.com/jquery-4.0.0.min.js" integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/ui/1.14.2/jquery-ui.min.js" integrity="sha256-mblSWfbYzaq/f+4akyMhE6XELCou4jbkgPv+JQPER2M=" crossorigin="anonymous"></script>
+
+    <script type="module" src="/frontend/js/layout.js"></script>
+    <script type="module" src="/frontend/js/main.js"></script>
+    <script type="module" src="/frontend/js/components/admin.js"></script>
+</body>
+
+</html>
