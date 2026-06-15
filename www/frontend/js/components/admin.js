@@ -220,6 +220,7 @@ async function loadProductsForAdmin() {
 
     registerProductEditToggleEvents();
     registerProductEditSubmitEvents();
+    registerProductDeleteEvents();
 }
 
 
@@ -250,6 +251,12 @@ function renderProductTableRows(row) {
                     <svg class="bi" width="16" height="16" fill="currentColor">
                         <use xlink:href="/frontend/bootstrap-icons/bootstrap-icons.svg#pencil" />
                     </svg>
+                </button>
+                <button type="button"
+                    class="btn btn-sm btn-outline-danger admin-delete-product-btn"
+                    data-product-id="${escapeHtml(product.product_id)}"
+                    data-change="delete">
+                    Delete
                 </button>
             </td>
         </tr>
@@ -352,6 +359,33 @@ function registerProductEditSubmitEvents() {
         });
     });
 }
+
+function registerProductDeleteEvents(){
+    document.querySelectorAll('.admin-delete-product-btn').forEach(button => {
+        button.addEventListener('click', async () => {
+            const productId = button.dataset.productId;
+
+            if (!confirm('Are you sure you want to delete this product?')) {
+                return;
+            }
+
+            try {
+                
+                const result = await apiPost('product', 'deleteProduct', { product_id: productId });
+
+                if (result.response.ok) {
+                    showSuccess('Product deleted successfully.');
+                    await loadProductsForAdmin(); // re-render product table after produtct deletions
+                } else {
+                    showError(result.message || 'Could not delete product.');
+                }
+            } catch (error) {
+                showError('Failed to execute delete operation.');
+            }
+        });
+    });       
+}
+
 
 
 /**************************************************************/
@@ -626,6 +660,8 @@ function renderStatusOptions(currentStatus) {
         `;
     }).join('');
 }
+
+
 
 
 

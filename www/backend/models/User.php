@@ -22,7 +22,7 @@ class User implements JsonSerializable {
         $this->passwordHash = $data['password_hash'] ?? '';
         $this->firstName = $data['first_name'] ?? '';
         $this->lastName = $data['last_name'] ?? '';
-        $this->title_id = (int)$data['title_id'] ?? 1;
+        $this->title_id = (!isset($data['title_id']) || $data['title_id'] === '') ? null : (int)$data['title_id'];
         $this->isAdmin = (bool)($data['is_admin'] ?? false);
         $this->isActive = (bool)($data['is_active'] ?? false);
         $this->createdAt = $data['created_at'] ?? '';

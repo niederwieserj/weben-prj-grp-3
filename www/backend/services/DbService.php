@@ -21,11 +21,13 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/backend/models/Category.php';
     - getProductById(int $id): ?Product
     - getAllProductsWithImages(?string $searchTerm = null): array
     - createProduct(array $data): int
+    - deleteProduct(int $productId): bool
     - updateProduct(int $productId, array $data): bool
     - createProductImage(int $productId, string $imageUrl, string $altText): int
     - upsertPrimaryProductImage(int $productId, string $imageUrl, string $altText): void
     - getProductByIdWithImages(int $productId): ?array
     - getAllProducts(): array
+
 
 
 USER QUERIES:
@@ -249,6 +251,17 @@ class DbService
         return $stmt->rowCount() > 0;
     }
 
+    public function deleteProduct(int $productId): bool
+    {
+      $stmt = $this->pdo->prepare("
+            DELETE FROM products 
+            WHERE product_id = ?
+        ");
+
+        $stmt->execute([$productId]);
+
+        return $stmt->rowCount() > 0;  
+    }
 
     /*************************/
     //      (admin only)

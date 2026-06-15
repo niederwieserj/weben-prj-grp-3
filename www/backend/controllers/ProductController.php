@@ -60,6 +60,10 @@ class ProductController
                     $result = $productService->updateProduct($input);
                     break;
 
+                case 'deleteProduct':
+                    $result = $productService->deleteProduct($input);
+                    break;    
+
                 default:
                     throw new InvalidArgumentException('Invalid action.');
             }

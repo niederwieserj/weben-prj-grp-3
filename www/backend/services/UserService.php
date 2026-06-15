@@ -28,6 +28,8 @@ class UserService
         if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             throw new InvalidArgumentException("Invalid email format.");
         }
+        
+        
 
         // 2. Check Existence (Now returns User object or null)
         if ($this->db->getUserByEmailOrUsername($data['username'])) {
@@ -63,7 +65,8 @@ class UserService
         } catch (Exception $e) {
             $this->db->rollback();
 
-            throw new RuntimeException("Registration failed.");
+            //throw new RuntimeException("Registration failed.");
+            throw new RuntimeException("Registration failed: " . $e->getMessage());
         }
     }
 

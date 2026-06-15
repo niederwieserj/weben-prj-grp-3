@@ -175,4 +175,24 @@ class ProductService
 
         return [];
     }
+
+    public function deleteProduct(array $input): array
+    {
+        $this->requireAdmin();
+
+        $productId = (int) ($input['product_id'] ?? 0);
+
+        if ($productId <= 0) {
+            throw new InvalidArgumentException('Product id is required.');
+        }
+
+        $deleted = $this->db->deleteProduct($productId);
+
+        if (!$deleted) {
+            throw new OutOfBoundsException('Product not found.');
+        }
+
+        return ['message' => 'Product successfully deleted.'];
+    }
+
 }

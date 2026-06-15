@@ -153,7 +153,6 @@ weben-prj-grp-3
    │  │  │  ├─ products.js
    │  │  │  ├─ profile.js
    │  │  │  ├─ reset-password.js
-   │  │  │  ├─ search.js
    │  │  │  └─ sign-up.js
    │  │  ├─ layout.js
    │  │  ├─ main.js
@@ -186,4 +185,22 @@ weben-prj-grp-3
       ├─ test_db.php
       └─ test_db_pdo.php
 
+
+Admin set up in DB:
+1. 
+   email: beate.admin@gmail.com
+   username: adminBeate
+   psw: 987Beate
+
+Regular Users set up in DB:
+
+1. 
+   email: max.muster@gmail.com
+   username: musterMax
+   psw: 1864Muster
+
+2. 
+   email: tabea.muster12@gmail.com
+   username: musterTabea17
+   psw: tabY1965!
 ```
