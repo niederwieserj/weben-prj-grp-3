@@ -58,6 +58,10 @@
     display: none; 
 }
 
+.product-card .card .card-body p {
+  height: 3rem;
+}
+
 .col {
   flex: 0 0 100%;
   max-width: 100%;

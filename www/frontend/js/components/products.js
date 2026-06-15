@@ -230,7 +230,7 @@ async function loadProducts() {
         }
 
         productToInsert.querySelector('#product-name').textContent = product['name'];
-        productToInsert.querySelector('#product-price').textContent = product['price'] + ' €';
+        productToInsert.querySelector('#product-price').textContent = (Math.round(product['price'] * 100) / 100).toFixed(2) + ' €';
 
         const stars = createStarsFromRating(product['avg_rating']);
         const ratingContainer = productToInsert.querySelector('#product-rating');
